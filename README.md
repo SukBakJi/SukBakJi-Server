@@ -37,7 +37,7 @@ EX) #이슈번호 [commit type]: 기능 내용
 - feat: 새 기능 구현
 - fix: 에러 수정
 - style: 코드 변경이 없는 경우, 코드 포멧팅
-- refactor: 코드 리팩터링
+- refactor: 코드 리팩토링
 - docs: 문서 수정 및 생성
 - rename: 파일, 폴더명만 수정하거나 이동하는 작업
 - test: 테스트 관련 작업
