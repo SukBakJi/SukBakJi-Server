@@ -13,7 +13,7 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class SwaggerConfig {
     @Bean
-    public OpenAPI SukBakjiSwagger() {
+    public OpenAPI SukBakJiSwagger() {
         Info info = new Info()
                 .title("SukBakJi Server API")
                 .description("SukBakJi Server API 명세서")
