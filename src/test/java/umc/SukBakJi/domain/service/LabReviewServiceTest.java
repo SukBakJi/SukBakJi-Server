@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
+import umc.SukBakJi.domain.model.dto.LabReviewSearchDTO;
 import umc.SukBakJi.global.apiPayload.code.ErrorReasonDTO;
 import umc.SukBakJi.global.apiPayload.code.status.ErrorStatus;
 import umc.SukBakJi.global.apiPayload.exception.GeneralException;
@@ -66,7 +67,7 @@ class LabReviewServiceTest {
         logger.info("저장된 회원: {}", savedMember);
 
         // 연구실 생성 및 저장
-        Lab lab = new Lab("AI 연구실", "대학 A", "교수 A", "http://ailab.example.com", Arrays.asList());
+        Lab lab = new Lab("AI 연구실", "대학 A", "교수A", "교수 프로필", "광운대학교" , "http://ailab.example.com", Arrays.asList());
         savedLab = labRepository.save(lab);
         assertNotNull(savedLab.getId(), "연구실 저장 후 ID가 있어야 합니다.");
         logger.info("저장된 연구실: {}", savedLab);
@@ -86,6 +87,7 @@ class LabReviewServiceTest {
         assertNotNull(details, "상세 정보는 null이 아니어야 합니다.");
         assertEquals("대학 A", details.getUniversityName());
         assertEquals("AI 연구실", details.getLabName());
+        assertEquals("교수A", details.getProfessorName());
         assertTrue(details.getContent().contains("훌륭한 연구 기회를 제공합니다."));
         assertEquals(Arrays.asList("HORIZONTAL", "HIGH", "LAX", "MEDIUM", "EASY"), details.getTags());
     }
@@ -110,6 +112,7 @@ class LabReviewServiceTest {
         assertNotNull(details, "상세 정보는 null이 아니어야 합니다.");
         assertEquals("대학 A", details.getUniversityName());
         assertEquals("AI 연구실", details.getLabName());
+        assertEquals("교수A", details.getProfessorName());
         assertTrue(details.getContent().contains("훌륭한 자원이 있는 연구실입니다."));
         assertEquals(Arrays.asList("HORIZONTAL", "HIGH", "LAX", "MEDIUM", "EASY"), details.getTags());
     }
@@ -232,7 +235,50 @@ class LabReviewServiceTest {
         ErrorReasonDTO errorReason = exception.getErrorReasonHttpStatus();
         assertEquals(ErrorStatus.LAB_REVIEW_NOT_FOUND.getCode(), errorReason.getCode());
         assertEquals(ErrorStatus.LAB_REVIEW_NOT_FOUND.getMessage(), errorReason.getMessage());
-        logger.info("예외 발생 - 코드: {}, 메시지: {}", errorReason.getCode(), errorReason.getMessage());
+    }
+
+    @Test
+    public void 연구실후기검색() {
+        // Given: 연구실 후기를 여러 개 생성하고 저장
+        LabReview review1 = new LabReview(savedLab, savedMember, "이 연구실은 훌륭한 연구 기회를 제공합니다.", Atmosphere.HORIZONTAL, ThesisGuidance.HIGH, LeadershipStyle.LAX, SalaryLevel.MEDIUM, GraduationDifficulty.EASY);
+        LabReview review2 = new LabReview(savedLab, savedMember, "또 다른 연구 기회를 제공합니다.", Atmosphere.VERTICAL, ThesisGuidance.MEDIUM, LeadershipStyle.AUTHORITATIVE, SalaryLevel.HIGH, GraduationDifficulty.HARD);
+        labReviewRepository.saveAll(Arrays.asList(review1, review2));
+
+        // When: 지도교수명을 기준으로 연구실 후기를 검색
+        LabReviewSearchDTO searchDTO = new LabReviewSearchDTO();
+        searchDTO.setProfessorName("교수A");
+        List<LabReviewDetailsDTO> reviewList = labReviewService.searchLabReviews(searchDTO.getProfessorName(), 0, 6);
+
+        // Then: 검색된 후기가 올바르게 조회되었는지 검증
+        assertNotNull(reviewList, "후기 리스트는 null이 아니어야 합니다.");
+        assertEquals(2, reviewList.size(), "저장된 후기가 2개여야 합니다.");
+    }
+
+    @Test
+    public void 연구실후기검색_교수없음_예외발생() {
+        // When & Then: 존재하지 않는 교수명을 기준으로 연구실 후기를 검색 시도
+        GeneralException exception = assertThrows(GeneralException.class, () -> {
+            labReviewService.searchLabReviews("존재하지 않는 교수", 0, 6);
+        });
+
+        // 예외 메시지 검증
+        ErrorReasonDTO errorReason = exception.getErrorReasonHttpStatus();
+        assertEquals(ErrorStatus.PROFESSOR_NOT_FOUND.getCode(), errorReason.getCode());
+        assertEquals(ErrorStatus.PROFESSOR_NOT_FOUND.getMessage(), errorReason.getMessage());
+    }
+
+    @Test
+    public void 연구실후기검색_교수있지만후기없음_예외발생() {
+        // Given: 교수는 존재하지만 후기가 없는 경우
+        // When & Then: 연구실 후기를 검색 시도
+        GeneralException exception = assertThrows(GeneralException.class, () -> {
+            labReviewService.searchLabReviews("교수A", 0, 6);
+        });
+
+        // 예외 메시지 검증
+        ErrorReasonDTO errorReason = exception.getErrorReasonHttpStatus();
+        assertEquals(ErrorStatus.LAB_REVIEW_NOT_FOUND.getCode(), errorReason.getCode());
+        assertEquals(ErrorStatus.LAB_REVIEW_NOT_FOUND.getMessage(), errorReason.getMessage());
     }
 
 }

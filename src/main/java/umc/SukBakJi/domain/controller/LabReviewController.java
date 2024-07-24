@@ -7,10 +7,12 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import umc.SukBakJi.domain.model.dto.LabReviewSearchDTO;
 import umc.SukBakJi.global.apiPayload.ApiResponse;
 import umc.SukBakJi.domain.model.dto.LabReviewCreateDTO;
 import umc.SukBakJi.domain.model.dto.LabReviewDetailsDTO;
 import umc.SukBakJi.domain.service.LabReviewService;
+import umc.SukBakJi.global.apiPayload.code.ErrorReasonDTO;
 
 import java.util.List;
 
@@ -27,7 +29,10 @@ public class LabReviewController {
                     content = @Content(mediaType = "application/json",
                             schema = @Schema(implementation = LabReviewDetailsDTO.class))),
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "연구실 후기를 찾을 수 없습니다.",
-                    content = @Content)
+                    content = @Content),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "500", description = "서버 에러, 관리자에게 문의 바랍니다.",
+                    content = @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = ErrorReasonDTO.class)))
     })
     @GetMapping("/{reviewId}")
     public ApiResponse<LabReviewDetailsDTO> getLabReviewDetails(@PathVariable Long reviewId) {
@@ -47,7 +52,10 @@ public class LabReviewController {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "4042", description = "후기를 작성할 사용자를 찾을 수 없습니다.",
                     content = @Content),
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "400", description = "후기 내용이 유효하지 않습니다.",
-                    content = @Content)
+                    content = @Content),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "500", description = "서버 에러, 관리자에게 문의 바랍니다.",
+                    content = @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = ErrorReasonDTO.class)))
     })
     @PostMapping
     public ApiResponse<LabReviewDetailsDTO> createLabReview(
@@ -61,7 +69,16 @@ public class LabReviewController {
     @ApiResponses(value = {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "성공",
                     content = @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = LabReviewDetailsDTO.class)))
+                            schema = @Schema(implementation = LabReviewDetailsDTO.class))),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "400", description = "잘못된 요청입니다.",
+                    content = @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = ErrorReasonDTO.class))),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "연구실 후기를 찾을 수 없습니다.",
+                    content = @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = ErrorReasonDTO.class))),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "500", description = "서버 에러, 관리자에게 문의 바랍니다.",
+                    content = @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = ErrorReasonDTO.class)))
     })
     @GetMapping
     public ApiResponse<List<LabReviewDetailsDTO>> getLabReviewList(
@@ -69,6 +86,31 @@ public class LabReviewController {
             @Parameter(description = "페이지 크기", example = "6") @RequestParam(defaultValue = "6") int size
     ) {
         List<LabReviewDetailsDTO> reviewList = labReviewService.getLabReviewList(page, size);
+        return ApiResponse.onSuccess(reviewList);
+    }
+
+    @Operation(summary = "Search Lab Reviews by Professor Name", description = "지도교수명으로 연구실 후기를 검색합니다.")
+    @ApiResponses(value = {
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "성공",
+                    content = @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = LabReviewDetailsDTO.class))),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "해당 지도교수를 찾을 수 없습니다.",
+                    content = @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = ErrorReasonDTO.class))),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "연구실 후기를 찾을 수 없습니다.",
+                    content = @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = ErrorReasonDTO.class))),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "500", description = "서버 에러, 관리자에게 문의 바랍니다.",
+                    content = @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = ErrorReasonDTO.class)))
+    })
+    @PostMapping("/search")
+    public ApiResponse<List<LabReviewDetailsDTO>> searchLabReview(
+            @RequestBody LabReviewSearchDTO searchDTO,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "6") int size
+    ) {
+        List<LabReviewDetailsDTO> reviewList = labReviewService.searchLabReviews(searchDTO.getProfessorName(), page, size);
         return ApiResponse.onSuccess(reviewList);
     }
 }

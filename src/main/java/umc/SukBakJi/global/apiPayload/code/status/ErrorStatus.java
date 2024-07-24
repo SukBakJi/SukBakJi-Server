@@ -40,7 +40,9 @@ public enum ErrorStatus implements BaseErrorCode {
     MEMBER_NOT_FOUND_FOR_REVIEW(HttpStatus.NOT_FOUND, "MEMBER4042", "후기를 작성할 사용자를 찾을 수 없습니다."),
     INVALID_REVIEW_CONTENT(HttpStatus.BAD_REQUEST, "REVIEW4001", "후기 내용이 유효하지 않습니다."),
     DUPLICATE_REVIEW(HttpStatus.CONFLICT, "REVIEW4091", "중복된 후기가 존재합니다."),
-    UNAUTHORIZED_REVIEW_ACCESS(HttpStatus.FORBIDDEN, "REVIEW4031", "해당 후기에 접근할 권한이 없습니다.");
+    UNAUTHORIZED_REVIEW_ACCESS(HttpStatus.FORBIDDEN, "REVIEW4031", "해당 후기에 접근할 권한이 없습니다."),
+    PROFESSOR_NOT_FOUND(HttpStatus.NOT_FOUND, "PROFESSOR4041", "해당 지도교수를 찾을 수 없습니다."),
+    INVALID_PROFESSOR_NAME(HttpStatus.NOT_FOUND, "PROFESSOR4042", "지도교수 이름을 찾을 수 없습니다.");
 
 
 

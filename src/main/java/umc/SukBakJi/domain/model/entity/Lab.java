@@ -28,6 +28,12 @@ public class Lab extends BaseEntity {
     @Column(nullable = false)
     private String professorName; // 교수명
 
+    @Column(nullable = true)
+    private String professorProfile; // 교수 프로필
+
+    @Column(nullable = true)
+    private String professorAcademic; // 교수 학적
+
     private String labLink; // 연구실 링크
 
     @ManyToMany
@@ -39,10 +45,12 @@ public class Lab extends BaseEntity {
     private List<ResearchTopic> researchTopics;
 
 
-    public Lab(String labName, String universityName, String professorName, String labLink, List<ResearchTopic> researchTopics) {
+    public Lab(String labName, String universityName, String professorName, String professorProfile, String professorAcademic, String labLink, List<ResearchTopic> researchTopics) {
         this.labName = labName;
         this.universityName = universityName;
         this.professorName = professorName;
+        this.professorProfile = professorProfile;
+        this.professorAcademic = professorAcademic;
         this.labLink = labLink;
         this.researchTopics = researchTopics;
     }
