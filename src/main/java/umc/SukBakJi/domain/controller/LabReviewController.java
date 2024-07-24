@@ -12,6 +12,9 @@ import umc.SukBakJi.domain.model.dto.LabReviewCreateDTO;
 import umc.SukBakJi.domain.model.dto.LabReviewDetailsDTO;
 import umc.SukBakJi.domain.service.LabReviewService;
 
+import java.util.List;
+
+
 @RestController
 @RequestMapping("/api/labs/reviews")
 public class LabReviewController {
@@ -52,5 +55,20 @@ public class LabReviewController {
             @RequestBody LabReviewCreateDTO dto) {
         LabReviewDetailsDTO details = labReviewService.createLabReview(dto);
         return ApiResponse.onSuccess(details);
+    }
+
+    @Operation(summary = "Get Lab Review List", description = "연구실 후기 목록을 조회합니다.")
+    @ApiResponses(value = {
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "성공",
+                    content = @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = LabReviewDetailsDTO.class)))
+    })
+    @GetMapping
+    public ApiResponse<List<LabReviewDetailsDTO>> getLabReviewList(
+            @Parameter(description = "페이지 번호", example = "0") @RequestParam(defaultValue = "0") int page,
+            @Parameter(description = "페이지 크기", example = "6") @RequestParam(defaultValue = "6") int size
+    ) {
+        List<LabReviewDetailsDTO> reviewList = labReviewService.getLabReviewList(page, size);
+        return ApiResponse.onSuccess(reviewList);
     }
 }

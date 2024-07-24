@@ -21,6 +21,7 @@ import umc.SukBakJi.domain.repository.LabReviewRepository;
 import umc.SukBakJi.domain.repository.MemberRepository;
 
 import java.util.Arrays;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -47,6 +48,11 @@ class LabReviewServiceTest {
     private Member savedMember;
     @BeforeEach
     public void 설정() {
+        // 데이터베이스 초기화
+        labReviewRepository.deleteAll();
+        labRepository.deleteAll();
+        memberRepository.deleteAll();
+
         // 모든 종속성이 올바르게 주입되었는지 확인
         assertNotNull(labReviewService);
         assertNotNull(labRepository);
@@ -72,7 +78,6 @@ class LabReviewServiceTest {
         LabReview review = new LabReview(savedLab, savedMember, "이 연구실은 훌륭한 연구 기회를 제공합니다.", Atmosphere.HORIZONTAL, ThesisGuidance.HIGH, LeadershipStyle.LAX, SalaryLevel.MEDIUM, GraduationDifficulty.EASY);
         review = labReviewRepository.save(review);
         assertNotNull(review.getId(), "연구실 후기를 저장한 후 ID가 있어야 합니다.");
-        logger.info("저장된 연구실 후기: {}", review);
 
         // When: 연구실 후기 상세 정보를 가져옴
         LabReviewDetailsDTO details = labReviewService.getLabReviewDetails(review.getId());
@@ -83,7 +88,6 @@ class LabReviewServiceTest {
         assertEquals("AI 연구실", details.getLabName());
         assertTrue(details.getContent().contains("훌륭한 연구 기회를 제공합니다."));
         assertEquals(Arrays.asList("HORIZONTAL", "HIGH", "LAX", "MEDIUM", "EASY"), details.getTags());
-        logger.info("가져온 연구실 후기 상세 정보 - 태그: {}", details.getTags());
     }
     @Test
     public void 연구실후기생성하기() {
@@ -108,7 +112,6 @@ class LabReviewServiceTest {
         assertEquals("AI 연구실", details.getLabName());
         assertTrue(details.getContent().contains("훌륭한 자원이 있는 연구실입니다."));
         assertEquals(Arrays.asList("HORIZONTAL", "HIGH", "LAX", "MEDIUM", "EASY"), details.getTags());
-        logger.info("생성되고 가져온 연구실 후기 상세 정보: {}", details);
     }
 
     @Test
@@ -122,7 +125,6 @@ class LabReviewServiceTest {
         ErrorReasonDTO errorReason = exception.getErrorReasonHttpStatus();
         assertEquals(ErrorStatus.LAB_REVIEW_NOT_FOUND.getCode(), errorReason.getCode());
         assertEquals(ErrorStatus.LAB_REVIEW_NOT_FOUND.getMessage(), errorReason.getMessage());
-        logger.info("예외 발생 - 코드: {}, 메시지: {}", errorReason.getCode(), errorReason.getMessage());
     }
 
     @Test
@@ -148,7 +150,6 @@ class LabReviewServiceTest {
         ErrorReasonDTO errorReason = exception.getErrorReasonHttpStatus();
         assertEquals(ErrorStatus.LAB_NOT_FOUND.getCode(), errorReason.getCode());
         assertEquals(ErrorStatus.LAB_NOT_FOUND.getMessage(), errorReason.getMessage());
-        logger.info("예외 발생 - 코드: {}, 메시지: {}", errorReason.getCode(), errorReason.getMessage());
     }
 
     @Test
@@ -178,7 +179,6 @@ class LabReviewServiceTest {
         ErrorReasonDTO errorReason = exception.getErrorReasonHttpStatus();
         assertEquals(ErrorStatus.DUPLICATE_REVIEW.getCode(), errorReason.getCode());
         assertEquals(ErrorStatus.DUPLICATE_REVIEW.getMessage(), errorReason.getMessage());
-        logger.info("예외 발생 - 코드: {}, 메시지: {}", errorReason.getCode(), errorReason.getMessage());
     }
 
     @Test
@@ -204,6 +204,34 @@ class LabReviewServiceTest {
         ErrorReasonDTO errorReason = exception.getErrorReasonHttpStatus();
         assertEquals(ErrorStatus.INVALID_REVIEW_CONTENT.getCode(), errorReason.getCode());
         assertEquals(ErrorStatus.INVALID_REVIEW_CONTENT.getMessage(), errorReason.getMessage());
+    }
+
+    @Test
+    public void 연구실후기목록조회() {
+        // Given: 연구실 후기를 여러 개 생성하고 저장
+        LabReview review1 = new LabReview(savedLab, savedMember, "이 연구실은 훌륭한 연구 기회를 제공합니다.", Atmosphere.HORIZONTAL, ThesisGuidance.HIGH, LeadershipStyle.LAX, SalaryLevel.MEDIUM, GraduationDifficulty.EASY);
+        LabReview review2 = new LabReview(savedLab, savedMember, "또 다른 연구 기회를 제공합니다.", Atmosphere.VERTICAL, ThesisGuidance.MEDIUM, LeadershipStyle.AUTHORITATIVE, SalaryLevel.HIGH, GraduationDifficulty.HARD);
+        labReviewRepository.saveAll(Arrays.asList(review1, review2));
+
+        // When: 모든 연구실 후기를 조회
+        List<LabReviewDetailsDTO> reviewList = labReviewService.getLabReviewList(0, 6);
+
+        // Then: 후기가 올바르게 조회되었는지 검증
+        assertNotNull(reviewList, "후기 리스트는 null이 아니어야 합니다.");
+        assertEquals(2, reviewList.size(), "저장된 후기가 2개여야 합니다.");
+    }
+
+    @Test
+    public void 연구실후기목록조회_빈리스트_예외발생() {
+        // When & Then: 저장된 연구실 후기가 없는 상태에서 조회 시도
+        GeneralException exception = assertThrows(GeneralException.class, () -> {
+            labReviewService.getLabReviewList(0, 6);
+        });
+
+        // 예외 메시지 검증
+        ErrorReasonDTO errorReason = exception.getErrorReasonHttpStatus();
+        assertEquals(ErrorStatus.LAB_REVIEW_NOT_FOUND.getCode(), errorReason.getCode());
+        assertEquals(ErrorStatus.LAB_REVIEW_NOT_FOUND.getMessage(), errorReason.getMessage());
         logger.info("예외 발생 - 코드: {}, 메시지: {}", errorReason.getCode(), errorReason.getMessage());
     }
 
