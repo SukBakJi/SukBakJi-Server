@@ -43,9 +43,14 @@ public class LabReviewConverter {
     }
 
     public LabReviewDetailsDTO toDto(LabReview review) {
+        Lab lab = review.getLab();
         return LabReviewDetailsDTO.builder()
                 .universityName(review.getLab().getUniversityName())
                 .labName(review.getLab().getLabName())
+                .professorName(lab.getProfessorName())
+                .professorProfile(lab.getProfessorProfile())
+                .professorAcademic(lab.getProfessorAcademic())
+                .researchKeywords(lab.getResearchTopics())
                 .content(review.getContent())
                 .tags(Arrays.asList(
                         review.getAtmosphere().name(),
