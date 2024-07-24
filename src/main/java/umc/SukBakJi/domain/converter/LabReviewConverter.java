@@ -13,6 +13,8 @@ import umc.SukBakJi.global.apiPayload.code.status.ErrorStatus;
 import umc.SukBakJi.global.apiPayload.exception.GeneralException;
 
 import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Component
 public class LabReviewConverter {
@@ -54,5 +56,15 @@ public class LabReviewConverter {
                 ))
                 .createdAt(review.getCreatedAt().toString())
                 .build();
+    }
+
+    public List<LabReviewDetailsDTO> toDto(List<LabReview> reviews) {
+        if (reviews == null || reviews.isEmpty()) {
+            throw new GeneralException(ErrorStatus.LAB_REVIEW_NOT_FOUND);
+        }
+
+        return reviews.stream()
+                .map(this::toDto)
+                .collect(Collectors.toList());
     }
 }

@@ -1,6 +1,8 @@
 package umc.SukBakJi.domain.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import umc.SukBakJi.domain.converter.LabReviewConverter;
 import umc.SukBakJi.global.apiPayload.code.status.ErrorStatus;
@@ -28,8 +30,7 @@ public class LabReviewService {
     private LabReviewConverter labReviewConverter;
 
     public LabReviewDetailsDTO getLabReviewDetails(Long reviewId) {
-        LabReview review = labReviewRepository.findById(reviewId)
-                .orElseThrow(() -> new GeneralException(ErrorStatus.LAB_REVIEW_NOT_FOUND));
+        LabReview review = labReviewRepository.findById(reviewId).orElseThrow(() -> new GeneralException(ErrorStatus.LAB_REVIEW_NOT_FOUND));
 
         return labReviewConverter.toDto(review);
 
@@ -51,4 +52,13 @@ public class LabReviewService {
         return labReviewConverter.toDto(review);
     }
 
+    public List<LabReviewDetailsDTO> getLabReviewList(int page, int size) {
+        PageRequest pageRequest = PageRequest.of(page, size);
+        Page<LabReview> reviews = labReviewRepository.findAll(pageRequest);
+        if (reviews.isEmpty()) {
+            throw new GeneralException(ErrorStatus.LAB_REVIEW_NOT_FOUND);
+        }
+
+        return labReviewConverter.toDto(reviews.getContent());
+    }
 }
