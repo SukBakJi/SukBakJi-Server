@@ -23,12 +23,9 @@ public enum ErrorStatus implements BaseErrorCode {
     // 예시
     ARTICLE_NOT_FOUND(HttpStatus.NOT_FOUND, "ARTICLE4001", "게시글이 없습니다."),
 
-    // For test
-    TEMP_EXCEPTION(HttpStatus.BAD_REQUEST, "TEMP4001", "이거는 테스트"),
-
-    // FoodCategory Error
-    FOOD_CATEGORY_NOT_FOUND(HttpStatus.NOT_FOUND, "FOOD_CATEGORY4001", "음식 카테고리가 없습니다.");
-
+    // 알람 설정 관련 에러
+    INVALID_DATE(HttpStatus.BAD_REQUEST, "ALARM400", "올바르지 않는 날짜입니다."),
+    DUPLICATE_ALARM_NAME(HttpStatus.BAD_REQUEST, "ALARM401", "중복된 알람 이름입니다.");
 
     private final HttpStatus httpStatus;
     private final String code;
