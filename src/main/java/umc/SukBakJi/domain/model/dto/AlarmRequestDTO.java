@@ -20,4 +20,10 @@ public class AlarmRequestDTO {
         @NotNull
         String time;
     }
+
+    @Getter
+    public static class viewAlarmList{
+        @NotNull
+        Long memberId;
+    }
 }
