@@ -6,6 +6,8 @@ import lombok.Setter;
 import umc.SukBakJi.global.entity.BaseEntity;
 import umc.SukBakJi.domain.model.entity.enums.Menu;
 
+import java.util.List;
+
 @Entity
 @Getter
 @Setter
@@ -21,4 +23,11 @@ public class Board extends BaseEntity {
 
     @Enumerated(EnumType.STRING)
     private Menu menu;
+
+    // Define relationships if necessary
+    @OneToMany(mappedBy = "board")
+    private List<Post> posts;
+
+    @OneToMany(mappedBy = "board")
+    private List<BoardLike> boardLikes;
 }
