@@ -16,6 +16,7 @@ import umc.SukBakJi.domain.repository.UnivRepository;
 import umc.SukBakJi.global.apiPayload.code.status.ErrorStatus;
 import umc.SukBakJi.global.apiPayload.exception.GeneralException;
 
+import java.util.List;
 import java.util.Optional;
 
 
@@ -49,6 +50,16 @@ public class CalenderService {
 
         return alarm;
     }
+
+    @Transactional
+    public List<Alarm> getAlarmList(Long memberId){
+        List<Alarm> alarmList = alarmRepository.findByMemberId(memberId);
+        if(alarmList.isEmpty()){
+            alarmList = null;
+        }
+        return alarmList;
+    }
+
 
 //    public UnivRequestDTO setUniv(UnivRequestDTO.setUniv request){
 //        LabReview review = labReviewConverter.toEntity(dto);

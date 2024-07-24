@@ -18,4 +18,23 @@ public class AlarmResponseDTO {
         String alarmName;
         Long memberId;
     }
+
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class getAlarmListDTO{
+        Long memberId;
+        List<AlarmResponseDTO.alarmDTO> alarmList;
+    }
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class alarmDTO{
+        Long alarmId;
+        String alarmName;
+        String alarmDate;
+        String alarmTime;
+    }
 }
