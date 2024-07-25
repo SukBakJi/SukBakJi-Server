@@ -1,47 +1,47 @@
 package umc.SukBakJi.domain.model.entity;
 
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
+import umc.SukBakJi.domain.model.entity.enums.DegreeLevel;
+import umc.SukBakJi.domain.model.entity.enums.Provider;
 import umc.SukBakJi.global.entity.BaseEntity;
-import lombok.Setter;
 
 import java.util.List;
 
 @Entity
 @Getter
+@Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@ToString
-@Setter
+@AllArgsConstructor
 public class Member extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "member_id")
     private Long id;
 
-    @Column(nullable = false)
     private String name;
 
-    @Column(nullable = false)
     private String password;
 
-    @Column(nullable = false)
+    @Column(unique = true, nullable = false)
     private String email;
 
-    @Column(nullable = false)
     private String phoneNumber;
 
-    @Column(nullable = false)
-    private String degreeLevel;
+    @Enumerated(EnumType.STRING)
+    private DegreeLevel degreeLevel;
 
-    @Column(nullable = false)
     @ColumnDefault("0")
     private Integer point;
 
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private String socialType;
+    private Provider provider;
+
+    private String providerId;
+
+    private String refreshToken;
 
     // Define relationships if necessary
     @OneToMany(mappedBy = "member")
@@ -58,13 +58,31 @@ public class Member extends BaseEntity {
 
     @OneToMany(mappedBy = "member")
     private List<Scrap> scraps;
-    public Member(String name, String password, String email, String phoneNumber, String degreeLevel, int point, String socialType) {
+    public Member(String name, String password, String email, String phoneNumber, DegreeLevel degreeLevel, int point, Provider provider) {
         this.name = name;
         this.password = password;
         this.email = email;
         this.phoneNumber = phoneNumber;
         this.degreeLevel = degreeLevel;
         this.point = point;
-        this.socialType = socialType;
+        this.provider = provider;
+    }
+
+    @Builder
+    public Member(Provider provider, String providerId) {
+        this.provider = provider;
+        this.providerId = providerId;
+    }
+
+    public Member(String email) {
+        this.email = email;
+    }
+
+    public void updateRefreshToken(String refreshToken) {
+        this.refreshToken = refreshToken;
+    }
+
+    public void resetRefreshToken() {
+        this.refreshToken = null;
     }
 }
