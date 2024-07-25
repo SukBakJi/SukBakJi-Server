@@ -42,9 +42,12 @@ public enum ErrorStatus implements BaseErrorCode {
     DUPLICATE_REVIEW(HttpStatus.CONFLICT, "REVIEW4091", "중복된 후기가 존재합니다."),
     UNAUTHORIZED_REVIEW_ACCESS(HttpStatus.FORBIDDEN, "REVIEW4031", "해당 후기에 접근할 권한이 없습니다."),
     PROFESSOR_NOT_FOUND(HttpStatus.NOT_FOUND, "PROFESSOR4041", "해당 지도교수를 찾을 수 없습니다."),
-    INVALID_PROFESSOR_NAME(HttpStatus.NOT_FOUND, "PROFESSOR4042", "지도교수 이름을 찾을 수 없습니다.");
+    INVALID_PROFESSOR_NAME(HttpStatus.NOT_FOUND, "PROFESSOR4042", "지도교수 이름을 찾을 수 없습니다."),
 
 
+    // 알람 설정 관련 에러
+    INVALID_DATE(HttpStatus.BAD_REQUEST, "ALARM400", "올바르지 않는 날짜입니다."),
+    DUPLICATE_ALARM_NAME(HttpStatus.BAD_REQUEST, "ALARM401", "중복된 알람 이름입니다.");
 
     private final HttpStatus httpStatus;
     private final String code;
