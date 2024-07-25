@@ -1,4 +1,4 @@
-package umc.SukBakJi.domain.model.dto.auth;
+package umc.SukBakJi.global.security.jwt;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -8,7 +8,6 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 public class JwtToken {
-    private String grantType;
     private String accessToken;
     private String refreshToken;
 }

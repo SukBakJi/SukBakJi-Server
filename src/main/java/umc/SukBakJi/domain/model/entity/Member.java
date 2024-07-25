@@ -2,8 +2,10 @@ package umc.SukBakJi.domain.model.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.ColumnDefault;
+import org.springframework.boot.context.properties.bind.DefaultValue;
 import umc.SukBakJi.domain.model.entity.enums.DegreeLevel;
-import umc.SukBakJi.domain.model.entity.enums.LoginType;
+import umc.SukBakJi.domain.model.entity.enums.Provider;
 import umc.SukBakJi.global.entity.BaseEntity;
 
 @Entity
@@ -17,10 +19,8 @@ public class Member extends BaseEntity {
     @Column(name = "member_id")
     private Long id;
 
-    @Column(nullable = false)
     private String name;
 
-    @Column(nullable = false)
     private String password;
 
     @Column(unique = true, nullable = false)
@@ -29,12 +29,34 @@ public class Member extends BaseEntity {
     private String phoneNumber;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
     private DegreeLevel degreeLevel;
 
-    private Integer point = 0;
+    @ColumnDefault("0")
+    private Integer point;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private LoginType loginType;
+    private Provider provider;
+
+    private String providerId;
+
+    private String refreshToken;
+
+    @Builder
+    public Member(Provider provider, String providerId) {
+        this.provider = provider;
+        this.providerId = providerId;
+    }
+
+    public Member(String email) {
+        this.email = email;
+    }
+
+    public void updateRefreshToken(String refreshToken) {
+        this.refreshToken = refreshToken;
+    }
+
+    public void resetRefreshToken() {
+        this.refreshToken = null;
+    }
 }

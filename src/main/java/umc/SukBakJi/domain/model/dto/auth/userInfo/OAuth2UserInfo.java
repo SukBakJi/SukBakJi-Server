@@ -1,4 +1,8 @@
 package umc.SukBakJi.domain.model.dto.auth.userInfo;
 
-public class OAuth2UserInfo {
+import umc.SukBakJi.domain.model.entity.enums.Provider;
+
+public interface OAuth2UserInfo {
+    Provider getProvider();
+    String getEmail();
 }
