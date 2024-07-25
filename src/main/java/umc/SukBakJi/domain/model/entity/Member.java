@@ -3,10 +3,11 @@ package umc.SukBakJi.domain.model.entity;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
-import org.springframework.boot.context.properties.bind.DefaultValue;
 import umc.SukBakJi.domain.model.entity.enums.DegreeLevel;
 import umc.SukBakJi.domain.model.entity.enums.Provider;
 import umc.SukBakJi.global.entity.BaseEntity;
+
+import java.util.List;
 
 @Entity
 @Getter
@@ -41,6 +42,31 @@ public class Member extends BaseEntity {
     private String providerId;
 
     private String refreshToken;
+
+    // Define relationships if necessary
+    @OneToMany(mappedBy = "member")
+    private List<Post> posts;
+
+    @OneToMany(mappedBy = "member")
+    private List<Comment> comments;
+
+    @OneToMany(mappedBy = "member")
+    private List<Reply> replies;
+
+    @OneToMany(mappedBy = "member")
+    private List<BoardLike> boardLikes;
+
+    @OneToMany(mappedBy = "member")
+    private List<Scrap> scraps;
+    public Member(String name, String password, String email, String phoneNumber, DegreeLevel degreeLevel, int point, Provider provider) {
+        this.name = name;
+        this.password = password;
+        this.email = email;
+        this.phoneNumber = phoneNumber;
+        this.degreeLevel = degreeLevel;
+        this.point = point;
+        this.provider = provider;
+    }
 
     @Builder
     public Member(Provider provider, String providerId) {
