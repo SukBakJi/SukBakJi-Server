@@ -20,6 +20,7 @@ public class Member extends BaseEntity {
     @Column(nullable = false)
     private String name;
 
+    @Column(nullable = false)
     private String password;
 
     @Column(nullable = false)
@@ -31,6 +32,7 @@ public class Member extends BaseEntity {
     @Column(nullable = false)
     private String degreeLevel;
 
+    @Column(nullable = false)
     @ColumnDefault("0")
     private int point;
 
