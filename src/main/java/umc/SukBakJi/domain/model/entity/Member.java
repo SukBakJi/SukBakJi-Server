@@ -5,11 +5,12 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+import org.hibernate.annotations.ColumnDefault;
 import umc.SukBakJi.global.entity.BaseEntity;
 
 @Entity
 @Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED) // 기본 생성자의 접근 수준을 protected로 설정
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @ToString
 public class Member extends BaseEntity {
     @Id
@@ -32,6 +33,7 @@ public class Member extends BaseEntity {
     private String degreeLevel;
 
     @Column(nullable = false)
+    @ColumnDefault("0")
     private int point;
 
     @Column(nullable = false)
