@@ -18,6 +18,10 @@ bin/
 !**/src/test/**/bin/
 
 ### IntelliJ IDEA ###
+<<<<<<< HEAD
+=======
+application.properties
+>>>>>>> origin/develop
 .idea
 *.iws
 *.iml
@@ -36,4 +40,4 @@ out/
 ### VS Code ###
 .vscode/
 
-application.yml
+/src/main/resources/application.yml
