@@ -9,6 +9,7 @@ public class MemberConverter {
                 .email(email)
                 .password(encodedPassword)
                 .provider(provider)
+                .role("ROLE_USER")
                 .build();
     }
 }

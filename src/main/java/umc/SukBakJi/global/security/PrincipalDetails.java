@@ -2,29 +2,25 @@ package umc.SukBakJi.global.security;
 
 import lombok.Data;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import umc.SukBakJi.domain.model.entity.Member;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Data
 public class PrincipalDetails implements UserDetails, OAuth2User {
 
     private Member member;
     private Map<String, Object> attributes;
+    private Collection<? extends GrantedAuthority> authorities;
 
     // 일반 로그인 생성자
     public PrincipalDetails(Member member) {
         this.member = member;
-    }
-
-    // OAuth2 로그인 생성자
-    public PrincipalDetails(Member member, Map<String, Object> attributes) {
-        this.member = member;
-        this.attributes = attributes;
+        this.authorities = Collections.singletonList(new SimpleGrantedAuthority("ROLE_USER"));
     }
 
     /**
@@ -40,7 +36,7 @@ public class PrincipalDetails implements UserDetails, OAuth2User {
      */
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return Collections.emptyList();
+        return authorities;
     }
 
     @Override
