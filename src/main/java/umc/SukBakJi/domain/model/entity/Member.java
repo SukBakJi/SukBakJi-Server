@@ -43,8 +43,6 @@ public class Member extends BaseEntity {
 
     private String refreshToken;
 
-    private String role;
-
     // Define relationships if necessary
     @OneToMany(mappedBy = "member")
     private List<Post> posts;
