@@ -4,24 +4,26 @@ import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
+import umc.SukBakJi.domain.model.entity.Member;
+import umc.SukBakJi.domain.repository.MemberRepository;
+import umc.SukBakJi.global.security.PrincipalDetails;
 
 import java.security.Key;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Date;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Slf4j
 @Component
+@RequiredArgsConstructor
 public class JwtTokenProvider {
     private Key key;
 
@@ -41,19 +43,26 @@ public class JwtTokenProvider {
         this.key = Keys.hmacShaKeyFor(keyBytes);
     }
 
+    private final MemberRepository memberRepository;
+
     // Member 정보를 가지고 AccessToken, RefreshToken 생성
-    public JwtToken generateToken(Authentication authentication) {
+    public JwtToken generateJwtToken(Member member) {
+        // PrincipalDetails 생성
+        UserDetails principal = new PrincipalDetails(member);
+
         // 권한 가져오기
-        String authorities = authentication.getAuthorities().stream()
+        String authorities = principal.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
                 .collect(Collectors.joining(","));
+
+        log.info("authorities: " + authorities);
 
         long now = (new Date()).getTime();
 
         // Access Token 생성
         Date accessTokenExpiresIn = new Date(now + accessTokenExpiration);
         String accessToken = Jwts.builder()
-                .setSubject(authentication.getName())
+                .setSubject(principal.getUsername())
                 .claim("auth", authorities)
                 .setExpiration(accessTokenExpiresIn)
                 .signWith(key, SignatureAlgorithm.HS256)
@@ -85,7 +94,13 @@ public class JwtTokenProvider {
                 .map(SimpleGrantedAuthority::new)
                 .collect(Collectors.toList());
 
-        UserDetails principal = new User(claims.getSubject(), "", authorities);
+        String email = claims.getSubject();
+        Member member = memberRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("회원 정보를 찾을 수 없습니다."));
+
+        // PrincipalDetails 생성
+        UserDetails principal = new PrincipalDetails(member);
+
         return new UsernamePasswordAuthenticationToken(principal, "", authorities);
     }
 
