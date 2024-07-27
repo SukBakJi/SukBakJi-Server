@@ -7,6 +7,7 @@ import umc.SukBakJi.domain.model.entity.enums.DegreeLevel;
 import umc.SukBakJi.domain.model.entity.enums.Provider;
 import umc.SukBakJi.global.entity.BaseEntity;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
@@ -39,8 +40,6 @@ public class Member extends BaseEntity {
     @Column(nullable = false)
     private Provider provider;
 
-    private String providerId;
-
     private String refreshToken;
 
     // Define relationships if necessary
@@ -68,12 +67,6 @@ public class Member extends BaseEntity {
         this.provider = provider;
     }
 
-    @Builder
-    public Member(Provider provider, String providerId) {
-        this.provider = provider;
-        this.providerId = providerId;
-    }
-
     public Member(String email) {
         this.email = email;
     }
@@ -84,5 +77,10 @@ public class Member extends BaseEntity {
 
     public void resetRefreshToken() {
         this.refreshToken = null;
+    }
+
+    @PrePersist
+    public void setPoint() {
+        this.point = 0;
     }
 }

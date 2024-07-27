@@ -54,7 +54,7 @@ public class AuthService {
             throw new MemberHandler(ErrorStatus.INVALID_PASSWORD);
         }
 
-        JwtToken jwtToken = generateJwtToken(member);
+        JwtToken jwtToken = jwtTokenProvider.generateJwtToken(member);
         return AuthConverter.toLoginDto(member, jwtToken);
     }
 
@@ -80,11 +80,11 @@ public class AuthService {
         member.resetRefreshToken();
     }
 
-    public JwtToken generateJwtToken(Member member) {
-        return jwtTokenProvider.generateToken(new UsernamePasswordAuthenticationToken(
-                member.getEmail(), member.getPassword()
-        ));
-    }
+//    public JwtToken generateJwtToken(Member member) {
+//        return jwtTokenProvider.generateToken(new UsernamePasswordAuthenticationToken(
+//                member.getEmail(), member.getPassword()
+//        ));
+//    }
 
 //    private JwtToken getToken(Member member) {
 //        JwtToken token = generateJwtToken(member);
