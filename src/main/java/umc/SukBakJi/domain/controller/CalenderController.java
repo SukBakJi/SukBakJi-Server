@@ -9,11 +9,14 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import umc.SukBakJi.domain.converter.AlarmConverter;
+import umc.SukBakJi.domain.converter.UnivConverter;
 import umc.SukBakJi.domain.model.dto.AlarmRequestDTO;
 import umc.SukBakJi.domain.model.dto.AlarmResponseDTO;
 import umc.SukBakJi.domain.model.dto.UnivRequestDTO;
 import umc.SukBakJi.domain.model.dto.UnivResponseDTO;
 import umc.SukBakJi.domain.model.entity.Alarm;
+import umc.SukBakJi.domain.model.entity.University;
+import umc.SukBakJi.domain.model.entity.mapping.SetUniv;
 import umc.SukBakJi.domain.service.CalenderService;
 import umc.SukBakJi.global.apiPayload.ApiResponse;
 import umc.SukBakJi.global.apiPayload.code.ErrorReasonDTO;
@@ -44,6 +47,24 @@ public class CalenderController {
 //        UnivRequestDTO details = calenderService.setUniv(request);
 //        return ApiResponse.onSuccess(details);
 //    }
+
+    @Operation(summary = "Get University", description = "선택한 학교를 조회합니다.")
+    @ApiResponses(value = {
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "성공"),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "400", description = "해당하는 사용자가 없습니다.",
+                    content = @Content),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "500", description = "서버 에러, 관리자에게 문의 바랍니다.",
+                    content = @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = ErrorReasonDTO.class)))
+    })
+    @GetMapping("/univ/{memberId}")
+    public ApiResponse<UnivResponseDTO.getUnivListDTO> getUnivList(@PathVariable(name="memberId") Long memberId){
+        List<SetUniv> univList = calenderService.getUnivList(memberId);
+        if(univList == null){
+            return ApiResponse.onSuccess(UnivConverter.toGetUnivListDTO(memberId, null));
+        }
+        return ApiResponse.onSuccess(UnivConverter.toGetUnivListDTO(memberId, univList));
+    }
 
     @Operation(summary = "Set Alarm", description = "알람을 설정합니다.")
     @ApiResponses(value = {

@@ -18,4 +18,10 @@ public class UnivRequestDTO {
         @NotNull
         List<Long> univId;
     }
+
+    @Getter
+    public static class getUnivList{
+        @NotNull
+        Long memberId;
+    }
 }
