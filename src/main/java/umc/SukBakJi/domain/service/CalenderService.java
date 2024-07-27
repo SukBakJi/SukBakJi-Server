@@ -5,11 +5,11 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import umc.SukBakJi.domain.converter.AlarmConverter;
-import umc.SukBakJi.domain.converter.SetUnivConverter;
 import umc.SukBakJi.domain.model.dto.AlarmRequestDTO;
-import umc.SukBakJi.domain.model.dto.UnivRequestDTO;
 import umc.SukBakJi.domain.model.entity.Alarm;
 import umc.SukBakJi.domain.model.entity.Member;
+import umc.SukBakJi.domain.model.entity.University;
+import umc.SukBakJi.domain.model.entity.mapping.SetUniv;
 import umc.SukBakJi.domain.repository.AlarmRepository;
 import umc.SukBakJi.domain.repository.MemberRepository;
 import umc.SukBakJi.domain.repository.UnivRepository;
@@ -29,6 +29,9 @@ public class CalenderService {
 
     @Autowired
     private MemberRepository memberRepository;
+
+    @Autowired
+    private UnivRepository univRepository;
 
     @Transactional
     public Alarm createAlarm(AlarmRequestDTO.createAlarm request){
@@ -60,10 +63,17 @@ public class CalenderService {
         return alarmList;
     }
 
-
 //    public UnivRequestDTO setUniv(UnivRequestDTO.setUniv request){
 //        LabReview review = labReviewConverter.toEntity(dto);
 //
 //        Optional<LabReview> existingReview = labReviewRepository.findByLabAndMember(review.getLab(), review.getMember());
 //    }
+
+    public List<SetUniv> getUnivList(Long memberId){
+        List<SetUniv> univList = univRepository.findByMemberId(memberId);
+        if(univList.isEmpty()){
+            univList = null;
+        }
+        return univList;
+    }
 }
