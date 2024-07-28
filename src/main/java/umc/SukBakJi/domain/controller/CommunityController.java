@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import umc.SukBakJi.domain.model.dto.HotBoardPostDTO;
 import umc.SukBakJi.domain.model.dto.LatestQuestionDTO;
 import umc.SukBakJi.domain.service.CommunityService;
 import umc.SukBakJi.global.apiPayload.ApiResponse;
@@ -30,5 +31,17 @@ public class CommunityController {
     public ApiResponse<List<LatestQuestionDTO>> getLatestQuestions() {
         List<LatestQuestionDTO> latestQuestions = communityService.getLatestQuestions();
         return ApiResponse.onSuccess(latestQuestions);
+    }
+
+    @Operation(summary = "Get Hot Board Posts", description = "스크랩 20개 이상 또는 조회수 100회 이상인 게시글을 최신순으로 보여줍니다.")
+    @ApiResponses(value = {
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "성공",
+                    content = @io.swagger.v3.oas.annotations.media.Content(mediaType = "application/json",
+                            schema = @io.swagger.v3.oas.annotations.media.Schema(implementation = HotBoardPostDTO.class)))
+    })
+    @GetMapping("/hot-boards")
+    public ApiResponse<List<HotBoardPostDTO>> getHotBoardPosts() {
+        List<HotBoardPostDTO> hotBoardPosts = communityService.getHotBoardPosts();
+        return ApiResponse.onSuccess(hotBoardPosts);
     }
 }
