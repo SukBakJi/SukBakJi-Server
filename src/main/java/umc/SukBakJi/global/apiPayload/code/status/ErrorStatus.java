@@ -44,6 +44,12 @@ public enum ErrorStatus implements BaseErrorCode {
     PROFESSOR_NOT_FOUND(HttpStatus.NOT_FOUND, "PROFESSOR4041", "해당 지도교수를 찾을 수 없습니다."),
     INVALID_PROFESSOR_NAME(HttpStatus.NOT_FOUND, "PROFESSOR4042", "지도교수 이름을 찾을 수 없습니다."),
 
+    // 게시판 관련 오류
+    BOARD_NOT_FOUND(HttpStatus.NOT_FOUND, "BOARD4041", "게시판을 찾을 수 없습니다."),
+    POST_NOT_FOUND(HttpStatus.NOT_FOUND, "POST4041", "게시글을 찾을 수 없습니다."),
+    UNAUTHORIZED_BOARD_ACCESS(HttpStatus.FORBIDDEN, "BOARD4031", "해당 게시판에 접근할 권한이 없습니다."),
+    UNAUTHORIZED_POST_ACCESS(HttpStatus.FORBIDDEN, "POST4031", "해당 게시글에 접근할 권한이 없습니다."),
+    INVALID_BOARD_NAME(HttpStatus.BAD_REQUEST, "BOARD4001", "유효하지 않은 게시판 이름입니다."),
 
     // 알람 설정 관련 에러
     INVALID_DATE(HttpStatus.BAD_REQUEST, "ALARM400", "올바르지 않는 날짜입니다."),
