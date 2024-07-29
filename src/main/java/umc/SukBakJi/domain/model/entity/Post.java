@@ -1,6 +1,7 @@
 package umc.SukBakJi.domain.model.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.Setter;
 import umc.SukBakJi.global.entity.BaseEntity;
@@ -15,16 +16,26 @@ public class Post extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long postId;
 
+    @Column(nullable = false)
     private String title;
+
+    @Column(nullable = false)
     private String content;
+
+    private String supportField;  // Optional
+    private String job;           // Optional
+    private String hiringType;    // Optional
+    private String finalEducation;// Optional
+
+    @Column(nullable = false)
     private Long views;
 
     @ManyToOne
-    @JoinColumn(name = "member_id")
+    @JoinColumn(name = "member_id", nullable = false)
     private Member member;
 
     @ManyToOne
-    @JoinColumn(name = "board_id")
+    @JoinColumn(name = "board_id", nullable = false)
     private Board board;
 
     @OneToMany(mappedBy = "post")
@@ -33,4 +44,3 @@ public class Post extends BaseEntity {
     @OneToMany(mappedBy = "post")
     private List<Scrap> scraps;
 }
-
