@@ -3,6 +3,7 @@ package umc.SukBakJi.domain.model.entity;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import umc.SukBakJi.domain.model.entity.mapping.Scrap;
 import umc.SukBakJi.global.entity.BaseEntity;
 
 import java.util.List;

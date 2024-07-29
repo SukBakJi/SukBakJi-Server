@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import org.hibernate.annotations.ColumnDefault;
+import umc.SukBakJi.domain.model.entity.mapping.Scrap;
 import umc.SukBakJi.global.entity.BaseEntity;
 import lombok.Setter;
 
