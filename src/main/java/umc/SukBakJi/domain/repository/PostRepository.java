@@ -27,4 +27,7 @@ public interface PostRepository extends JpaRepository<Post, Long> {
     @Query("SELECT p FROM Post p WHERE p.member.id = :memberId ORDER BY p.createdAt DESC")
     List<Post> findByMemberId(Long memberId);
 
+    // 특정 사용자가 작성한 댓글의 게시글 목록 조회
+    @Query("SELECT DISTINCT c.post FROM Comment c WHERE c.member.id = :memberId")
+    List<Post> findPostsByMemberComments(@Param("memberId") Long memberId);
 }

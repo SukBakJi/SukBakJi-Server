@@ -12,5 +12,5 @@ public class PostListDTO {
     private Long views;
     private String boardName;
     private String menu;
-    private int commentCount;
+    private long commentCount;
 }
