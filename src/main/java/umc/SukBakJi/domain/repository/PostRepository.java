@@ -23,4 +23,8 @@ public interface PostRepository extends JpaRepository<Post, Long> {
     @Query("SELECT p FROM Post p JOIN p.scraps s WHERE s.member.id = :memberId")
     List<Post> findScrappedPostsByMemberId(@Param("memberId") Long memberId);
 
+    // 특정 사용자가 작성한 게시글 목록 조회
+    @Query("SELECT p FROM Post p WHERE p.member.id = :memberId ORDER BY p.createdAt DESC")
+    List<Post> findByMemberId(Long memberId);
+
 }
