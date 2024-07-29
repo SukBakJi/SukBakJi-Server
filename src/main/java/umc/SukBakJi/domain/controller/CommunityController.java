@@ -9,9 +9,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import umc.SukBakJi.domain.model.dto.HotBoardPostDTO;
 import umc.SukBakJi.domain.model.dto.LatestQuestionDTO;
-import umc.SukBakJi.domain.model.dto.ScrapPostDTO;
+import umc.SukBakJi.domain.model.dto.PostListDTO;
 import umc.SukBakJi.domain.service.CommunityService;
-import umc.SukBakJi.domain.service.ScrapService;
 import umc.SukBakJi.global.apiPayload.ApiResponse;
 
 import java.util.List;
@@ -22,9 +21,6 @@ public class CommunityController {
 
     @Autowired
     private CommunityService communityService;
-
-    @Autowired
-    private ScrapService scrapService;
 
     @Operation(summary = "Get Latest Questions", description = "각 메뉴(박사, 석사, 진학예정)별로 질문게시판의 최신 질문글을 가져옵니다.")
     @ApiResponses(value = {
@@ -55,11 +51,11 @@ public class CommunityController {
     @ApiResponses(value = {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "성공",
                     content = @io.swagger.v3.oas.annotations.media.Content(mediaType = "application/json",
-                            schema = @io.swagger.v3.oas.annotations.media.Schema(implementation = ScrapPostDTO.class)))
+                            schema = @io.swagger.v3.oas.annotations.media.Schema(implementation = PostListDTO.class)))
     })
     @GetMapping("/{userId}/scrap-list")
-    public ApiResponse<List<ScrapPostDTO>> getScrapListByUserId(@PathVariable("userId") Long userId) {
-        List<ScrapPostDTO> scrapList = scrapService.getScrapListByUserId(userId);
+    public ApiResponse<List<PostListDTO>> getScrapListByUserId(@PathVariable("userId") Long userId) {
+        List<PostListDTO> scrapList = communityService.getScrappedPostsByUserId(userId);
         return ApiResponse.onSuccess(scrapList);
     }
 }
