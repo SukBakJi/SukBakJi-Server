@@ -16,14 +16,21 @@ public class PostConverter {
     }
 
     public static HotBoardPostDTO toHotBoardPostDTO(Post post) {
-        return new HotBoardPostDTO(
-                post.getBoard().getMenu(),
-                post.getBoard().getBoardName(),
-                post.getTitle(),
-                post.getContent(),
-                post.getComments().size(),
-                post.getViews()
-        );
+        int totalCommentCount = post.getComments() != null ? post.getComments().size() : 0;
+        if (post.getComments() != null) {
+            totalCommentCount += post.getComments().stream()
+                    .mapToInt(comment -> comment.getReplies() != null ? comment.getReplies().size() : 0)
+                    .sum();
+        }
+
+        return HotBoardPostDTO.builder()
+                .menu(post.getBoard().getMenu())
+                .boardName(post.getBoard().getBoardName())
+                .title(post.getTitle())
+                .content(post.getContent())
+                .commentCount(totalCommentCount)
+                .views(post.getViews())
+                .build();
     }
 
     public static PostListDTO toPostListDTO(Post post) {
