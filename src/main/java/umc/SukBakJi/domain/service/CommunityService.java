@@ -28,12 +28,17 @@ public class CommunityService {
         List<LatestQuestionDTO> latestQuestions = new ArrayList<>();
 
         for (Menu menu : Menu.values()) {
-            if (menu != Menu.자유) {
-                Optional<Post> postOptional = postRepository.findTopByBoardMenuOrderByCreatedAtDesc(menu);
-                Post post = postOptional.orElseThrow(() -> new GeneralException(ErrorStatus.POST_NOT_FOUND));
-                latestQuestions.add(PostConverter.toLatestQuestionDTO(post));
+            List<Post> posts = postRepository.findTopByBoardMenuOrderByCreatedAtDesc(menu);
+            if (!posts.isEmpty()) {
+                Post latestPost = posts.get(0);
+                latestQuestions.add(PostConverter.toLatestQuestionDTO(latestPost));
             }
         }
+
+        if (latestQuestions.isEmpty()) {
+            throw new GeneralException(ErrorStatus.POST_NOT_FOUND);
+        }
+
         return latestQuestions;
     }
 

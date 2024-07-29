@@ -12,9 +12,8 @@ import java.util.Optional;
 public interface PostRepository extends JpaRepository<Post, Long> {
 
     // 최신 질문글 조회
-    @Query("select p from Post p where p.board.menu = :menu AND p.board.boardName = '질문게시판' ORDER BY p.createdAt DESC ")
-    Optional<Post> findTopByBoardMenuOrderByCreatedAtDesc(@Param("menu") Menu menu);
-
+    @Query("SELECT p FROM Post p WHERE p.board.menu = :menu AND p.board.boardName = '질문게시판' ORDER BY p.createdAt DESC")
+    List<Post> findTopByBoardMenuOrderByCreatedAtDesc(@Param("menu") Menu menu);
     // HOT 게시글 조회
     @Query("SELECT p FROM Post p WHERE (p.views >= 100 OR (SELECT COUNT(s) FROM Scrap s WHERE s.post = p) >= 20) ORDER BY p.createdAt DESC")
     List<Post> findHotPosts();
