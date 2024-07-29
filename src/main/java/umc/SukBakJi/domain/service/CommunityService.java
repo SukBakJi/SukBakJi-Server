@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import umc.SukBakJi.domain.converter.PostConverter;
 import umc.SukBakJi.domain.model.dto.HotBoardPostDTO;
 import umc.SukBakJi.domain.model.dto.LatestQuestionDTO;
+import umc.SukBakJi.domain.model.dto.PostListDTO;
 import umc.SukBakJi.domain.model.entity.Post;
 import umc.SukBakJi.domain.model.entity.enums.Menu;
 import umc.SukBakJi.domain.repository.PostRepository;
@@ -39,6 +40,12 @@ public class CommunityService {
         List<Post> hotPosts = postRepository.findHotPosts();
         return hotPosts.stream()
                 .map(PostConverter::toHotBoardPostDTO)
+                .collect(Collectors.toList());
+    }
+
+    public List<PostListDTO> getScrappedPostsByUserId(Long userId) {
+        return postRepository.findScrappedPostsByMemberId(userId).stream()
+                .map(PostConverter::toPostListDTO)
                 .collect(Collectors.toList());
     }
 }
