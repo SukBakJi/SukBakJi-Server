@@ -27,6 +27,10 @@ public class PostConverter {
     }
 
     public static PostListDTO toPostListDTO(Post post) {
+        long commentCount = post.getComments().stream()
+                .mapToLong(comment -> 1 + comment.getReplies().size())
+                .sum();
+
         return PostListDTO.builder()
                 .postId(post.getPostId())
                 .title(post.getTitle())
@@ -34,7 +38,7 @@ public class PostConverter {
                 .views(post.getViews())
                 .boardName(post.getBoard().getBoardName())
                 .menu(post.getBoard().getMenu().name())
-                .commentCount(post.getComments().size())
+                .commentCount(commentCount)
                 .build();
     }
 }

@@ -51,7 +51,7 @@ public enum ErrorStatus implements BaseErrorCode {
     UNAUTHORIZED_POST_ACCESS(HttpStatus.FORBIDDEN, "POST4031", "해당 게시글에 접근할 권한이 없습니다."),
     INVALID_BOARD_NAME(HttpStatus.BAD_REQUEST, "BOARD4001", "유효하지 않은 게시판 이름입니다."),
     NO_SCRAP_FOUND(HttpStatus.NOT_FOUND, "SCRAP4041", "스크랩한 게시물이 없습니다."),
-
+    NO_COMMENTS_FOUND(HttpStatus.NOT_FOUND, "COMMENT4041", "댓글을 작성한 게시물이 없습니다."),
 
     // 알람 설정 관련 에러
     INVALID_DATE(HttpStatus.BAD_REQUEST, "ALARM400", "올바르지 않는 날짜입니다."),

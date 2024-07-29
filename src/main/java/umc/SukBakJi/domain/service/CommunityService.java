@@ -62,4 +62,15 @@ public class CommunityService {
                 .map(PostConverter::toPostListDTO)
                 .collect(Collectors.toList());
     }
+
+    // 특정 사용자가 작성한 댓글의 게시글 목록
+    public List<PostListDTO> getCommentedPostsByUserId(Long userId) {
+        List<Post> posts = postRepository.findPostsByMemberComments(userId);
+        if (posts.isEmpty()) {
+            throw new GeneralException(ErrorStatus.NO_COMMENTS_FOUND);
+        }
+        return posts.stream()
+                .map(PostConverter::toPostListDTO)
+                .collect(Collectors.toList());
+    }
 }
