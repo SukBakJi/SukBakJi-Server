@@ -4,11 +4,14 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import umc.SukBakJi.domain.model.dto.HotBoardPostDTO;
 import umc.SukBakJi.domain.model.dto.LatestQuestionDTO;
+import umc.SukBakJi.domain.model.dto.ScrapPostDTO;
 import umc.SukBakJi.domain.service.CommunityService;
+import umc.SukBakJi.domain.service.ScrapService;
 import umc.SukBakJi.global.apiPayload.ApiResponse;
 
 import java.util.List;
@@ -19,6 +22,9 @@ public class CommunityController {
 
     @Autowired
     private CommunityService communityService;
+
+    @Autowired
+    private ScrapService scrapService;
 
     @Operation(summary = "Get Latest Questions", description = "각 메뉴(박사, 석사, 진학예정)별로 질문게시판의 최신 질문글을 가져옵니다.")
     @ApiResponses(value = {
@@ -43,5 +49,17 @@ public class CommunityController {
     public ApiResponse<List<HotBoardPostDTO>> getHotBoardPosts() {
         List<HotBoardPostDTO> hotBoardPosts = communityService.getHotBoardPosts();
         return ApiResponse.onSuccess(hotBoardPosts);
+    }
+
+    @Operation(summary = "Get Scrap List", description = "사용자가 스크랩한 게시물 목록을 조회합니다.")
+    @ApiResponses(value = {
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "성공",
+                    content = @io.swagger.v3.oas.annotations.media.Content(mediaType = "application/json",
+                            schema = @io.swagger.v3.oas.annotations.media.Schema(implementation = ScrapPostDTO.class)))
+    })
+    @GetMapping("/scrap-list/{userId}")
+    public ApiResponse<List<ScrapPostDTO>> getScrapListByUserId(@PathVariable("userId") Long userId) {
+        List<ScrapPostDTO> scrapList = scrapService.getScrapListByUserId(userId);
+        return ApiResponse.onSuccess(scrapList);
     }
 }
