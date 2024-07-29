@@ -57,7 +57,7 @@ public class CommunityController {
                     content = @io.swagger.v3.oas.annotations.media.Content(mediaType = "application/json",
                             schema = @io.swagger.v3.oas.annotations.media.Schema(implementation = ScrapPostDTO.class)))
     })
-    @GetMapping("/scrap-list/{userId}")
+    @GetMapping("/{userId}/scrap-list")
     public ApiResponse<List<ScrapPostDTO>> getScrapListByUserId(@PathVariable("userId") Long userId) {
         List<ScrapPostDTO> scrapList = scrapService.getScrapListByUserId(userId);
         return ApiResponse.onSuccess(scrapList);
