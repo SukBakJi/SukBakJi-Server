@@ -23,6 +23,7 @@ public class CommunityService {
     @Autowired
     private PostRepository postRepository;
 
+    // 최신 질문글 목록
     public List<LatestQuestionDTO> getLatestQuestions(){
         List<LatestQuestionDTO> latestQuestions = new ArrayList<>();
 
@@ -36,6 +37,7 @@ public class CommunityService {
         return latestQuestions;
     }
 
+    // HOT 게시글 목록
     public List<HotBoardPostDTO> getHotBoardPosts() {
         List<Post> hotPosts = postRepository.findHotPosts();
         return hotPosts.stream()
@@ -43,8 +45,20 @@ public class CommunityService {
                 .collect(Collectors.toList());
     }
 
+    // 특정 사용자가 스크랩한 게시글 목록
     public List<PostListDTO> getScrappedPostsByUserId(Long userId) {
         return postRepository.findScrappedPostsByMemberId(userId).stream()
+                .map(PostConverter::toPostListDTO)
+                .collect(Collectors.toList());
+    }
+
+    // 특정 사용자가 작성한 게시글 목록
+    public List<PostListDTO> getPostsByUserId(Long userId) {
+        List<Post> posts = postRepository.findByMemberId(userId);
+        if (posts.isEmpty()) {
+            throw new GeneralException(ErrorStatus.POST_NOT_FOUND);
+        }
+        return posts.stream()
                 .map(PostConverter::toPostListDTO)
                 .collect(Collectors.toList());
     }

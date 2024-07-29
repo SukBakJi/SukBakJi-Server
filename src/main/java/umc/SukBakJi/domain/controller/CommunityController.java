@@ -58,4 +58,16 @@ public class CommunityController {
         List<PostListDTO> scrapList = communityService.getScrappedPostsByUserId(userId);
         return ApiResponse.onSuccess(scrapList);
     }
+
+    @Operation(summary = "Get Post List", description = "사용자가 작성한 게시물 목록을 조회합니다.")
+    @ApiResponses(value = {
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "성공",
+                    content = @io.swagger.v3.oas.annotations.media.Content(mediaType = "application/json",
+                            schema = @io.swagger.v3.oas.annotations.media.Schema(implementation = PostListDTO.class)))
+    })
+    @GetMapping("/{user_id}/post-list")
+    public ApiResponse<List<PostListDTO>> getPostListByUser(@PathVariable("user_id") Long userId) {
+        List<PostListDTO> postList = communityService.getPostsByUserId(userId);
+        return ApiResponse.onSuccess(postList);
+    }
 }
