@@ -41,4 +41,13 @@ public class AlarmResponseDTO {
         String alarmTime;
         Long onoff;
     }
+
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class turnOnOff{
+        Long alarmId;
+        Long onoff;
+    }
 }

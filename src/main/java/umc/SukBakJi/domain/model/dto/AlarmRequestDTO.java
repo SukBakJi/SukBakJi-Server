@@ -30,4 +30,10 @@ public class AlarmRequestDTO {
         @NotNull
         Long memberId;
     }
+
+    @Getter
+    public static class turnAlarm{
+        @NotNull
+        Long alarmId;
+    }
 }
