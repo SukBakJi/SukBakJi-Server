@@ -6,6 +6,7 @@ import lombok.Setter;
 import umc.SukBakJi.domain.model.entity.mapping.Scrap;
 import umc.SukBakJi.global.entity.BaseEntity;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,6 +22,7 @@ public class Post extends BaseEntity {
     private String content;
     private Long views;
 
+
     @ManyToOne
     @JoinColumn(name = "member_id")
     private Member member;
@@ -34,5 +36,8 @@ public class Post extends BaseEntity {
 
     @OneToMany(mappedBy = "post")
     private List<Scrap> scraps  = new ArrayList<>();
+
+    private LocalDateTime hotTimestamp; // HOT 게시글이 된 순간을 기록
+
 }
 
