@@ -9,6 +9,7 @@ import java.util.Optional;
 
 public interface AlarmRepository extends JpaRepository<Alarm, Long> {
     Optional<Alarm> findByNameAndMember(String name, Member member);
+    Optional<Alarm> findByUnivNameAndMember(String univName, Member member);
 
     List<Alarm> findByMemberId(Long memberId);
 }
