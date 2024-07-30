@@ -13,7 +13,9 @@ public class AlarmConverter {
     public static AlarmResponseDTO.createAlarmDTO toCreateAlarm(Alarm alarm){
         return AlarmResponseDTO.createAlarmDTO.builder()
                 .alarmId(alarm.getId())
+                .alarmUnivName(alarm.getUnivName())
                 .alarmName(alarm.getName())
+                .onoff(alarm.getOnoff())
                 .memberId(alarm.getMember().getId())
                 .build();
     }
@@ -21,18 +23,22 @@ public class AlarmConverter {
     public static Alarm toAlarm(AlarmRequestDTO.createAlarm request, Member member){
         return Alarm.builder()
                 .member(member)
+                .univName(request.getUnivName())
                 .name(request.getName())
                 .date(request.getDate())
                 .time(request.getTime())
+                .onoff(request.getOnoff())
                 .build();
     }
 
     public static AlarmResponseDTO.alarmDTO alarmDTO(Alarm alarm){
         return AlarmResponseDTO.alarmDTO.builder()
                 .alarmId(alarm.getId())
+                .alarmUnivName(alarm.getUnivName())
                 .alarmName(alarm.getName())
                 .alarmDate(alarm.getDate())
                 .alarmTime(alarm.getTime())
+                .onoff(alarm.getOnoff())
                 .build();
     }
 
