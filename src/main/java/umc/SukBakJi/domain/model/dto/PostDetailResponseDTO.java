@@ -11,7 +11,7 @@ import java.util.List;
 @Setter
 public class PostDetailResponseDTO {
 
-    private Menu menu;
+    private String menu;
     private String title;
     private String content;
     private List<CommentDTO> comments;

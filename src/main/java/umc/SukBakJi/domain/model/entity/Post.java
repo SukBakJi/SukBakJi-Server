@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.Setter;
 import umc.SukBakJi.global.entity.BaseEntity;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
@@ -29,6 +30,8 @@ public class Post extends BaseEntity {
 
     @Column(nullable = false)
     private Long views;
+
+    private LocalDateTime hotTimestamp;
 
     @ManyToOne
     @JoinColumn(name = "member_id", nullable = false)
