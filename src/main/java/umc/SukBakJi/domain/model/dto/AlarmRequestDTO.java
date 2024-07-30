@@ -14,11 +14,15 @@ public class AlarmRequestDTO {
         @NotNull
         Long memberId;
         @NotNull
+        String univName;
+        @NotNull
         String name;
         @NotNull
         String date;
         @NotNull
         String time;
+        @NotNull
+        Long onoff;
     }
 
     @Getter

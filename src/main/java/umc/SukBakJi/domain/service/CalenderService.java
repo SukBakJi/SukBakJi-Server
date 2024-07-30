@@ -44,8 +44,9 @@ public class CalenderService {
 
         Alarm alarm = AlarmConverter.toAlarm(request, member);
 
-        Optional<Alarm> existingAlarm = alarmRepository.findByNameAndMember(alarm.getName(), alarm.getMember());
-        if (existingAlarm.isPresent()) {
+        Optional<Alarm> existingAlarm1 = alarmRepository.findByNameAndMember(alarm.getName(), alarm.getMember());
+        Optional<Alarm> existingAlarm2 = alarmRepository.findByUnivNameAndMember(alarm.getUnivName(), alarm.getMember());
+        if (existingAlarm1.isPresent() && existingAlarm2.isPresent()) {
             throw new GeneralException(ErrorStatus.DUPLICATE_ALARM_NAME);
         }
 

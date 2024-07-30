@@ -42,7 +42,7 @@ public class CalenderController {
 //    })
 //    @PostMapping("/univ")
 //    public ApiResponse<UnivResponseDTO.setUnivDTO> setUnivDTOApiResponse(
-//            @Parameter(description = "학교 설정 DTO", required = true)
+//            @Parameter(description = "대학교 선택 DTO", required = true)
 //            @RequestBody UnivRequestDTO.setUniv request) {
 //        UnivRequestDTO details = calenderService.setUniv(request);
 //        return ApiResponse.onSuccess(details);

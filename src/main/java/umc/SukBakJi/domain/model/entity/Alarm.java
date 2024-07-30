@@ -2,6 +2,7 @@ package umc.SukBakJi.domain.model.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.ColumnDefault;
 import umc.SukBakJi.global.entity.BaseEntity;
 
 @Entity
@@ -16,6 +17,9 @@ public class Alarm extends BaseEntity {
     private Long id;
 
     @Column(nullable = false)
+    private String univName; // 학교 이름
+
+    @Column(nullable = false)
     private String name; // 알람 이름
 
     @Column(nullable = false)
@@ -23,6 +27,9 @@ public class Alarm extends BaseEntity {
 
     @Column(nullable = false)
     private String time; // 알람 시간
+
+    @ColumnDefault("1")
+    private Long onoff; // 알람 온오프 여부
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "memberId")
