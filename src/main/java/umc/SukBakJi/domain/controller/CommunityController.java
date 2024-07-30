@@ -82,4 +82,16 @@ public class CommunityController {
         List<PostListDTO> postList = communityService.getCommentedPostsByUserId(userId);
         return ApiResponse.onSuccess(postList);
     }
+
+    @Operation(summary = "Get Favorite Board List", description = "사용자가 즐겨찾기한 게시판의 최신 게시물 목록을 조회합니다.")
+    @ApiResponses(value = {
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "성공",
+                    content = @io.swagger.v3.oas.annotations.media.Content(mediaType = "application/json",
+                            schema = @io.swagger.v3.oas.annotations.media.Schema(implementation = PostListDTO.class)))
+    })
+    @GetMapping("/{userId}/favorite-post-list")
+    public ApiResponse<List<PostListDTO>> getFavoritePosts(@PathVariable Long userId) {
+        List<PostListDTO> favoritePosts = communityService.getFavoritePosts(userId);
+        return ApiResponse.onSuccess(favoritePosts);
+    }
 }
