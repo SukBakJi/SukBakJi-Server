@@ -15,6 +15,7 @@ import umc.SukBakJi.domain.repository.PostRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -75,8 +76,15 @@ public class PostService {
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid post ID"));
 
+        // Increment views and update hotTimestamp if needed
+        post.setViews(post.getViews() + 1);
+        if (post.getViews() > 100 && post.getHotTimestamp() == null) {
+            post.setHotTimestamp(LocalDateTime.now());
+        }
+        postRepository.save(post);
+
         PostDetailResponseDTO response = new PostDetailResponseDTO();
-        response.setMenu(post.getBoard().getMenu());
+        response.setMenu(post.getBoard().getMenu().name()); // Convert enum to String
         response.setTitle(post.getTitle());
         response.setContent(post.getContent());
         response.setViews(post.getViews());
