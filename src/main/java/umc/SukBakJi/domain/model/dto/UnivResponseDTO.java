@@ -14,8 +14,7 @@ public class UnivResponseDTO {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class setUnivDTO{
-        List<univDTO> univDTOList;
-        Integer listSize;
+        Long univId;
         Long memberId;
     }
     @Builder
@@ -24,6 +23,8 @@ public class UnivResponseDTO {
     @AllArgsConstructor
     public static class univDTO{
         Long univId;
+        String season;
+        String method;
     }
 
     @Builder
