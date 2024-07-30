@@ -51,9 +51,9 @@ public class CalenderService {
 
         Alarm alarm = AlarmConverter.toAlarm(request, member);
 
-        Optional<Alarm> existingAlarm1 = alarmRepository.findByNameAndMember(alarm.getName(), alarm.getMember());
-        Optional<Alarm> existingAlarm2 = alarmRepository.findByUnivNameAndMember(alarm.getUnivName(), alarm.getMember());
-        if (existingAlarm1.isPresent() && existingAlarm2.isPresent()) {
+        List<Alarm> existingAlarm1 = alarmRepository.findByNameAndMember(alarm.getName(), alarm.getMember());
+        List<Alarm> existingAlarm2 = alarmRepository.findByUnivNameAndMember(alarm.getUnivName(), alarm.getMember());
+        if (!(existingAlarm1.isEmpty()) && !(existingAlarm2.isEmpty())) {
             throw new GeneralException(ErrorStatus.DUPLICATE_ALARM_NAME);
         }
 
@@ -89,5 +89,25 @@ public class CalenderService {
             univList = null;
         }
         return univList;
+    }
+
+    @Transactional
+    public Alarm onAlarm(Long alarmId){
+        Alarm alarm = alarmRepository.findById(alarmId)
+                .orElseThrow(() -> new GeneralException(ErrorStatus.INVALID_ALARM));
+        alarm.setOnoff(1L);
+        alarm = alarmRepository.save(alarm);
+
+        return alarm;
+    }
+
+    @Transactional
+    public Alarm offAlarm(Long alarmId){
+        Alarm alarm = alarmRepository.findById(alarmId)
+                .orElseThrow(() -> new GeneralException(ErrorStatus.INVALID_ALARM));
+        alarm.setOnoff(0L);
+        alarm = alarmRepository.save(alarm);
+
+        return alarm;
     }
 }

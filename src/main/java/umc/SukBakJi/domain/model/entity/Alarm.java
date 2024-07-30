@@ -8,6 +8,7 @@ import umc.SukBakJi.global.entity.BaseEntity;
 @Entity
 @Builder
 @Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED) // 기본 생성자의 접근 수준을 protected로 설정
 @ToString
@@ -35,3 +36,4 @@ public class Alarm extends BaseEntity {
     @JoinColumn(name = "memberId")
     private Member member;
 }
+
