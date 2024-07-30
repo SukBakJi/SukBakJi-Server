@@ -7,8 +7,10 @@ import umc.SukBakJi.domain.converter.PostConverter;
 import umc.SukBakJi.domain.model.dto.HotBoardPostDTO;
 import umc.SukBakJi.domain.model.dto.LatestQuestionDTO;
 import umc.SukBakJi.domain.model.dto.PostListDTO;
+import umc.SukBakJi.domain.model.entity.mapping.BoardLike;
 import umc.SukBakJi.domain.model.entity.Post;
 import umc.SukBakJi.domain.model.entity.enums.Menu;
+import umc.SukBakJi.domain.repository.BoardLikeRepository;
 import umc.SukBakJi.domain.repository.PostRepository;
 import umc.SukBakJi.global.apiPayload.code.status.ErrorStatus;
 import umc.SukBakJi.global.apiPayload.exception.GeneralException;
@@ -22,6 +24,9 @@ public class CommunityService {
 
     @Autowired
     private PostRepository postRepository;
+
+    @Autowired
+    private BoardLikeRepository boardLikeRepository;
 
     // 최신 질문글 목록
     public List<LatestQuestionDTO> getLatestQuestions(){
@@ -76,6 +81,23 @@ public class CommunityService {
         }
         return posts.stream()
                 .map(PostConverter::toPostListDTO)
+                .collect(Collectors.toList());
+    }
+
+    // 특정 사용자가 즐겨찾기한 게시판의 최신 게시글 목록
+    public List<PostListDTO> getFavoritePosts(Long userId) {
+        List<BoardLike> favorites = boardLikeRepository.findByMemberId(userId);
+
+        return favorites.stream()
+                .map(favorite -> {
+                    List<Post> latestPosts = postRepository.findTop1ByBoardIdOrderByCreatedAtDesc(favorite.getBoard().getBoardId());
+                    if (!latestPosts.isEmpty()) {
+                        return PostConverter.toPostListDTO(latestPosts.get(0));
+                    } else {
+                        return null;
+                    }
+                })
+                .filter(dto -> dto != null)
                 .collect(Collectors.toList());
     }
 }
