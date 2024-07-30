@@ -18,7 +18,10 @@ bin/
 !**/src/test/**/bin/
 
 ### IntelliJ IDEA ###
+<<<<<<< HEAD
+=======
 application.properties
+>>>>>>> origin/develop
 .idea
 *.iws
 *.iml

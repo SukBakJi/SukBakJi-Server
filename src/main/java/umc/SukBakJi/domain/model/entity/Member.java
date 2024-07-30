@@ -1,22 +1,26 @@
 package umc.SukBakJi.domain.model.entity;
 
 import jakarta.persistence.*;
+import lombok.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 import org.hibernate.annotations.ColumnDefault;
+import umc.SukBakJi.domain.model.entity.enums.DegreeLevel;
+import umc.SukBakJi.domain.model.entity.enums.Provider;
 import umc.SukBakJi.domain.model.entity.mapping.BoardLike;
 import umc.SukBakJi.domain.model.entity.mapping.Scrap;
 import umc.SukBakJi.global.entity.BaseEntity;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
 @Getter
-@NoArgsConstructor
-@ToString
-@Setter
+@Builder
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
 public class Member extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -29,21 +33,23 @@ public class Member extends BaseEntity {
     @Column(nullable = false)
     private String password;
 
-    @Column(nullable = false)
+    @Column(unique = true, nullable = false)
     private String email;
 
     @Column(nullable = false)
     private String phoneNumber;
 
-    @Column(nullable = false)
-    private String degreeLevel;
+    @Enumerated(EnumType.STRING)
+    private DegreeLevel degreeLevel;
 
-    @Column(nullable = false)
     @ColumnDefault("0")
     private Integer point;
 
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private String socialType;
+    private Provider provider;
+
+    private String refreshToken;
 
     // Define relationships if necessary
     @OneToMany(mappedBy = "member")
@@ -60,14 +66,30 @@ public class Member extends BaseEntity {
 
     @OneToMany(mappedBy = "member")
     private List<Scrap> scraps;
-
-    public Member(String name, String password, String email, String phoneNumber, String degreeLevel, int point, String socialType) {
+    public Member(String name, String password, String email, String phoneNumber, DegreeLevel degreeLevel, int point, Provider provider) {
         this.name = name;
         this.password = password;
         this.email = email;
         this.phoneNumber = phoneNumber;
         this.degreeLevel = degreeLevel;
         this.point = point;
-        this.socialType = socialType;
+        this.provider = provider;
+    }
+
+    public Member(String email) {
+        this.email = email;
+    }
+
+    public void updateRefreshToken(String refreshToken) {
+        this.refreshToken = refreshToken;
+    }
+
+    public void resetRefreshToken() {
+        this.refreshToken = null;
+    }
+
+    @PrePersist
+    public void setPoint() {
+        this.point = 0;
     }
 }
