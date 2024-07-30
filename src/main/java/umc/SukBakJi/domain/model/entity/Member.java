@@ -3,12 +3,12 @@ package umc.SukBakJi.domain.model.entity;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.ToString;
 import org.hibernate.annotations.ColumnDefault;
 import umc.SukBakJi.domain.model.entity.mapping.BoardLike;
 import umc.SukBakJi.domain.model.entity.mapping.Scrap;
 import umc.SukBakJi.global.entity.BaseEntity;
-import lombok.Setter;
 
 import java.util.List;
 
@@ -20,6 +20,7 @@ import java.util.List;
 public class Member extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "member_id")
     private Long id;
 
     @Column(nullable = false)
@@ -59,6 +60,7 @@ public class Member extends BaseEntity {
 
     @OneToMany(mappedBy = "member")
     private List<Scrap> scraps;
+
     public Member(String name, String password, String email, String phoneNumber, String degreeLevel, int point, String socialType) {
         this.name = name;
         this.password = password;

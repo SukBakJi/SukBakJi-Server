@@ -1,15 +1,19 @@
 package umc.SukBakJi.domain.repository;
 
+import umc.SukBakJi.domain.model.entity.Board;
+import umc.SukBakJi.domain.model.entity.Post;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
-import umc.SukBakJi.domain.model.entity.Post;
 import umc.SukBakJi.domain.model.entity.enums.Menu;
 
 import java.util.List;
 import java.util.Optional;
 
+@Repository
 public interface PostRepository extends JpaRepository<Post, Long> {
+    List<Post> findByBoard(Board board);
 
     // 최신 질문글 조회
     @Query("SELECT p FROM Post p WHERE p.board.menu = :menu AND p.board.boardName = '질문게시판' ORDER BY p.createdAt DESC")
