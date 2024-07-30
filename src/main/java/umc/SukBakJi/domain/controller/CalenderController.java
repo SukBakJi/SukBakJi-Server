@@ -29,28 +29,30 @@ public class CalenderController {
     @Autowired
     private CalenderService calenderService;
 
-//    @Operation(summary = "Set University", description = "일정을 조회할 학교를 설정합니다.")
-//    @ApiResponses(value = {
-//            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "성공",
-//                    content = @Content(mediaType = "application/json",
-//                            schema = @Schema(implementation = UnivRequestDTO.class))),
-//            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "400", description = "선택된 학교가 유효하지 않습니다.",
-//                    content = @Content),
-//            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "500", description = "서버 에러, 관리자에게 문의 바랍니다.",
-//                    content = @Content(mediaType = "application/json",
-//                            schema = @Schema(implementation = ErrorReasonDTO.class)))
-//    })
-//    @PostMapping("/univ")
-//    public ApiResponse<UnivResponseDTO.setUnivDTO> setUnivDTOApiResponse(
-//            @Parameter(description = "대학교 선택 DTO", required = true)
-//            @RequestBody UnivRequestDTO.setUniv request) {
-//        UnivRequestDTO details = calenderService.setUniv(request);
-//        return ApiResponse.onSuccess(details);
-//    }
+    @Operation(summary = "Set University", description = "대학교를 선택합니다.")
+    @ApiResponses(value = {
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "성공",
+                    content = @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = UnivResponseDTO.class))),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "400", description = "선택된 학교가 유효하지 않습니다.",
+                    content = @Content),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "500", description = "서버 에러, 관리자에게 문의 바랍니다.",
+                    content = @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = ErrorReasonDTO.class)))
+    })
+    @PostMapping("/univ")
+    public ApiResponse<UnivResponseDTO.setUnivDTO> setUnivDTOApiResponse(
+            @Parameter(description = "대학교 선택 DTO", required = true)
+            @RequestBody UnivRequestDTO.setUniv request) {
+        SetUniv setUniv = calenderService.setUniv(request);
+        return ApiResponse.onSuccess(UnivConverter.toSetUnivDTO(setUniv));
+    }
 
     @Operation(summary = "Get University", description = "선택한 학교를 조회합니다.")
     @ApiResponses(value = {
-            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "성공"),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "성공",
+                    content = @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = UnivResponseDTO.class))),
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "400", description = "해당하는 사용자가 없습니다.",
                     content = @Content),
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "500", description = "서버 에러, 관리자에게 문의 바랍니다.",
@@ -68,7 +70,9 @@ public class CalenderController {
 
     @Operation(summary = "Set Alarm", description = "알람을 설정합니다.")
     @ApiResponses(value = {
-            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "성공"),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "성공",
+                    content = @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = AlarmResponseDTO.class))),
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "400", description = "올바른 날짜나 시간이 아닙니다.",
                     content = @Content),
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "500", description = "서버 에러, 관리자에게 문의 바랍니다.",
@@ -83,7 +87,9 @@ public class CalenderController {
 
     @Operation(summary = "Get Alarm", description = "알람을 조회합니다.")
     @ApiResponses(value = {
-            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "성공"),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "성공",
+                    content = @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = AlarmResponseDTO.class))),
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "400", description = "해당하는 사용자가 없습니다.",
                     content = @Content),
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "500", description = "서버 에러, 관리자에게 문의 바랍니다.",

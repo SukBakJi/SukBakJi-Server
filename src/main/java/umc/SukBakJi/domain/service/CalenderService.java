@@ -5,13 +5,17 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import umc.SukBakJi.domain.converter.AlarmConverter;
+import umc.SukBakJi.domain.converter.UnivConverter;
 import umc.SukBakJi.domain.model.dto.AlarmRequestDTO;
+import umc.SukBakJi.domain.model.dto.UnivRequestDTO;
+import umc.SukBakJi.domain.model.dto.UnivResponseDTO;
 import umc.SukBakJi.domain.model.entity.Alarm;
 import umc.SukBakJi.domain.model.entity.Member;
 import umc.SukBakJi.domain.model.entity.University;
 import umc.SukBakJi.domain.model.entity.mapping.SetUniv;
 import umc.SukBakJi.domain.repository.AlarmRepository;
 import umc.SukBakJi.domain.repository.MemberRepository;
+import umc.SukBakJi.domain.repository.SetUnivRepository;
 import umc.SukBakJi.domain.repository.UnivRepository;
 import umc.SukBakJi.global.apiPayload.code.status.ErrorStatus;
 import umc.SukBakJi.global.apiPayload.exception.GeneralException;
@@ -29,6 +33,9 @@ public class CalenderService {
 
     @Autowired
     private MemberRepository memberRepository;
+
+    @Autowired
+    private SetUnivRepository setUnivRepository;
 
     @Autowired
     private UnivRepository univRepository;
@@ -64,14 +71,20 @@ public class CalenderService {
         return alarmList;
     }
 
-//    public UnivRequestDTO setUniv(UnivRequestDTO.setUniv request){
-//        LabReview review = labReviewConverter.toEntity(dto);
-//
-//        Optional<LabReview> existingReview = labReviewRepository.findByLabAndMember(review.getLab(), review.getMember());
-//    }
+    public SetUniv setUniv(UnivRequestDTO.setUniv request){
+        University univ = univRepository.findById(request.getUnivId())
+                .orElseThrow(() -> new GeneralException(ErrorStatus.INVALID_UNIVERSITY));
+
+        Member member = memberRepository.findById(request.getMemberId())
+                .orElseThrow(() -> new GeneralException(ErrorStatus.MEMBER_NOT_FOUND));
+
+        SetUniv setUniv = UnivConverter.toSetUniv(request, member, univ);
+        setUniv = setUnivRepository.save(setUniv);
+        return setUniv;
+    }
 
     public List<SetUniv> getUnivList(Long memberId){
-        List<SetUniv> univList = univRepository.findByMemberId(memberId);
+        List<SetUniv> univList = setUnivRepository.findByMemberId(memberId);
         if(univList.isEmpty()){
             univList = null;
         }

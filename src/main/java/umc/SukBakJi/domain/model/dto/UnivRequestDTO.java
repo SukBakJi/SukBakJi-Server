@@ -16,7 +16,11 @@ public class UnivRequestDTO {
         @NotNull
         Long memberId;
         @NotNull
-        List<Long> univId;
+        Long univId;
+        @NotNull
+        String season;
+        @NotNull
+        String method;
     }
 
     @Getter
