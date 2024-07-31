@@ -1,9 +1,6 @@
 package umc.SukBakJi.domain.controller;
 
-import umc.SukBakJi.domain.model.dto.CreateJobPostRequestDTO;
-import umc.SukBakJi.domain.model.dto.CreatePostRequestDTO;
-import umc.SukBakJi.domain.model.dto.PostDetailResponseDTO;
-import umc.SukBakJi.domain.model.dto.PostListResponseDTO;
+import umc.SukBakJi.domain.model.dto.*;
 import umc.SukBakJi.domain.model.entity.Post;
 import umc.SukBakJi.domain.service.PostService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +12,7 @@ import umc.SukBakJi.global.apiPayload.ApiResponse;
 
 import jakarta.validation.Valid;
 import umc.SukBakJi.global.apiPayload.ApiResponse;
+import umc.SukBakJi.global.apiPayload.exception.GeneralException;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -31,54 +29,55 @@ public class PostController {
     }
 
     @PostMapping("/create")
-    public ResponseEntity<?> createPost(@Valid @RequestBody CreatePostRequestDTO request, BindingResult result,
-                                        @RequestParam Long memberId) {
-        if (result.hasErrors()) {
-            String errors = result.getAllErrors().stream()
-                    .map(error -> error.getDefaultMessage())
-                    .collect(Collectors.joining(", "));
-            return ResponseEntity.badRequest().body(errors);
-        }
-
+    public ResponseEntity<ApiResponse<?>> createPost(@RequestBody CreatePostRequestDTO request, @RequestParam Long memberId) {
         try {
-            Post createdPost = postService.createPost(request, memberId);
-            return ResponseEntity.ok(createdPost);
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
+            PostResponseDTO createdPost = postService.createPost(request, memberId);
+            return ResponseEntity.ok(ApiResponse.onSuccess("게시글 작성에 성공했습니다.", createdPost));
+        } catch (GeneralException e) {
+            return ResponseEntity.status(e.getErrorReasonHttpStatus().getHttpStatus())
+                    .body(ApiResponse.onFailure(e.getErrorReasonHttpStatus().getCode(), e.getErrorReasonHttpStatus().getMessage(), null));
+        } catch (Exception e) {
+            return ResponseEntity.status(500)
+                    .body(ApiResponse.onFailure("COMMON500", "Internal server error", null));
         }
     }
 
-    @PostMapping("/create-job-post")
-    public ResponseEntity<?> createJobPost(@Valid @RequestBody CreateJobPostRequestDTO request, BindingResult result,
-                                           @RequestParam Long memberId) {
-        if (result.hasErrors()) {
-            String errors = result.getAllErrors().stream()
-                    .map(error -> error.getDefaultMessage())
-                    .collect(Collectors.joining(", "));
-            return ResponseEntity.badRequest().body(errors);
-        }
-
+    @PostMapping("/createJobPost")
+    public ResponseEntity<ApiResponse<?>> createJobPost(@RequestBody CreateJobPostRequestDTO request, @RequestParam Long memberId) {
         try {
-            Post createdPost = postService.createJobPost(request, memberId);
-            return ResponseEntity.ok(createdPost);
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
+            PostResponseDTO createdJobPost = postService.createJobPost(request, memberId);
+            return ResponseEntity.ok(ApiResponse.onSuccess("잡 포스트 작성에 성공했습니다.", createdJobPost));
+        } catch (GeneralException e) {
+            return ResponseEntity.status(e.getErrorReasonHttpStatus().getHttpStatus())
+                    .body(ApiResponse.onFailure(e.getErrorReasonHttpStatus().getCode(), e.getErrorReasonHttpStatus().getMessage(), null));
+        } catch (Exception e) {
+            return ResponseEntity.status(500)
+                    .body(ApiResponse.onFailure("COMMON500", "Internal server error", null));
         }
     }
 
     @GetMapping("/list")
-    public ResponseEntity<List<PostListResponseDTO>> getPostList(@RequestParam String menu, @RequestParam String boardName) {
+    public ResponseEntity<ApiResponse<List<PostListResponseDTO>>> getPostList(@RequestParam String menu, @RequestParam String boardName) {
         try {
             List<PostListResponseDTO> postList = postService.getPostList(menu, boardName);
-            return ResponseEntity.ok(postList);
+            return ResponseEntity.ok(ApiResponse.onSuccess(postList));
+        } catch (GeneralException e) {
+            return ResponseEntity.status(e.getErrorReasonHttpStatus().getHttpStatus())
+                    .body(ApiResponse.onFailure(e.getErrorReasonHttpStatus().getCode(), e.getErrorReasonHttpStatus().getMessage(), null));
         } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().body(null);
+            return ResponseEntity.status(400)
+                    .body(ApiResponse.onFailure("COMMON400", "Invalid menu or board name", null));
         }
     }
 
     @GetMapping("/{postId}")
-    public ResponseEntity<PostDetailResponseDTO> getPostDetails(@PathVariable Long postId) {
-        PostDetailResponseDTO postDetails = postService.getPostDetails(postId);
-        return ResponseEntity.ok(postDetails);
+    public ResponseEntity<?> viewPostDetail(@PathVariable Long postId) {
+        try {
+            PostDetailResponseDTO postDetail = postService.getPostDetail(postId);
+            return ResponseEntity.ok(ApiResponse.onSuccess(postDetail));
+        } catch (GeneralException e) {
+            return ResponseEntity.status(e.getErrorReasonHttpStatus().getHttpStatus())
+                    .body(ApiResponse.onFailure(e.getErrorReasonHttpStatus().getCode(), e.getErrorReasonHttpStatus().getMessage(), null));
+        }
     }
 }
