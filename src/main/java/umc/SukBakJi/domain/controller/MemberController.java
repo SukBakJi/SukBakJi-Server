@@ -3,10 +3,7 @@ package umc.SukBakJi.domain.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import umc.SukBakJi.domain.model.dto.member.MemberRequestDto;
 import umc.SukBakJi.domain.model.dto.member.MemberResponseDto;
 import umc.SukBakJi.domain.service.MemberService;
@@ -24,6 +21,13 @@ public class MemberController {
     @Operation(summary = "프로필 설정", description = "회원가입 이후 진행되는 프로필 설정입니다.")
     public ApiResponse<?> setMemberProfile(@RequestBody MemberRequestDto.ProfileDto profileDto) {
         MemberResponseDto.ProfileResultDto responseDto = memberService.setMemberProfile(profileDto);
+        return ApiResponse.onSuccess(responseDto);
+    }
+
+    @PutMapping("/profile")
+    @Operation(summary = "프로필 수정", description = "설정에서 사용자 정보를 수정합니다.")
+    public ApiResponse<?> modifyMemberProfile(@RequestBody MemberRequestDto.ProfileDto profileDto) {
+        MemberResponseDto.ProfileResultDto responseDto = memberService.modifyMemberProfile(profileDto);
         return ApiResponse.onSuccess(responseDto);
     }
 }
