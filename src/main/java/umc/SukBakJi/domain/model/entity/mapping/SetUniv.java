@@ -2,6 +2,7 @@ package umc.SukBakJi.domain.model.entity.mapping;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.ColumnDefault;
 import umc.SukBakJi.domain.model.entity.Member;
 import umc.SukBakJi.domain.model.entity.University;
 import umc.SukBakJi.global.entity.BaseEntity;
@@ -26,6 +27,9 @@ public class SetUniv extends BaseEntity {
 
     @Column(nullable = false)
     private String method; // 모집전형
+
+    @ColumnDefault("0")
+    private int show; // 일정 보일지 여부 체크
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "universityId")
