@@ -48,7 +48,13 @@ public class MemberService {
 
         // 연구 주제 조회 및 존재하지 않을 경우 생성 (추후에 코드 변경 필요)
         Set<ResearchTopic> researchTopics = new HashSet<>();
+        Set<String> existingTopicNames = new HashSet<>();
+
         for (String researchTopicName : profileDto.getResearchTopics()) {
+            if (existingTopicNames.contains(researchTopicName)) {
+                continue; // 이미 존재하는 연구 주제는 건너 뜀
+            }
+
             ResearchTopic researchTopic = researchTopicRepository.findByTopicName(researchTopicName)
                     .orElseGet(() -> {
                         ResearchTopic newResearchTopic = ResearchTopic.builder()
@@ -56,12 +62,19 @@ public class MemberService {
                                 .build();
                         return researchTopicRepository.save(newResearchTopic);
                     });
+
             researchTopics.add(researchTopic);
+            existingTopicNames.add(researchTopicName);
         }
 
         List<MemberResearchTopic> memberResearchTopics = new ArrayList<>();
 
         for (ResearchTopic researchTopic : researchTopics) {
+            boolean alreadyExists = memberResearchTopicRepository.existsByMemberAndResearchTopic(member, researchTopic);
+            if (alreadyExists) {
+                continue; // 이미 존재한다면 MemberResearchTopic에 추가하지 않음
+            }
+
             MemberResearchTopic memberResearchTopic = MemberResearchTopic.builder()
                     .member(member)
                     .researchTopic(researchTopic)
