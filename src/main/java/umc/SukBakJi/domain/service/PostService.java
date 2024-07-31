@@ -72,31 +72,36 @@ public class PostService {
         return postRepository.save(post);
     }
 
-    public PostDetailResponseDTO getPostDetail(Long postId) {
+    public PostDetailResponseDTO getPostDetails(Long postId) {
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid post ID"));
 
-        // Increment views and update hotTimestamp if needed
+        // Increment the view count
         post.setViews(post.getViews() + 1);
-        if (post.getViews() > 100 && post.getHotTimestamp() == null) {
-            post.setHotTimestamp(LocalDateTime.now());
-        }
         postRepository.save(post);
 
-        PostDetailResponseDTO response = new PostDetailResponseDTO();
-        response.setMenu(post.getBoard().getMenu().name()); // Convert enum to String
-        response.setTitle(post.getTitle());
-        response.setContent(post.getContent());
-        response.setViews(post.getViews());
+        // Map post to PostDetailResponseDTO
+        PostDetailResponseDTO responseDTO = new PostDetailResponseDTO();
+        responseDTO.setMenu(post.getBoard().getMenu().name());  // Convert enum to string
+        responseDTO.setTitle(post.getTitle());
+        responseDTO.setContent(post.getContent());
+        responseDTO.setViews(post.getViews());
 
-        List<PostDetailResponseDTO.CommentDTO> comments = post.getComments().stream()
-                .map(this::convertToCommentDTO)
+        List<PostDetailResponseDTO.CommentDTO> commentDTOs = post.getComments().stream()
+                .map(comment -> {
+                    PostDetailResponseDTO.CommentDTO commentDTO = new PostDetailResponseDTO.CommentDTO();
+                    commentDTO.setAnonymousName(comment.getNickname());
+                    commentDTO.setDegreeLevel(comment.getMember().getDegreeLevel().name());
+                    commentDTO.setContent(comment.getContent());
+                    commentDTO.setCreatedDate(comment.getCreatedAt());
+                    return commentDTO;
+                })
                 .collect(Collectors.toList());
 
-        response.setComments(comments);
-        response.setCommentCount((long) comments.size());
+        responseDTO.setComments(commentDTOs);
+        responseDTO.setCommentCount((long) commentDTOs.size());
 
-        return response;
+        return responseDTO;
     }
 
     public List<PostListResponseDTO> getPostList(String menu, String boardName) {

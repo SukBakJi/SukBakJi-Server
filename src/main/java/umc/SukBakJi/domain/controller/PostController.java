@@ -10,8 +10,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import umc.SukBakJi.global.apiPayload.ApiResponse;
 
 import jakarta.validation.Valid;
+import umc.SukBakJi.global.apiPayload.ApiResponse;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -74,12 +77,8 @@ public class PostController {
     }
 
     @GetMapping("/{postId}")
-    public ResponseEntity<PostDetailResponseDTO> getPostDetail(@PathVariable Long postId) {
-        try {
-            PostDetailResponseDTO postDetail = postService.getPostDetail(postId);
-            return ResponseEntity.ok(postDetail);
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().body(null);
-        }
+    public ResponseEntity<PostDetailResponseDTO> getPostDetails(@PathVariable Long postId) {
+        PostDetailResponseDTO postDetails = postService.getPostDetails(postId);
+        return ResponseEntity.ok(postDetails);
     }
 }
