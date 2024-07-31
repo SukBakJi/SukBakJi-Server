@@ -50,7 +50,11 @@ public enum ErrorStatus implements BaseErrorCode {
 
     // 알람 설정 관련 에러
     INVALID_DATE(HttpStatus.BAD_REQUEST, "ALARM400", "올바르지 않는 날짜입니다."),
-    DUPLICATE_ALARM_NAME(HttpStatus.BAD_REQUEST, "ALARM401", "중복된 알람 이름입니다.");
+    DUPLICATE_ALARM_NAME(HttpStatus.BAD_REQUEST, "ALARM401", "중복된 알람 이름입니다."),
+    INVALID_ALARM(HttpStatus.BAD_REQUEST, "ALARM402", "유효하지 않은 알람입니다."),
+
+    // 대학교 설정 관련 에러
+    INVALID_UNIVERSITY(HttpStatus.BAD_REQUEST, "UNIVERSITY400", "유효하지 않은 학교입니다.");
 
     private final HttpStatus httpStatus;
     private final String code;

@@ -14,8 +14,7 @@ public class UnivResponseDTO {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class setUnivDTO{
-        List<univDTO> univDTOList;
-        Integer listSize;
+        Long univId;
         Long memberId;
     }
     @Builder
@@ -24,6 +23,16 @@ public class UnivResponseDTO {
     @AllArgsConstructor
     public static class univDTO{
         Long univId;
-        String univName;
+        String season;
+        String method;
+    }
+
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class getUnivListDTO{
+        Long memberId;
+        List<univDTO> univList;
     }
 }
