@@ -15,6 +15,9 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import umc.SukBakJi.domain.model.entity.Member;
 import umc.SukBakJi.domain.repository.MemberRepository;
+import umc.SukBakJi.domain.service.MemberService;
+import umc.SukBakJi.global.apiPayload.code.status.ErrorStatus;
+import umc.SukBakJi.global.apiPayload.exception.handler.MemberHandler;
 import umc.SukBakJi.global.security.PrincipalDetails;
 
 import java.security.Key;
@@ -143,5 +146,14 @@ public class JwtTokenProvider {
                 .parseClaimsJws(token)
                 .getBody();
         return claims.getSubject(); // 사용자 이메일
+    }
+
+    public Long getMemberIdFromToken(String token) {
+        String email = getEmailFromToken(token);
+        Member member = memberRepository.findByEmail(email)
+                .orElseThrow(() -> new MemberHandler(ErrorStatus.MEMBER_NOT_FOUND));
+
+        Long memberId = member.getId();
+        return memberId;
     }
 }
