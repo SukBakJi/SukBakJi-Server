@@ -45,4 +45,12 @@ public class MemberRequestDto {
         private DegreeLevel degreeLevel;
         private List<String> researchTopics;
     }
+
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class ProfileRequestDto {
+        private String email;
+    }
 }

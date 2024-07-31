@@ -8,6 +8,7 @@ import umc.SukBakJi.domain.model.entity.mapping.MemberResearchTopic;
 import umc.SukBakJi.domain.repository.MemberResearchTopicRepository;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -21,5 +22,12 @@ public class MemberResearchTopicService {
         for (MemberResearchTopic researchTopic : memberResearchTopics) {
             memberResearchTopicRepository.delete(researchTopic);
         }
+    }
+
+    public List<String> getResearchTopicNamesByMember(Member member) {
+        return member.getMemberResearchTopics()
+                .stream()
+                .map(memberResearchTopic -> memberResearchTopic.getResearchTopic().getTopicName())
+                .collect(Collectors.toList());
     }
 }

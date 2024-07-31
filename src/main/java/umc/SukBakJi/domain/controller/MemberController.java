@@ -30,4 +30,12 @@ public class MemberController {
         MemberResponseDto.ProfileResultDto responseDto = memberService.modifyMemberProfile(profileDto);
         return ApiResponse.onSuccess(responseDto);
     }
+
+    @GetMapping("/mypage")
+    @Operation(summary = "마이페이지", description = "사용자가 설정한 프로필 정보를 확인합니다.")
+    public ApiResponse<?> getMyPage(@RequestHeader("Authorization") String token) {
+        String jwtToken = token.substring(7);
+        MemberResponseDto.ProfileResultDto responseDto = memberService.getMemberProfile(jwtToken);
+        return ApiResponse.onSuccess(responseDto);
+    }
 }
