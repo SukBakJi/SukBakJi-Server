@@ -40,8 +40,17 @@ public class MemberRequestDto {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class ProfileDto {
+        private String email;
         private String name;
         private DegreeLevel degreeLevel;
         private List<String> researchTopics;
+    }
+
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class ProfileRequestDto {
+        private String email;
     }
 }
