@@ -1,7 +1,6 @@
 package umc.SukBakJi.domain.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+import umc.SukBakJi.domain.model.dto.CommentResponseDTO;
 import umc.SukBakJi.domain.model.dto.CreateCommentRequestDTO;
 import umc.SukBakJi.domain.model.entity.Comment;
 import umc.SukBakJi.domain.model.entity.Member;
@@ -9,6 +8,10 @@ import umc.SukBakJi.domain.model.entity.Post;
 import umc.SukBakJi.domain.repository.CommentRepository;
 import umc.SukBakJi.domain.repository.MemberRepository;
 import umc.SukBakJi.domain.repository.PostRepository;
+import umc.SukBakJi.global.apiPayload.code.status.ErrorStatus;
+import umc.SukBakJi.global.apiPayload.exception.GeneralException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
@@ -29,24 +32,20 @@ public class CommentService {
         this.memberRepository = memberRepository;
     }
 
-    public Comment createComment(CreateCommentRequestDTO request) {
+    public CommentResponseDTO createComment(CreateCommentRequestDTO request) {
         Post post = postRepository.findById(request.getPostId())
-                .orElseThrow(() -> new IllegalArgumentException("Invalid post ID"));
+                .orElseThrow(() -> new GeneralException(ErrorStatus.POST_NOT_FOUND));
 
         Member member = memberRepository.findById(request.getMemberId())
-                .orElseThrow(() -> new IllegalArgumentException("Invalid member ID"));
+                .orElseThrow(() -> new GeneralException(ErrorStatus.MEMBER_NOT_FOUND));
 
-        // Determine if the commenter is the author of the post
         boolean isAuthor = post.getMember().equals(member);
-
         String nickname;
+
         if (isAuthor) {
             nickname = "글쓴이";
         } else {
-            // Get all comments for the post
             List<Comment> postComments = commentRepository.findByPost(post);
-
-            // Find existing nickname for the member if exists
             Optional<String> existingNickname = postComments.stream()
                     .filter(comment -> comment.getMember().equals(member))
                     .map(Comment::getNickname)
@@ -55,7 +54,6 @@ public class CommentService {
             if (existingNickname.isPresent()) {
                 nickname = existingNickname.get();
             } else {
-                // Get the highest nickname number used so far
                 Set<Integer> usedNumbers = postComments.stream()
                         .map(Comment::getNickname)
                         .filter(n -> n.startsWith("익명 "))
@@ -74,8 +72,18 @@ public class CommentService {
         comment.setPost(post);
         comment.setMember(member);
         comment.setContent(request.getContent());
-        comment.setNickname(nickname); // Set the nickname
+        comment.setNickname(nickname);
 
-        return commentRepository.save(comment);
+        Comment savedComment = commentRepository.save(comment);
+
+        // Map the saved comment to CommentResponseDTO
+        CommentResponseDTO responseDTO = new CommentResponseDTO();
+        responseDTO.setCommentId(savedComment.getCommentId());
+        responseDTO.setContent(savedComment.getContent());
+        responseDTO.setNickname(savedComment.getNickname());
+        responseDTO.setCreatedAt(savedComment.getCreatedAt());
+        responseDTO.setUpdatedAt(savedComment.getUpdatedAt());
+
+        return responseDTO;
     }
 }
