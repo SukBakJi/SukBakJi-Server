@@ -30,6 +30,23 @@ public class CalenderController {
     @Autowired
     private CalenderService calenderService;
 
+    @Operation(summary = "대학교 검색", description = "학교를 검색합니다.")
+    @ApiResponses(value = {
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "성공",
+                    content = @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = UnivResponseDTO.getSearchListDTO.class))),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "400", description = "해당하는 사용자가 없습니다.",
+                    content = @Content),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "500", description = "서버 에러, 관리자에게 문의 바랍니다.",
+                    content = @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = ErrorReasonDTO.class)))
+    })
+    @GetMapping("/search")
+    public ApiResponse<UnivResponseDTO.getSearchListDTO> getMethodList(@RequestParam(name="keyword") String keyword){
+        List<UnivResponseDTO.searchListDTO> searchList = calenderService.getSearchList(keyword);
+        return ApiResponse.onSuccess(UnivConverter.toGetSearchListDTO(searchList));
+    }
+
     @Operation(summary = "대학교 모집 전형 조회", description = "선택한 학교의 모집 전형을 조회합니다.")
     @ApiResponses(value = {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "성공",

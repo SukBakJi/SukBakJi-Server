@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import umc.SukBakJi.domain.model.entity.University;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -51,5 +52,23 @@ public class UnivResponseDTO {
     public static class getMethodListDTO{
         Long univId;
         List<methodListDTO> methodListDTO;
+    }
+
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class searchListDTO{
+        Long id;
+        String name;
+    }
+
+
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class getSearchListDTO{
+        List<searchListDTO> universityList;
     }
 }
