@@ -3,6 +3,7 @@ package umc.SukBakJi.domain.converter;
 import umc.SukBakJi.domain.model.dto.UnivRequestDTO;
 import umc.SukBakJi.domain.model.dto.UnivResponseDTO;
 import umc.SukBakJi.domain.model.entity.Member;
+import umc.SukBakJi.domain.model.entity.UnivScheduleInfo;
 import umc.SukBakJi.domain.model.entity.University;
 import umc.SukBakJi.domain.model.entity.mapping.SetUniv;
 
@@ -46,6 +47,21 @@ public class UnivConverter {
         return UnivResponseDTO.setUnivDTO.builder()
                 .univId(setUniv.getUniversity().getId())
                 .memberId(setUniv.getMember().getId())
+                .build();
+    }
+
+    public static UnivResponseDTO.methodListDTO methodListDTO(String method){
+        return UnivResponseDTO.methodListDTO.builder()
+                .method(method)
+                .build();
+    }
+
+    public static UnivResponseDTO.getMethodListDTO toGetMethodListDTO (List<String> methodList, Long univId){
+        List<UnivResponseDTO.methodListDTO> getMethodListDTOList = methodList.stream()
+                .map(UnivConverter::methodListDTO).toList();
+        return UnivResponseDTO.getMethodListDTO.builder()
+                .univId(univId)
+                .methodListDTO(getMethodListDTOList)
                 .build();
     }
 }

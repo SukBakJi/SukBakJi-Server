@@ -21,6 +21,12 @@ public class UnivScheduleInfo extends BaseEntity {
     @Column(nullable = false)
     private String date; // 일정 날짜
 
+    @Column(nullable = false)
+    private String season; // 모집시기
+
+    @Column(nullable = false)
+    private String method; // 모집전형
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "universityId")
     private University university;

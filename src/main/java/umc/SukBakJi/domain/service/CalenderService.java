@@ -11,17 +11,18 @@ import umc.SukBakJi.domain.model.dto.UnivRequestDTO;
 import umc.SukBakJi.domain.model.dto.UnivResponseDTO;
 import umc.SukBakJi.domain.model.entity.Alarm;
 import umc.SukBakJi.domain.model.entity.Member;
+import umc.SukBakJi.domain.model.entity.UnivScheduleInfo;
 import umc.SukBakJi.domain.model.entity.University;
 import umc.SukBakJi.domain.model.entity.mapping.SetUniv;
-import umc.SukBakJi.domain.repository.AlarmRepository;
-import umc.SukBakJi.domain.repository.MemberRepository;
-import umc.SukBakJi.domain.repository.SetUnivRepository;
-import umc.SukBakJi.domain.repository.UnivRepository;
+import umc.SukBakJi.domain.repository.*;
 import umc.SukBakJi.global.apiPayload.code.status.ErrorStatus;
 import umc.SukBakJi.global.apiPayload.exception.GeneralException;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -39,6 +40,15 @@ public class CalenderService {
 
     @Autowired
     private UnivRepository univRepository;
+
+    @Autowired
+    private UnivScheduleInfoRepository univScheduleInfoRepository;
+
+    @Transactional
+    public List<String> getMethodList(Long univId){
+        List<String> univScheduleInfoList = univScheduleInfoRepository.findAllByUniversityId(univId);
+        return univScheduleInfoList;
+    }
 
     @Transactional
     public Alarm createAlarm(AlarmRequestDTO.createAlarm request){

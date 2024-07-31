@@ -35,4 +35,21 @@ public class UnivResponseDTO {
         Long memberId;
         List<univDTO> univList;
     }
+
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class methodListDTO{
+        String method;
+    }
+
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class getMethodListDTO{
+        Long univId;
+        List<methodListDTO> methodListDTO;
+    }
 }
