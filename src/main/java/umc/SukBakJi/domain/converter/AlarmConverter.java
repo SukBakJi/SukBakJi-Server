@@ -42,7 +42,7 @@ public class AlarmConverter {
                 .build();
     }
 
-    public static AlarmResponseDTO.getAlarmListDTO getAlarmListDTO( Long memberId, List<Alarm> alarmList){
+    public static AlarmResponseDTO.getAlarmListDTO getAlarmListDTO(Long memberId, List<Alarm> alarmList){
         if(alarmList == null){
             return AlarmResponseDTO.getAlarmListDTO.builder()
                     .memberId(memberId)
@@ -54,6 +54,13 @@ public class AlarmConverter {
         return AlarmResponseDTO.getAlarmListDTO.builder()
                 .memberId(memberId)
                 .alarmList(getAlarmListDTOList)
+                .build();
+    }
+
+    public static AlarmResponseDTO.turnOnOff turnOnOff(Alarm alarm){
+        return AlarmResponseDTO.turnOnOff.builder()
+                .alarmId(alarm.getId())
+                .onoff(alarm.getOnoff())
                 .build();
     }
 }
