@@ -29,7 +29,7 @@ public class SetUniv extends BaseEntity {
     private String method; // 모집전형
 
     @ColumnDefault("0")
-    private int show; // 일정 보일지 여부 체크
+    private Integer showing; // 일정 보일지 여부 체크
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "universityId")
