@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.annotation.Validated;
@@ -18,6 +19,7 @@ import umc.SukBakJi.domain.model.entity.enums.Provider;
 import umc.SukBakJi.domain.service.AuthService;
 import umc.SukBakJi.global.apiPayload.ApiResponse;
 import umc.SukBakJi.global.security.jwt.JwtTokenProvider;
+
 
 @RestController
 @RequiredArgsConstructor
