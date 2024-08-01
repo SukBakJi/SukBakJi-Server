@@ -3,17 +3,22 @@ package umc.SukBakJi.domain.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import umc.SukBakJi.domain.model.dto.HotBoardPostDTO;
 import umc.SukBakJi.domain.model.dto.LatestQuestionDTO;
 import umc.SukBakJi.domain.model.dto.PostListDTO;
+import umc.SukBakJi.domain.model.entity.Member;
+import umc.SukBakJi.domain.repository.MemberRepository;
 import umc.SukBakJi.domain.service.CommunityService;
 import umc.SukBakJi.global.apiPayload.ApiResponse;
+import umc.SukBakJi.global.apiPayload.code.status.ErrorStatus;
+import umc.SukBakJi.global.apiPayload.exception.handler.MemberHandler;
+import umc.SukBakJi.global.security.jwt.JwtTokenProvider;
 
 import java.util.List;
+import java.util.logging.Logger;
+
+import static org.hibernate.query.sqm.tree.SqmNode.log;
 
 @RestController
 @RequestMapping("/api/community")
@@ -21,6 +26,9 @@ public class CommunityController {
 
     @Autowired
     private CommunityService communityService;
+
+    @Autowired
+    private JwtTokenProvider jwtTokenProvider;
 
     @Operation(summary = "Get Latest Questions", description = "각 메뉴(박사, 석사, 진학예정)별로 질문게시판의 최신 질문글을 가져옵니다.")
     @ApiResponses(value = {
@@ -53,8 +61,11 @@ public class CommunityController {
                     content = @io.swagger.v3.oas.annotations.media.Content(mediaType = "application/json",
                             schema = @io.swagger.v3.oas.annotations.media.Schema(implementation = PostListDTO.class)))
     })
-    @GetMapping("/{userId}/scrap-list")
-    public ApiResponse<List<PostListDTO>> getScrapListByUserId(@PathVariable("userId") Long userId) {
+    @GetMapping("/scrap-list")
+    public ApiResponse<List<PostListDTO>> getScrapListByUserId(@RequestHeader("Authorization") String token) {
+        String jwtToken = token.substring(7);
+        Long userId = jwtTokenProvider.getMemberIdFromToken(jwtToken);
+
         List<PostListDTO> scrapList = communityService.getScrappedPostsByUserId(userId);
         return ApiResponse.onSuccess(scrapList);
     }
@@ -65,8 +76,11 @@ public class CommunityController {
                     content = @io.swagger.v3.oas.annotations.media.Content(mediaType = "application/json",
                             schema = @io.swagger.v3.oas.annotations.media.Schema(implementation = PostListDTO.class)))
     })
-    @GetMapping("/{user_id}/post-list")
-    public ApiResponse<List<PostListDTO>> getPostListByUser(@PathVariable("user_id") Long userId) {
+    @GetMapping("/post-list")
+    public ApiResponse<List<PostListDTO>> getPostListByUser(@RequestHeader("Authorization") String token) {
+        String jwtToken = token.substring(7);
+        Long userId = jwtTokenProvider.getMemberIdFromToken(jwtToken);
+
         List<PostListDTO> postList = communityService.getPostsByUserId(userId);
         return ApiResponse.onSuccess(postList);
     }
@@ -77,8 +91,11 @@ public class CommunityController {
                     content = @io.swagger.v3.oas.annotations.media.Content(mediaType = "application/json",
                             schema = @io.swagger.v3.oas.annotations.media.Schema(implementation = PostListDTO.class)))
     })
-    @GetMapping("/{user_id}/comment-list")
-    public ApiResponse<List<PostListDTO>> getCommentedPostListByUser(@PathVariable("user_id") Long userId) {
+    @GetMapping("/comment-list")
+    public ApiResponse<List<PostListDTO>> getCommentedPostListByUser(@RequestHeader("Authorization") String token) {
+        String jwtToken = token.substring(7);
+        Long userId = jwtTokenProvider.getMemberIdFromToken(jwtToken);
+
         List<PostListDTO> postList = communityService.getCommentedPostsByUserId(userId);
         return ApiResponse.onSuccess(postList);
     }
@@ -89,8 +106,11 @@ public class CommunityController {
                     content = @io.swagger.v3.oas.annotations.media.Content(mediaType = "application/json",
                             schema = @io.swagger.v3.oas.annotations.media.Schema(implementation = PostListDTO.class)))
     })
-    @GetMapping("/{userId}/favorite-post-list")
-    public ApiResponse<List<PostListDTO>> getFavoritePosts(@PathVariable Long userId) {
+    @GetMapping("/favorite-post-list")
+    public ApiResponse<List<PostListDTO>> getFavoritePosts(@RequestHeader("Authorization") String token) {
+        String jwtToken = token.substring(7);
+
+        Long userId = jwtTokenProvider.getMemberIdFromToken(jwtToken);
         List<PostListDTO> favoritePosts = communityService.getFavoritePosts(userId);
         return ApiResponse.onSuccess(favoritePosts);
     }

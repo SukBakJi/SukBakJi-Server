@@ -5,7 +5,9 @@ import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
 import umc.SukBakJi.domain.model.entity.enums.DegreeLevel;
 import umc.SukBakJi.domain.model.entity.enums.Provider;
+import umc.SukBakJi.domain.model.entity.mapping.BoardLike;
 import umc.SukBakJi.domain.model.entity.mapping.MemberResearchTopic;
+import umc.SukBakJi.domain.model.entity.mapping.Scrap;
 import umc.SukBakJi.global.entity.BaseEntity;
 
 import java.time.LocalDateTime;
@@ -27,7 +29,7 @@ public class Member extends BaseEntity {
 
     private String password;
 
-//    @Column(unique = true, nullable = false)
+    //    @Column(unique = true, nullable = false)
     private String email;
 
     private String phoneNumber;
