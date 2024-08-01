@@ -15,7 +15,9 @@ public class AlarmResponseDTO {
     @AllArgsConstructor
     public static class createAlarmDTO{
         Long alarmId;
+        String alarmUnivName;
         String alarmName;
+        Long onoff;
         Long memberId;
     }
 
@@ -33,8 +35,19 @@ public class AlarmResponseDTO {
     @AllArgsConstructor
     public static class alarmDTO{
         Long alarmId;
+        String alarmUnivName;
         String alarmName;
         String alarmDate;
         String alarmTime;
+        Long onoff;
+    }
+
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class turnOnOff{
+        Long alarmId;
+        Long onoff;
     }
 }

@@ -12,9 +12,6 @@ public class CreateCommentRequestDTO {
     @NotNull(message = "Post ID is required")
     private Long postId;
 
-    @NotNull(message = "Member ID is required")
-    private Long memberId;
-
     @NotBlank(message = "Content is required")
     private String content;
 }

@@ -2,13 +2,10 @@ package umc.SukBakJi.domain.model.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
 import org.hibernate.annotations.ColumnDefault;
 import umc.SukBakJi.domain.model.entity.enums.DegreeLevel;
 import umc.SukBakJi.domain.model.entity.enums.Provider;
+import umc.SukBakJi.domain.model.entity.mapping.MemberResearchTopic;
 import umc.SukBakJi.domain.model.entity.mapping.BoardLike;
 import umc.SukBakJi.domain.model.entity.mapping.Scrap;
 import umc.SukBakJi.global.entity.BaseEntity;
@@ -18,6 +15,7 @@ import java.util.List;
 
 @Entity
 @Getter
+@Setter
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
@@ -50,6 +48,10 @@ public class Member extends BaseEntity {
     private Provider provider;
 
     private String refreshToken;
+
+    // Define relationships if necessary
+    @OneToMany(mappedBy = "member")
+    private List<MemberResearchTopic> memberResearchTopics;
 
     @OneToMany(mappedBy = "member")
     private List<Post> posts;
