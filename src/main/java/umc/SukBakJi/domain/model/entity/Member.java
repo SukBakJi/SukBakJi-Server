@@ -51,7 +51,6 @@ public class Member extends BaseEntity {
 
     private String refreshToken;
 
-    // Define relationships if necessary
     @OneToMany(mappedBy = "member")
     private List<Post> posts;
 
@@ -66,6 +65,7 @@ public class Member extends BaseEntity {
 
     @OneToMany(mappedBy = "member")
     private List<Scrap> scraps;
+
     public Member(String name, String password, String email, String phoneNumber, DegreeLevel degreeLevel, int point, Provider provider) {
         this.name = name;
         this.password = password;
@@ -91,5 +91,9 @@ public class Member extends BaseEntity {
     @PrePersist
     public void setPoint() {
         this.point = 0;
+    }
+
+    public Long getMemberId() {
+        return id;
     }
 }

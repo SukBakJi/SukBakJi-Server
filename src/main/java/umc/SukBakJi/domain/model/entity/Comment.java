@@ -17,6 +17,9 @@ public class Comment extends BaseEntity {
 
     private String content;
 
+    @Column(nullable = false)
+    private String nickname; // Add the nickname field
+
     @ManyToOne
     @JoinColumn(name = "member_id")
     private Member member;
