@@ -36,6 +36,9 @@ public enum ErrorStatus implements BaseErrorCode {
     DATABASE_CONNECTION_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "DB5001", "데이터베이스 연결에 실패했습니다."),
     SQL_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "DB5002", "SQL 쿼리 실행 중 오류가 발생했습니다."),
 
+    // 연구 주제 관련 에러
+    RESEARCH_NOT_FOUND(HttpStatus.NOT_FOUND, "TOPIC4001", "연구 주제를 찾을 수 없습니다."),
+
     // 연구실 후기 관련 에러
     LAB_REVIEW_NOT_FOUND(HttpStatus.NOT_FOUND, "LAB_REVIEW4041", "연구실 후기를 찾을 수 없습니다."),
     LAB_NOT_FOUND(HttpStatus.NOT_FOUND, "LAB4041", "연구실을 찾을 수 없습니다."),
@@ -55,9 +58,23 @@ public enum ErrorStatus implements BaseErrorCode {
     NO_SCRAP_FOUND(HttpStatus.NOT_FOUND, "SCRAP4041", "스크랩한 게시물이 없습니다."),
     NO_COMMENTS_FOUND(HttpStatus.NOT_FOUND, "COMMENT4041", "댓글을 작성한 게시물이 없습니다."),
 
+    // Post-related errors
+    POST_CREATION_FAILED(HttpStatus.BAD_REQUEST, "POST4001", "게시글 작성에 실패했습니다."),
+    INVALID_MENU_OR_BOARD(HttpStatus.BAD_REQUEST, "POST4002", "유효하지 않은 메뉴 또는 게시판 이름입니다."),
+    INVALID_MEMBER_ID(HttpStatus.BAD_REQUEST, "POST4003", "유효하지 않은 회원 ID입니다."),
+
+
+    // Comment related errors
+    COMMENT_CREATION_FAILED(HttpStatus.BAD_REQUEST, "COMMENT4001", "댓글 생성에 실패했습니다."),
+    COMMENT_NOT_FOUND(HttpStatus.NOT_FOUND, "COMMENT4041", "댓글을 찾을 수 없습니다."),
+
     // 알람 설정 관련 에러
     INVALID_DATE(HttpStatus.BAD_REQUEST, "ALARM400", "올바르지 않는 날짜입니다."),
-    DUPLICATE_ALARM_NAME(HttpStatus.BAD_REQUEST, "ALARM401", "중복된 알람 이름입니다.");
+    DUPLICATE_ALARM_NAME(HttpStatus.BAD_REQUEST, "ALARM401", "중복된 알람 이름입니다."),
+    INVALID_ALARM(HttpStatus.BAD_REQUEST, "ALARM402", "유효하지 않은 알람입니다."),
+
+    // 대학교 설정 관련 에러
+    INVALID_UNIVERSITY(HttpStatus.BAD_REQUEST, "UNIVERSITY400", "유효하지 않은 학교입니다.");
 
     private final HttpStatus httpStatus;
     private final String code;
