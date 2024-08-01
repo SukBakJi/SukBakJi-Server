@@ -7,6 +7,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import umc.SukBakJi.domain.converter.AuthConverter;
 import umc.SukBakJi.domain.converter.MemberConverter;
+import umc.SukBakJi.domain.model.entity.ResearchTopic;
+import umc.SukBakJi.domain.model.entity.mapping.MemberResearchTopic;
+import umc.SukBakJi.domain.repository.MemberResearchTopicRepository;
+import umc.SukBakJi.domain.repository.ResearchTopicRepository;
+import umc.SukBakJi.global.apiPayload.exception.GeneralException;
 import umc.SukBakJi.global.security.jwt.JwtToken;
 import umc.SukBakJi.domain.model.dto.member.MemberRequestDto;
 import umc.SukBakJi.domain.model.dto.member.MemberResponseDto;
@@ -17,6 +22,12 @@ import umc.SukBakJi.global.apiPayload.code.status.ErrorStatus;
 import umc.SukBakJi.global.apiPayload.exception.handler.MemberHandler;
 import umc.SukBakJi.global.security.jwt.JwtTokenProvider;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
+
 @Service
 @RequiredArgsConstructor
 @Transactional
@@ -24,6 +35,8 @@ public class AuthService {
 
     private final JwtTokenProvider jwtTokenProvider;
     private final MemberRepository memberRepository;
+    private final ResearchTopicRepository researchTopicRepository;
+    private final MemberResearchTopicRepository memberResearchTopicRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
 //    private final KakaoService kakaoService;
 //    private final AppleService appleService;

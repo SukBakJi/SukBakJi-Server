@@ -1,15 +1,17 @@
 package umc.SukBakJi.domain.model.entity;
 
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.*;
+import umc.SukBakJi.domain.model.entity.mapping.MemberResearchTopic;
 import umc.SukBakJi.global.entity.BaseEntity;
 
+import java.util.List;
+
 @Entity
+@Builder
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
 @ToString
 public class ResearchTopic extends BaseEntity {
 
@@ -25,5 +27,9 @@ public class ResearchTopic extends BaseEntity {
     public ResearchTopic(String topicName, String category) {
         this.topicName = topicName;
         this.category = category;
+    }
+
+    public void setTopicName(String researchTopicName) {
+        this.topicName = researchTopicName;
     }
 }
