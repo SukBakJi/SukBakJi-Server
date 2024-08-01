@@ -2,15 +2,10 @@ package umc.SukBakJi.domain.model.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
 import org.hibernate.annotations.ColumnDefault;
 import umc.SukBakJi.domain.model.entity.enums.DegreeLevel;
 import umc.SukBakJi.domain.model.entity.enums.Provider;
-import umc.SukBakJi.domain.model.entity.mapping.BoardLike;
-import umc.SukBakJi.domain.model.entity.mapping.Scrap;
+import umc.SukBakJi.domain.model.entity.mapping.MemberResearchTopic;
 import umc.SukBakJi.global.entity.BaseEntity;
 
 import java.time.LocalDateTime;
@@ -18,6 +13,7 @@ import java.util.List;
 
 @Entity
 @Getter
+@Setter
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
@@ -27,16 +23,13 @@ public class Member extends BaseEntity {
     @Column(name = "member_id")
     private Long id;
 
-    @Column(nullable = false)
     private String name;
 
-    @Column(nullable = false)
     private String password;
 
-    @Column(unique = true, nullable = false)
+//    @Column(unique = true, nullable = false)
     private String email;
 
-    @Column(nullable = false)
     private String phoneNumber;
 
     @Enumerated(EnumType.STRING)
@@ -46,12 +39,15 @@ public class Member extends BaseEntity {
     private Integer point;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
+//    @Column(nullable = false)
     private Provider provider;
 
     private String refreshToken;
 
     // Define relationships if necessary
+    @OneToMany(mappedBy = "member")
+    private List<MemberResearchTopic> memberResearchTopics;
+
     @OneToMany(mappedBy = "member")
     private List<Post> posts;
 

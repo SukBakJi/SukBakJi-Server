@@ -8,7 +8,6 @@ import org.springframework.security.oauth2.core.user.OAuth2User;
 import umc.SukBakJi.domain.model.entity.Member;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Data
 public class PrincipalDetails implements UserDetails, OAuth2User {
