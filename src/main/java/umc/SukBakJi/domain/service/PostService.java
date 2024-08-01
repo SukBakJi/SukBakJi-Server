@@ -57,7 +57,7 @@ public class PostService {
         responseDTO.setCreatedAt(savedPost.getCreatedAt().toString());
         responseDTO.setUpdatedAt(savedPost.getUpdatedAt().toString());
         responseDTO.setBoardId(savedPost.getBoard().getBoardId());
-        responseDTO.setMemberId(savedPost.getMember().getMemberId());
+        responseDTO.setMemberId(savedPost.getMember().getId());
 
         return responseDTO;
     }
@@ -90,10 +90,11 @@ public class PostService {
         responseDTO.setCreatedAt(savedPost.getCreatedAt().toString());
         responseDTO.setUpdatedAt(savedPost.getUpdatedAt().toString());
         responseDTO.setBoardId(savedPost.getBoard().getBoardId());
-        responseDTO.setMemberId(savedPost.getMember().getMemberId());
+        responseDTO.setMemberId(savedPost.getMember().getId());
 
         return responseDTO;
     }
+
 
     public PostDetailResponseDTO getPostDetail(Long postId) {
         Post post = postRepository.findById(postId)

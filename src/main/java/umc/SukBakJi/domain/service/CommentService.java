@@ -32,11 +32,11 @@ public class CommentService {
         this.memberRepository = memberRepository;
     }
 
-    public CommentResponseDTO createComment(CreateCommentRequestDTO request) {
+    public CommentResponseDTO createComment(CreateCommentRequestDTO request, Long memberId) {
         Post post = postRepository.findById(request.getPostId())
                 .orElseThrow(() -> new GeneralException(ErrorStatus.POST_NOT_FOUND));
 
-        Member member = memberRepository.findById(request.getMemberId())
+        Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new GeneralException(ErrorStatus.MEMBER_NOT_FOUND));
 
         boolean isAuthor = post.getMember().equals(member);
