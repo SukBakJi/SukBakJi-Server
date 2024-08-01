@@ -5,6 +5,7 @@ import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
 import umc.SukBakJi.domain.model.entity.enums.DegreeLevel;
 import umc.SukBakJi.domain.model.entity.enums.Provider;
+import umc.SukBakJi.domain.model.entity.mapping.MemberResearchTopic;
 import umc.SukBakJi.domain.model.entity.mapping.BoardLike;
 import umc.SukBakJi.domain.model.entity.mapping.MemberResearchTopic;
 import umc.SukBakJi.domain.model.entity.mapping.Scrap;
@@ -64,6 +65,7 @@ public class Member extends BaseEntity {
 
     @OneToMany(mappedBy = "member")
     private List<Scrap> scraps;
+
     public Member(String name, String password, String email, String phoneNumber, DegreeLevel degreeLevel, int point, Provider provider) {
         this.name = name;
         this.password = password;
@@ -90,4 +92,9 @@ public class Member extends BaseEntity {
     public void setPoint() {
         this.point = 0;
     }
+
+    public Long getMemberId() {
+        return id;
+    }
 }
+
