@@ -12,11 +12,11 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import umc.SukBakJi.global.security.jwt.JwtTokenProvider;
 import umc.SukBakJi.global.security.oauth2.handler.OAuth2AuthenticationFailureHandler;
 import umc.SukBakJi.global.security.oauth2.handler.OAuth2AuthenticationSuccessHandler;
 import umc.SukBakJi.global.security.jwt.JwtAuthenticationEntryPoint;
 import umc.SukBakJi.global.security.jwt.JwtAuthenticationFilter;
-import umc.SukBakJi.global.security.jwt.JwtTokenProvider;
 import umc.SukBakJi.global.security.oauth2.service.CustomOAuth2UserService;
 
 @Configuration
