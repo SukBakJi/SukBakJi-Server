@@ -36,8 +36,9 @@ public class MemberService {
     private final JwtTokenProvider jwtTokenProvider;
 
     // 프로필 설정
-    public MemberResponseDto.ProfileResultDto setMemberProfile(MemberRequestDto.ProfileDto profileDto) {
-        Member member = memberRepository.findByEmail(profileDto.getEmail())
+    public MemberResponseDto.ProfileResultDto setMemberProfile(@RequestHeader("Authorization") String token, MemberRequestDto.ProfileDto profileDto) {
+        String email = jwtTokenProvider.getEmailFromToken(token);
+        Member member = memberRepository.findByEmail(email)
                 .orElseThrow(() -> new MemberHandler(ErrorStatus.MEMBER_NOT_FOUND));
 
         // 존재하는 연구 주제인지 조회
@@ -93,8 +94,9 @@ public class MemberService {
     }
 
     // 프로필 수정
-    public MemberResponseDto.ProfileResultDto modifyMemberProfile(MemberRequestDto.ProfileDto profileDto) {
-        Member member = memberRepository.findByEmail(profileDto.getEmail())
+    public MemberResponseDto.ProfileResultDto modifyMemberProfile(@RequestHeader("Authorization") String token, MemberRequestDto.ModifyProfileDto profileDto) {
+        String email = jwtTokenProvider.getEmailFromToken(token);
+        Member member = memberRepository.findByEmail(email)
                 .orElseThrow(() -> new MemberHandler(ErrorStatus.MEMBER_NOT_FOUND));
 
         memberResearchTopicService.deleteByMember(member);
@@ -130,12 +132,11 @@ public class MemberService {
             memberResearchTopicRepository.save(memberResearchTopic);
         }
 
-        member.setName(profileDto.getName());
         member.setDegreeLevel(profileDto.getDegreeLevel());
         member.setMemberResearchTopics(memberResearchTopics);
         memberRepository.save(member);
 
-        return MemberConverter.toSetMemberProfile(member, profileDto.getResearchTopics());
+        return MemberConverter.toModifyMemberProfile(member, profileDto.getResearchTopics());
     }
 
     // 프로필 보기
@@ -154,10 +155,10 @@ public class MemberService {
         System.out.println(memberResearchTopics);
 
         return MemberResponseDto.ProfileResultDto.builder()
-                .email(email)
                 .name(member.getName())
                 .degreeLevel(member.getDegreeLevel())
                 .researchTopics(memberResearchTopics)
+                .point(member.getPoint())
                 .build();
     }
 }

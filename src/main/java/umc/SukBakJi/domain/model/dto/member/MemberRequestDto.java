@@ -40,7 +40,6 @@ public class MemberRequestDto {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class ProfileDto {
-        private String email;
         private String name;
         private DegreeLevel degreeLevel;
         private List<String> researchTopics;
@@ -50,7 +49,8 @@ public class MemberRequestDto {
     @Getter
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class ProfileRequestDto {
-        private String email;
+    public static class ModifyProfileDto {
+        private DegreeLevel degreeLevel;
+        private List<String> researchTopics;
     }
 }
