@@ -7,6 +7,7 @@ import umc.SukBakJi.domain.model.entity.enums.DegreeLevel;
 import umc.SukBakJi.domain.model.entity.enums.Provider;
 import umc.SukBakJi.domain.model.entity.mapping.MemberResearchTopic;
 import umc.SukBakJi.domain.model.entity.mapping.BoardLike;
+import umc.SukBakJi.domain.model.entity.mapping.MemberResearchTopic;
 import umc.SukBakJi.domain.model.entity.mapping.Scrap;
 import umc.SukBakJi.global.entity.BaseEntity;
 
@@ -25,16 +26,13 @@ public class Member extends BaseEntity {
     @Column(name = "member_id")
     private Long id;
 
-    @Column(nullable = false)
     private String name;
 
-    @Column(nullable = false)
     private String password;
 
-    @Column(unique = true, nullable = false)
+    //    @Column(unique = true, nullable = false)
     private String email;
 
-    @Column(nullable = false)
     private String phoneNumber;
 
     @Enumerated(EnumType.STRING)
@@ -44,7 +42,7 @@ public class Member extends BaseEntity {
     private Integer point;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
+//    @Column(nullable = false)
     private Provider provider;
 
     private String refreshToken;
@@ -99,3 +97,4 @@ public class Member extends BaseEntity {
         return id;
     }
 }
+
