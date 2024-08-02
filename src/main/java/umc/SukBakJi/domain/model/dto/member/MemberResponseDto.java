@@ -31,9 +31,9 @@ public class MemberResponseDto {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class ProfileResultDto {
-        private String email;
         private String name;
         private DegreeLevel degreeLevel;
         private List<String> researchTopics;
+        private Integer point;
     }
 }
