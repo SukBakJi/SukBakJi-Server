@@ -21,10 +21,19 @@ public class MemberConverter {
 
     public static MemberResponseDto.ProfileResultDto toSetMemberProfile(Member member, List<String> resarchTopics) {
         return MemberResponseDto.ProfileResultDto.builder()
-                .email(member.getEmail())
                 .name(member.getName())
                 .degreeLevel(member.getDegreeLevel())
                 .researchTopics(resarchTopics)
+                .point(member.getPoint())
+                .build();
+    }
+
+    public static MemberResponseDto.ProfileResultDto toModifyMemberProfile(Member member, List<String> resarchTopics) {
+        return MemberResponseDto.ProfileResultDto.builder()
+                .name(member.getName())
+                .degreeLevel(member.getDegreeLevel())
+                .researchTopics(resarchTopics)
+                .point(member.getPoint())
                 .build();
     }
 }

@@ -19,15 +19,19 @@ public class MemberController {
 
     @PostMapping("/profile")
     @Operation(summary = "프로필 설정", description = "회원가입 이후 진행되는 프로필 설정입니다.")
-    public ApiResponse<?> setMemberProfile(@RequestBody MemberRequestDto.ProfileDto profileDto) {
-        MemberResponseDto.ProfileResultDto responseDto = memberService.setMemberProfile(profileDto);
+    public ApiResponse<?> setMemberProfile(@RequestHeader("Authorization") String token,
+                                           @RequestBody MemberRequestDto.ProfileDto profileDto) {
+        String jwtToken = token.substring(7);
+        MemberResponseDto.ProfileResultDto responseDto = memberService.setMemberProfile(jwtToken, profileDto);
         return ApiResponse.onSuccess(responseDto);
     }
 
     @PutMapping("/profile")
     @Operation(summary = "프로필 수정", description = "설정에서 사용자 정보를 수정합니다.")
-    public ApiResponse<?> modifyMemberProfile(@RequestBody MemberRequestDto.ProfileDto profileDto) {
-        MemberResponseDto.ProfileResultDto responseDto = memberService.modifyMemberProfile(profileDto);
+    public ApiResponse<?> modifyMemberProfile(@RequestHeader("Authorization") String token,
+                                              @RequestBody MemberRequestDto.ModifyProfileDto profileDto) {
+        String jwtToken = token.substring(7);
+        MemberResponseDto.ProfileResultDto responseDto = memberService.modifyMemberProfile(jwtToken, profileDto);
         return ApiResponse.onSuccess(responseDto);
     }
 
