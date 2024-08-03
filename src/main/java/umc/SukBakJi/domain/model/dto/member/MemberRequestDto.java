@@ -2,6 +2,7 @@ package umc.SukBakJi.domain.model.dto.member;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 import lombok.*;
 import umc.SukBakJi.domain.model.entity.enums.DegreeLevel;
 import umc.SukBakJi.domain.model.entity.enums.Provider;
@@ -52,5 +53,16 @@ public class MemberRequestDto {
     public static class ModifyProfileDto {
         private DegreeLevel degreeLevel;
         private List<String> researchTopics;
+    }
+
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class PasswordDto {
+        private String currentPassword;
+        @Pattern(regexp = "^.{6,}$", message = "비밀번호는 여섯 자리 이상 입력해주세요.")
+        private String newPassword;
+        private String confirmPassword;
     }
 }
