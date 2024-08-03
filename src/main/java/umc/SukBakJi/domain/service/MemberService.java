@@ -156,6 +156,7 @@ public class MemberService {
 
         return MemberResponseDto.ProfileResultDto.builder()
                 .name(member.getName())
+                .provider(member.getProvider())
                 .degreeLevel(member.getDegreeLevel())
                 .researchTopics(memberResearchTopics)
                 .point(member.getPoint())
