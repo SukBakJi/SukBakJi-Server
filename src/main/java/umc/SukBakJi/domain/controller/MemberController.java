@@ -1,7 +1,10 @@
 package umc.SukBakJi.domain.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import umc.SukBakJi.domain.model.dto.member.MemberRequestDto;
@@ -41,5 +44,14 @@ public class MemberController {
         String jwtToken = token.substring(7);
         MemberResponseDto.ProfileResultDto responseDto = memberService.getMemberProfile(jwtToken);
         return ApiResponse.onSuccess(responseDto);
+    }
+
+    @PostMapping("/password")
+    @Operation(summary = "비밀번호 재설정", description = "현재 비밀번호를 올바르게 입력했는지 검사하고, 새 비밀번호를 설정합니다.")
+    public ApiResponse<?> resetPassword(@RequestHeader("Authorization") String token,
+                                        @Valid @RequestBody MemberRequestDto.PasswordDto passwordDto) {
+        String jwtToken = token.substring(7);
+        memberService.resetPassword(jwtToken, passwordDto);
+        return ApiResponse.onSuccess("비밀번호를 재설정하였습니다.");
     }
 }
