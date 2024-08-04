@@ -1,10 +1,10 @@
 package umc.SukBakJi.domain.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestParam;
 import umc.SukBakJi.domain.converter.MemberConverter;
 import umc.SukBakJi.domain.model.dto.member.MemberRequestDto;
 import umc.SukBakJi.domain.model.dto.member.MemberResponseDto;
@@ -22,7 +22,6 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -34,6 +33,7 @@ public class MemberService {
     private final MemberResearchTopicRepository memberResearchTopicRepository;
     private final MemberResearchTopicService memberResearchTopicService;
     private final JwtTokenProvider jwtTokenProvider;
+    private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
     // 프로필 설정
     public MemberResponseDto.ProfileResultDto setMemberProfile(@RequestHeader("Authorization") String token, MemberRequestDto.ProfileDto profileDto) {
@@ -156,9 +156,28 @@ public class MemberService {
 
         return MemberResponseDto.ProfileResultDto.builder()
                 .name(member.getName())
+                .provider(member.getProvider())
                 .degreeLevel(member.getDegreeLevel())
                 .researchTopics(memberResearchTopics)
                 .point(member.getPoint())
                 .build();
+    }
+
+    // 비밀번호 재설정
+    public void resetPassword(@RequestHeader("Authorization") String token, MemberRequestDto.PasswordDto request) {
+        String email = jwtTokenProvider.getEmailFromToken(token);
+        Member member = memberRepository.findByEmail(email)
+                .orElseThrow(() -> new MemberHandler(ErrorStatus.MEMBER_NOT_FOUND));
+
+        if (!bCryptPasswordEncoder.matches(request.getCurrentPassword(), member.getPassword())) {
+            throw new MemberHandler(ErrorStatus.INVALID_PASSWORD);
+        }
+
+        if (!request.getNewPassword().equals(request.getConfirmPassword())) {
+            throw new MemberHandler(ErrorStatus.NOT_MATCHED_PASSWORD);
+        }
+
+        member.setPassword(bCryptPasswordEncoder.encode(request.getNewPassword()));
+        memberRepository.save(member);
     }
 }
