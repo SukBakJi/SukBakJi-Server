@@ -17,6 +17,7 @@ import umc.SukBakJi.global.apiPayload.code.ErrorReasonDTO;
 import umc.SukBakJi.global.security.jwt.JwtTokenProvider;
 
 import java.util.List;
+import java.util.Optional;
 
 
 @RestController
@@ -96,10 +97,10 @@ public class LabReviewController {
     })
     @GetMapping
     public ApiResponse<List<LabReviewDetailsDTO>> getLabReviewList(
-            @Parameter(description = "페이지 번호", example = "0") @RequestParam(defaultValue = "0") int page,
-            @Parameter(description = "페이지 크기", example = "6") @RequestParam(defaultValue = "6") int size
+            @Parameter(description = "시작 위치", example = "0") @RequestParam(defaultValue = "0") int offset,
+            @Parameter(description = "반환할 후기 개수") @RequestParam Optional<Integer> limit
     ) {
-        List<LabReviewDetailsDTO> reviewList = labReviewService.getLabReviewList(page, size);
+        List<LabReviewDetailsDTO> reviewList = labReviewService.getLabReviewList(offset, limit);
         return ApiResponse.onSuccess(reviewList);
     }
 

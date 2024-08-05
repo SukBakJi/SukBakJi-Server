@@ -3,6 +3,8 @@ package umc.SukBakJi.domain.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
@@ -21,6 +23,7 @@ import umc.SukBakJi.domain.repository.LabReviewRepository;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class LabReviewService {
@@ -83,14 +86,15 @@ public class LabReviewService {
         return labReviewConverter.toDto(review);
     }
 
-    public List<LabReviewDetailsDTO> getLabReviewList(int page, int size) {
-        PageRequest pageRequest = PageRequest.of(page, size);
-        Page<LabReview> reviews = labReviewRepository.findAll(pageRequest);
-        if (reviews.isEmpty()) {
-            throw new GeneralException(ErrorStatus.LAB_REVIEW_NOT_FOUND);
+    public List<LabReviewDetailsDTO> getLabReviewList(int offset, Optional<Integer> limit) {
+        List<LabReview> reviews;
+        if (limit.isPresent()) {
+            PageRequest pageRequest = PageRequest.of(offset, limit.get(), Sort.by(Sort.Direction.DESC, "createdAt"));
+            reviews = labReviewRepository.findAll(pageRequest).getContent();
+        } else {
+            reviews = labReviewRepository.findAll(Sort.by(Sort.Direction.DESC, "createdAt"));
         }
-
-        return labReviewConverter.toDto(reviews.getContent());
+        return reviews.stream().map(labReviewConverter::toDto).collect(Collectors.toList());
     }
 
 //    public List<LabReviewDetailsDTO> searchLabReviews(String professorName, int page, int size) {
