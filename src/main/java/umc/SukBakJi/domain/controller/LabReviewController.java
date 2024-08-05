@@ -29,7 +29,7 @@ public class LabReviewController {
     @Autowired
     private JwtTokenProvider jwtTokenProvider;
 
-    @Operation(summary = "Get Lab Review Details", description = "연구실 후기 상세 정보를 조회합니다.")
+    @Operation(summary = "연구실 별 후기 상세 조회", description = "연구실 후기 상세 정보를 조회합니다.")
     @ApiResponses(value = {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "성공",
                     content = @Content(mediaType = "application/json",
@@ -46,7 +46,7 @@ public class LabReviewController {
         return ApiResponse.onSuccess(summaryDTO);
     }
 
-    @Operation(summary = "Create Lab Review", description = "연구실 후기를 작성합니다.")
+    @Operation(summary = "연구실 후기 작성", description = "연구실 후기를 작성합니다.")
     @ApiResponses(value = {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "성공",
                     content = @Content(mediaType = "application/json",
@@ -80,7 +80,7 @@ public class LabReviewController {
         return ApiResponse.onSuccess(details);
     }
 
-    @Operation(summary = "Get Lab Review List", description = "연구실 후기 목록을 조회합니다.")
+    @Operation(summary = "모든 연구실의 후기 목록 조회", description = "연구실 후기 목록을 조회합니다.")
     @ApiResponses(value = {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "성공",
                     content = @Content(mediaType = "application/json",
