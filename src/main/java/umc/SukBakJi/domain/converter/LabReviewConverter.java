@@ -4,6 +4,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import umc.SukBakJi.domain.model.dto.LabReviewCreateDTO;
 import umc.SukBakJi.domain.model.dto.LabReviewDetailsDTO;
+import umc.SukBakJi.domain.model.dto.LabReviewSummaryDTO;
+import umc.SukBakJi.domain.model.dto.TriangleGraphData;
 import umc.SukBakJi.domain.model.entity.Lab;
 import umc.SukBakJi.domain.model.entity.Member;
 import umc.SukBakJi.domain.model.entity.mapping.LabReview;

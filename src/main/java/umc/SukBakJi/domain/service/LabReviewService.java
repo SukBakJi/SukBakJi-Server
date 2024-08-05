@@ -8,6 +8,8 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import umc.SukBakJi.domain.converter.LabReviewConverter;
+import umc.SukBakJi.domain.model.dto.LabReviewSummaryDTO;
+import umc.SukBakJi.domain.model.dto.TriangleGraphData;
 import umc.SukBakJi.global.apiPayload.code.status.ErrorStatus;
 import umc.SukBakJi.global.apiPayload.exception.GeneralException;
 import umc.SukBakJi.domain.model.dto.LabReviewCreateDTO;
@@ -32,11 +34,37 @@ public class LabReviewService {
     @Autowired
     private LabReviewConverter labReviewConverter;
 
-    public LabReviewDetailsDTO getLabReviewDetails(Long reviewId) {
-        LabReview review = labReviewRepository.findById(reviewId).orElseThrow(() -> new GeneralException(ErrorStatus.LAB_REVIEW_NOT_FOUND));
+    public LabReviewSummaryDTO getLabReviews(Long labId) {
+        List<LabReview> reviews = labReviewRepository.findByLabId(labId);
+        if (reviews.isEmpty()) {
+            throw new GeneralException(ErrorStatus.LAB_REVIEW_NOT_FOUND);
+        }
 
-        return labReviewConverter.toDto(review);
+        List<LabReviewDetailsDTO> reviewDTOs = labReviewConverter.toDto(reviews);
+        TriangleGraphData triangleGraphData = calculateTriangleGraphData(reviews);
 
+        return LabReviewSummaryDTO.builder()
+                .reviews(reviewDTOs)
+                .triangleGraphData(triangleGraphData)
+                .build();
+
+    }
+
+    private TriangleGraphData calculateTriangleGraphData(List<LabReview> reviews) {
+        double leadershipSum = 0, salarySum = 0, autonomySum = 0;
+
+        for (LabReview review : reviews) {
+            leadershipSum += review.getLeadershipStyle().getValue();
+            salarySum += review.getSalaryLevel().getValue();
+            autonomySum += review.getAutonomy().getValue();
+        }
+
+        int totalReviews = reviews.size();
+        return TriangleGraphData.builder()
+                .leadershipAverage(leadershipSum / totalReviews)
+                .salaryAverage(salarySum / totalReviews)
+                .autonomyAverage(autonomySum / totalReviews)
+                .build();
     }
 
     public LabReviewDetailsDTO createLabReview(LabReviewCreateDTO dto, Long labId, Long memberId) {
@@ -65,19 +93,19 @@ public class LabReviewService {
         return labReviewConverter.toDto(reviews.getContent());
     }
 
-    public List<LabReviewDetailsDTO> searchLabReviews(String professorName, int page, int size) {
-        PageRequest pageRequest = PageRequest.of(page, size);
-
-        List<Lab> labs = labRepository.findByProfessorName(professorName);
-        if (labs.isEmpty()) {
-            throw new GeneralException(ErrorStatus.PROFESSOR_NOT_FOUND);
-        }
-
-        List<LabReview> reviews = labReviewRepository.findByLabIn(labs, pageRequest);
-        if (reviews.isEmpty()) {
-            throw new GeneralException(ErrorStatus.LAB_REVIEW_NOT_FOUND);
-        }
-
-        return labReviewConverter.toDto(reviews);
-    }
+//    public List<LabReviewDetailsDTO> searchLabReviews(String professorName, int page, int size) {
+//        PageRequest pageRequest = PageRequest.of(page, size);
+//
+//        List<Lab> labs = labRepository.findByProfessorName(professorName);
+//        if (labs.isEmpty()) {
+//            throw new GeneralException(ErrorStatus.PROFESSOR_NOT_FOUND);
+//        }
+//
+//        List<LabReview> reviews = labReviewRepository.findByLabId(labs);
+//        if (reviews.isEmpty()) {
+//            throw new GeneralException(ErrorStatus.LAB_REVIEW_NOT_FOUND);
+//        }
+//
+//        return labReviewConverter.toDto(reviews);
+//    }
 }
