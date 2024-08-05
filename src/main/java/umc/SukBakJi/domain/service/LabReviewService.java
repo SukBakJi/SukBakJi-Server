@@ -39,12 +39,12 @@ public class LabReviewService {
 
     }
 
-    public LabReviewDetailsDTO createLabReview(LabReviewCreateDTO dto) {
-        if (dto.getContent() == null || dto.getContent().length() < 10) {
+    public LabReviewDetailsDTO createLabReview(LabReviewCreateDTO dto, Long labId, Long memberId) {
+        if (dto.getContent() == null || dto.getContent().length() < 30) {
             throw new GeneralException(ErrorStatus.INVALID_REVIEW_CONTENT);
         }
 
-        LabReview review = labReviewConverter.toEntity(dto);
+        LabReview review = labReviewConverter.toEntity(dto, labId, memberId);
 
         Optional<LabReview> existingReview = labReviewRepository.findByLabAndMember(review.getLab(), review.getMember());
         if (existingReview.isPresent()) {
