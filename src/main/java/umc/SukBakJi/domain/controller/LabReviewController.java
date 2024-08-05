@@ -13,6 +13,7 @@ import umc.SukBakJi.domain.model.dto.LabReviewCreateDTO;
 import umc.SukBakJi.domain.model.dto.LabReviewDetailsDTO;
 import umc.SukBakJi.domain.service.LabReviewService;
 import umc.SukBakJi.global.apiPayload.code.ErrorReasonDTO;
+import umc.SukBakJi.global.security.jwt.JwtTokenProvider;
 
 import java.util.List;
 
@@ -22,6 +23,9 @@ import java.util.List;
 public class LabReviewController {
     @Autowired
     private LabReviewService labReviewService;
+
+    @Autowired
+    private JwtTokenProvider jwtTokenProvider;
 
     @Operation(summary = "Get Lab Review Details", description = "연구실 후기 상세 정보를 조회합니다.")
     @ApiResponses(value = {
@@ -57,11 +61,20 @@ public class LabReviewController {
                     content = @Content(mediaType = "application/json",
                             schema = @Schema(implementation = ErrorReasonDTO.class)))
     })
-    @PostMapping
+    @PostMapping("/{lab_id}")
     public ApiResponse<LabReviewDetailsDTO> createLabReview(
             @Parameter(description = "연구실 후기 생성 DTO", required = true)
+            @PathVariable("lab_id") Long labId,
+            @RequestHeader("Authorization") String token,
             @RequestBody LabReviewCreateDTO dto) {
-        LabReviewDetailsDTO details = labReviewService.createLabReview(dto);
+
+        // JWT 토큰에서 Bearer 제거
+        String jwt = token.substring(7);
+
+        // JWT에서 사용자 ID 추출
+        Long userId = jwtTokenProvider.getMemberIdFromToken(jwt);
+
+        LabReviewDetailsDTO details = labReviewService.createLabReview(dto, labId, userId);
         return ApiResponse.onSuccess(details);
     }
 
