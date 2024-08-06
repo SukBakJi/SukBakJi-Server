@@ -1,7 +1,17 @@
 package umc.SukBakJi.domain.model.entity.enums;
 
 public enum SalaryLevel {
-    LOW,    // 인건비 하
-    MEDIUM, // 인건비 중
-    HIGH    // 인건비 상
+    높아요(10),
+    보통이에요(5),
+    낮아요(0);
+
+    private final int value;
+
+    SalaryLevel(int value) {
+        this.value = value;
+    }
+
+    public int getValue() {
+        return value;
+    }
 }
