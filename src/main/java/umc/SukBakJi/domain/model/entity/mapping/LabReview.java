@@ -20,17 +20,6 @@ public class LabReview extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    public LabReview(Lab lab, Member member, String content, Atmosphere atmosphere, ThesisGuidance thesisGuidance, LeadershipStyle leadershipStyle, SalaryLevel salaryLevel, GraduationDifficulty graduationDifficulty) {
-        this.lab = lab;
-        this.member = member;
-        this.content = content;
-        this.atmosphere = atmosphere;
-        this.thesisGuidance = thesisGuidance;
-        this.leadershipStyle = leadershipStyle;
-        this.salaryLevel = salaryLevel;
-        this.graduationDifficulty = graduationDifficulty;
-    }
-
     @ManyToOne
     @JoinColumn(name = "lab_id", nullable = false)
     private Lab lab;
@@ -44,14 +33,6 @@ public class LabReview extends BaseEntity {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private Atmosphere atmosphere;
-
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private ThesisGuidance thesisGuidance;
-
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
     private LeadershipStyle leadershipStyle;
 
     @Enumerated(EnumType.STRING)
@@ -60,15 +41,21 @@ public class LabReview extends BaseEntity {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private GraduationDifficulty graduationDifficulty;
+    private Autonomy autonomy;
 
-    public void updateReview(String content, Atmosphere atmosphere, ThesisGuidance thesisGuidance, LeadershipStyle leadershipStyle, SalaryLevel salaryLevel, GraduationDifficulty graduationDifficulty) {
+    public LabReview(Lab lab, Member member, String content, LeadershipStyle leadershipStyle, SalaryLevel salaryLevel, Autonomy autonomy) {
+        this.lab = lab;
+        this.member = member;
         this.content = content;
-        this.atmosphere = atmosphere;
-        this.thesisGuidance = thesisGuidance;
         this.leadershipStyle = leadershipStyle;
         this.salaryLevel = salaryLevel;
-        this.graduationDifficulty = graduationDifficulty;
+        this.autonomy = autonomy;
     }
 
+    public void updateReview(String content, LeadershipStyle leadershipStyle, SalaryLevel salaryLevel, Autonomy autonomy) {
+        this.content = content;
+        this.leadershipStyle = leadershipStyle;
+        this.salaryLevel = salaryLevel;
+        this.autonomy = autonomy;
+    }
 }
