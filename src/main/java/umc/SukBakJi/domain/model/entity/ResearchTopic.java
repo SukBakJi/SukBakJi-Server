@@ -24,6 +24,9 @@ public class ResearchTopic extends BaseEntity {
 
     private String category;
 
+    @ManyToMany(mappedBy = "researchTopics")
+    private List<Lab> labs;
+
     public ResearchTopic(String topicName, String category) {
         this.topicName = topicName;
         this.category = category;

@@ -28,6 +28,9 @@ public class Lab extends BaseEntity {
     @Column(nullable = false)
     private String professorName; // 교수명
 
+    @Column(nullable = false)
+    private String department; // 학과명 (Department Name)
+
     @Column(nullable = true)
     private String professorProfile; // 교수 프로필
 
@@ -49,6 +52,7 @@ public class Lab extends BaseEntity {
         this.labName = labName;
         this.universityName = universityName;
         this.professorName = professorName;
+        this.department = department;
         this.professorProfile = professorProfile;
         this.professorAcademic = professorAcademic;
         this.labLink = labLink;
