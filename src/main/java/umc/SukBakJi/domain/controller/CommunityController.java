@@ -30,7 +30,7 @@ public class CommunityController {
     @Autowired
     private JwtTokenProvider jwtTokenProvider;
 
-    @Operation(summary = "Get Latest Questions", description = "각 메뉴(박사, 석사, 진학예정)별로 질문게시판의 최신 질문글을 가져옵니다.")
+    @Operation(summary = "최근 질문글 3개 불러오기", description = "각 메뉴(박사, 석사, 진학예정)별로 질문게시판의 최신 질문글을 가져옵니다.")
     @ApiResponses(value = {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "성공",
                     content = @io.swagger.v3.oas.annotations.media.Content(mediaType = "application/json",
@@ -43,7 +43,7 @@ public class CommunityController {
         return ApiResponse.onSuccess(latestQuestions);
     }
 
-    @Operation(summary = "Get Hot Board Posts", description = "스크랩 20개 이상 또는 조회수 100회 이상인 게시글을 최신순으로 보여줍니다.")
+    @Operation(summary = "Hot 게시판 글 목록 불러오기", description = "스크랩 20개 이상 또는 조회수 100회 이상인 게시글을 최신순으로 보여줍니다.")
     @ApiResponses(value = {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "성공",
                     content = @io.swagger.v3.oas.annotations.media.Content(mediaType = "application/json",
@@ -55,7 +55,7 @@ public class CommunityController {
         return ApiResponse.onSuccess(hotBoardPosts);
     }
 
-    @Operation(summary = "Get Scrap List", description = "사용자가 스크랩한 게시물 목록을 조회합니다.")
+    @Operation(summary = "내가 작성한 스크랩 게시글 목록", description = "사용자가 스크랩한 게시물 목록을 조회합니다.")
     @ApiResponses(value = {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "성공",
                     content = @io.swagger.v3.oas.annotations.media.Content(mediaType = "application/json",
@@ -70,7 +70,7 @@ public class CommunityController {
         return ApiResponse.onSuccess(scrapList);
     }
 
-    @Operation(summary = "Get Post List", description = "사용자가 작성한 게시물 목록을 조회합니다.")
+    @Operation(summary = "내가 작성한 게시글 목록", description = "사용자가 작성한 게시물 목록을 조회합니다.")
     @ApiResponses(value = {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "성공",
                     content = @io.swagger.v3.oas.annotations.media.Content(mediaType = "application/json",
@@ -85,7 +85,7 @@ public class CommunityController {
         return ApiResponse.onSuccess(postList);
     }
 
-    @Operation(summary = "Get Comment Post List", description = "사용자가 작성한 게시물 목록을 조회합니다.")
+    @Operation(summary = "내가 작성한 댓글이 있는 게시글 목록", description = "사용자가 작성한 댓글이 포함된 게시물 목록을 조회합니다.")
     @ApiResponses(value = {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "성공",
                     content = @io.swagger.v3.oas.annotations.media.Content(mediaType = "application/json",
@@ -100,7 +100,7 @@ public class CommunityController {
         return ApiResponse.onSuccess(postList);
     }
 
-    @Operation(summary = "Get Favorite Board List", description = "사용자가 즐겨찾기한 게시판의 최신 게시물 목록을 조회합니다.")
+    @Operation(summary = "즐겨찾기한 게시판의 최근 게시글 1개씩 불러오기", description = "사용자가 즐겨찾기한 게시판의 최신 게시물 목록을 조회합니다.")
     @ApiResponses(value = {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "성공",
                     content = @io.swagger.v3.oas.annotations.media.Content(mediaType = "application/json",
