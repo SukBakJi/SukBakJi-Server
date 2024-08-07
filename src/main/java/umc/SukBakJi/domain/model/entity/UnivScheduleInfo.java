@@ -18,8 +18,9 @@ public class UnivScheduleInfo extends BaseEntity {
     @Column(nullable = false)
     private String content; // 일정 내용
 
-    @Column(nullable = false)
-    private String date; // 일정 날짜
+    private String startDate; // 일정 시작 날짜
+
+    private String endDate; // 일정 종료 날짜
 
     @Column(nullable = false)
     private String season; // 모집시기
