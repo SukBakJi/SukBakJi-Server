@@ -97,19 +97,18 @@ public class LabReviewService {
         return reviews.stream().map(labReviewConverter::toDto).collect(Collectors.toList());
     }
 
-//    public List<LabReviewDetailsDTO> searchLabReviews(String professorName, int page, int size) {
-//        PageRequest pageRequest = PageRequest.of(page, size);
-//
-//        List<Lab> labs = labRepository.findByProfessorName(professorName);
-//        if (labs.isEmpty()) {
-//            throw new GeneralException(ErrorStatus.PROFESSOR_NOT_FOUND);
-//        }
-//
-//        List<LabReview> reviews = labReviewRepository.findByLabId(labs);
-//        if (reviews.isEmpty()) {
-//            throw new GeneralException(ErrorStatus.LAB_REVIEW_NOT_FOUND);
-//        }
-//
-//        return labReviewConverter.toDto(reviews);
-//    }
+    public List<LabReviewDetailsDTO> searchLabReviews(String professorName) {
+
+        List<Lab> labs = labRepository.findByProfessorName(professorName);
+        if (labs.isEmpty()) {
+            throw new GeneralException(ErrorStatus.PROFESSOR_NOT_FOUND);
+        }
+
+        List<LabReview> reviews = labReviewRepository.findByLabIn(labs);
+        if (reviews.isEmpty()) {
+            throw new GeneralException(ErrorStatus.LAB_REVIEW_NOT_FOUND);
+        }
+
+        return labReviewConverter.toDto(reviews);
+    }
 }
