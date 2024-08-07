@@ -36,6 +36,6 @@ public class Lab extends BaseEntity {
 
     private String labLink; // 연구실 링크
 
-    @OneToMany(mappedBy = "lab")
-    private List<ResearchTopic> researchTopics;
+    @OneToMany(mappedBy = "lab", fetch = FetchType.LAZY)
+    private List<LabResearchTopic> labResearchTopics;
 }
