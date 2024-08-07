@@ -66,22 +66,14 @@ public class LabController {
     }
 
     @PostMapping("/{labId}/favorite")
-    @Operation(summary = "연구실 즐겨찾기 추가", description = "특정 연구실을 사용자의 즐겨찾기에 추가합니다.")
-    public ApiResponse<?> addFavoriteLab(@RequestHeader("Authorization") String token,
+    @Operation(summary = "연구실 즐겨찾기 추가 및 취소",
+                description = "특정 연구실을 사용자의 즐겨찾기에 추가하고, 이미 추가한 상태라면 다시 요청했을 때 즐겨찾기를 취소합니다.")
+    public ApiResponse<?> toggleFavoriteLab(@RequestHeader("Authorization") String token,
                                          @RequestParam Long labId) {
         String jwtToken = token.substring(7);
         Long userId = jwtTokenProvider.getMemberIdFromToken(jwtToken);
-        labService.addFavoriteLab(userId, labId);
-        return ApiResponse.onSuccess("연구실을 즐겨찾기에 추가하였습니다.");
-    }
-
-    @DeleteMapping("/{labId}/favorite")
-    @Operation(summary = "연구실 즐겨찾기 취소", description = "특정 연구실을 사용자의 즐겨찾기에서 취소합니다.")
-    public ApiResponse<?> cancelFavoriteLab(@RequestHeader("Authorization") String token,
-                                            @RequestParam Long labId) {
-        String jwtToken = token.substring(7);
-        Long userId = jwtTokenProvider.getMemberIdFromToken(jwtToken);
-        labService.cancelFavoriteLab(userId, labId);
-        return ApiResponse.onSuccess("연구실을 즐겨찾기에서 취소하였습니다.");
+        Boolean isAdded = labService.toggleFavoriteLab(userId, labId);
+        String message = isAdded ? "연구실을 즐겨찾기에 추가하였습니다." : "연구실을 즐겨찾기에서 취소하였습니다.";
+        return ApiResponse.onSuccess(message);
     }
 }

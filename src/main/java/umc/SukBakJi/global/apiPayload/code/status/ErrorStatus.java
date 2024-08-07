@@ -42,6 +42,7 @@ public enum ErrorStatus implements BaseErrorCode {
 
     // 연구실 관련 에러
     FAVORITE_NOT_FOUND(HttpStatus.NOT_FOUND, "FAVORITE4001", "즐겨찾기 목록에서 찾을 수 없습니다."),
+    FAVORITE_ADD_FAILED(HttpStatus.NOT_FOUND, "FAVORITE4002", "즐겨찾기 작업에 실패하였습니다."),
 
     // 연구실 후기 관련 에러
     LAB_REVIEW_NOT_FOUND(HttpStatus.NOT_FOUND, "LAB_REVIEW4041", "연구실 후기를 찾을 수 없습니다."),
