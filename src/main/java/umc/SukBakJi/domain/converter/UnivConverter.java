@@ -3,6 +3,7 @@ package umc.SukBakJi.domain.converter;
 import umc.SukBakJi.domain.model.dto.UnivRequestDTO;
 import umc.SukBakJi.domain.model.dto.UnivResponseDTO;
 import umc.SukBakJi.domain.model.entity.Member;
+import umc.SukBakJi.domain.model.entity.UnivScheduleInfo;
 import umc.SukBakJi.domain.model.entity.University;
 import umc.SukBakJi.domain.model.entity.mapping.SetUniv;
 
@@ -15,6 +16,7 @@ public class UnivConverter {
                 .univId(setUniv.getId())
                 .season(setUniv.getSeason())
                 .method(setUniv.getMethod())
+                .showing(setUniv.getShowing())
                 .build();
     }
 
@@ -42,10 +44,46 @@ public class UnivConverter {
                 .build();
     }
 
-    public static UnivResponseDTO.setUnivDTO toSetUnivDTO (SetUniv setUniv){
+    public static UnivResponseDTO.setUnivDTO toSetUnivDTO (Long memberId){
         return UnivResponseDTO.setUnivDTO.builder()
-                .univId(setUniv.getUniversity().getId())
-                .memberId(setUniv.getMember().getId())
+                .memberId(memberId)
+                .message("저장되었습니다.")
+                .build();
+    }
+
+    public static UnivResponseDTO.methodListDTO methodListDTO(String method){
+        return UnivResponseDTO.methodListDTO.builder()
+                .method(method)
+                .build();
+    }
+
+    public static UnivResponseDTO.getMethodListDTO toGetMethodListDTO(List<String> methodList, Long univId){
+        List<UnivResponseDTO.methodListDTO> getMethodListDTOList = methodList.stream()
+                .map(UnivConverter::methodListDTO).toList();
+        return UnivResponseDTO.getMethodListDTO.builder()
+                .univId(univId)
+                .methodListDTO(getMethodListDTOList)
+                .build();
+    }
+
+    public static UnivResponseDTO.getSearchListDTO toGetSearchListDTO(List<UnivResponseDTO.searchListDTO> universityList){
+        if(universityList == null){
+            return UnivResponseDTO.getSearchListDTO.builder()
+                    .universityList(null)
+                    .build();
+        }
+        return UnivResponseDTO.getSearchListDTO.builder()
+                .universityList(universityList)
+                .build();
+    }
+
+    public static UnivResponseDTO.searchListDTO toUnivList(String result){
+        String[] parts = result.split(",");
+        Long univId = Long.valueOf(parts[0]);
+        String name = parts[1];
+        return new UnivResponseDTO.searchListDTO().builder()
+                .id(univId)
+                .name(name)
                 .build();
     }
 }
