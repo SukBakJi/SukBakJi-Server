@@ -10,16 +10,18 @@ import umc.SukBakJi.domain.model.entity.ResearchTopic;
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
+@ToString
+@Table(name = "lab_research_topic")
 public class LabResearchTopic {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "lab_id")
+    @JoinColumn(name = "lab_id", nullable = false)
     private Lab lab;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "research_topic_id")
+    @JoinColumn(name = "research_topic_id", nullable = false)
     private ResearchTopic researchTopic;
 }

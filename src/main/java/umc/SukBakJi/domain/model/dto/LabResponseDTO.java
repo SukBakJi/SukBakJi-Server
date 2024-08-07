@@ -1,22 +1,16 @@
 package umc.SukBakJi.domain.model.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.util.List;
 
+@Getter
+@Setter
 public class LabResponseDTO {
-    @Builder
-    @Getter
-    @NoArgsConstructor
-    @AllArgsConstructor
-    public static class getFavoriteLabDTO {
-        private String labName;
-        private String professorName;
-        private String universityName;
-        private String departmentName;
-        private List<String> researchTopics;
-    }
+    private Long labId;
+    private String universityName;
+    private String department;
+    private String professorName;
+    private List<String> researchTopics;
 }

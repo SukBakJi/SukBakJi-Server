@@ -6,8 +6,10 @@ import umc.SukBakJi.global.entity.BaseEntity;
 
 @Entity
 @Getter
+@Builder
 @Setter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
+@NoArgsConstructor
 @ToString
 public class University extends BaseEntity {
 
