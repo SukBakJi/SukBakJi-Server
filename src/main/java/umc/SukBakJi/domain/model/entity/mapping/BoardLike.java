@@ -1,12 +1,18 @@
-package umc.SukBakJi.domain.model.entity;
+package umc.SukBakJi.domain.model.entity.mapping;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
+import umc.SukBakJi.domain.model.entity.Board;
+import umc.SukBakJi.domain.model.entity.Member;
 
 @Entity
 @Getter
 @Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class BoardLike {
     @EmbeddedId
     private BoardLikeId id;
@@ -22,10 +28,3 @@ public class BoardLike {
     private Board board;
 }
 
-@Embeddable
-class BoardLikeId implements java.io.Serializable {
-    private Long memberId;
-    private Long boardId;
-
-    // equals and hashCode
-}

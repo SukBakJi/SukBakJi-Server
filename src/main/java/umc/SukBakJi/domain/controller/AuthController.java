@@ -4,8 +4,10 @@ import io.swagger.v3.oas.annotations.Operation;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.util.StringUtils;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import umc.SukBakJi.domain.converter.AuthConverter;
@@ -18,6 +20,7 @@ import umc.SukBakJi.domain.model.entity.enums.Provider;
 import umc.SukBakJi.domain.service.AuthService;
 import umc.SukBakJi.global.apiPayload.ApiResponse;
 import umc.SukBakJi.global.security.jwt.JwtTokenProvider;
+
 
 @RestController
 @RequiredArgsConstructor
@@ -98,9 +101,7 @@ public class AuthController {
 //        response.sendRedirect(loginUrl);
 //    }
 
-
-    // 로그아웃 처리 아직 안돼요..ㅇ,,.,ㅠ ㅠ ㅜㅠ ㅠ
-    @PostMapping("/auth/logout")
+    @PostMapping("/logout")
     @Operation(summary = "로그아웃", description = "로그인한 사용자가 로그아웃 처리됩니다.")
     public ApiResponse<?> logout() {
         // 현재 사용자 인증 정보 가져오기

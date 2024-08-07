@@ -10,4 +10,5 @@ import java.util.Optional;
 public interface BoardRepository extends JpaRepository<Board, Long> {
     List<Board> findByMenu(Menu menu);
     List<Board> findByBoardNameAndMenu(String boardName, Menu menu);
+    Optional<Board> findByMenuAndBoardName(Menu menu, String boardName);
 }
