@@ -21,6 +21,7 @@ import umc.SukBakJi.domain.model.entity.mapping.SetUniv;
 import umc.SukBakJi.domain.service.CalenderService;
 import umc.SukBakJi.global.apiPayload.ApiResponse;
 import umc.SukBakJi.global.apiPayload.code.ErrorReasonDTO;
+import umc.SukBakJi.global.security.jwt.JwtTokenProvider;
 
 import java.util.List;
 
@@ -29,6 +30,9 @@ import java.util.List;
 public class CalenderController {
     @Autowired
     private CalenderService calenderService;
+
+    @Autowired
+    private JwtTokenProvider jwtTokenProvider;
 
     @Operation(summary = "대학교 검색", description = "학교를 검색합니다.")
     @ApiResponses(value = {
@@ -58,13 +62,13 @@ public class CalenderController {
                     content = @Content(mediaType = "application/json",
                             schema = @Schema(implementation = ErrorReasonDTO.class)))
     })
-    @GetMapping("/univ")
+    @GetMapping("/univ/method")
     public ApiResponse<UnivResponseDTO.getMethodListDTO> getMethodList(@RequestParam(name="univId") Long univId){
         List<String> scheduleInfoList = calenderService.getMethodList(univId);
         return ApiResponse.onSuccess(UnivConverter.toGetMethodListDTO(scheduleInfoList, univId));
     }
 
-    @Operation(summary = "Set University", description = "대학교를 선택합니다.")
+    @Operation(summary = "대학교 선택", description = "대학교를 선택합니다.")
     @ApiResponses(value = {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "성공",
                     content = @Content(mediaType = "application/json",
@@ -83,7 +87,7 @@ public class CalenderController {
         return ApiResponse.onSuccess(UnivConverter.toSetUnivDTO(request.getMemberId()));
     }
 
-    @Operation(summary = "Get University", description = "선택한 학교를 조회합니다.")
+    @Operation(summary = "학교 조회", description = "선택한 학교를 조회합니다.")
     @ApiResponses(value = {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "성공",
                     content = @Content(mediaType = "application/json",
@@ -94,8 +98,11 @@ public class CalenderController {
                     content = @Content(mediaType = "application/json",
                             schema = @Schema(implementation = ErrorReasonDTO.class)))
     })
-    @GetMapping("/univ/{memberId}")
-    public ApiResponse<UnivResponseDTO.getUnivListDTO> getUnivList(@PathVariable(name="memberId") Long memberId){
+    @GetMapping("/univ")
+    public ApiResponse<UnivResponseDTO.getUnivListDTO> getUnivList(@RequestHeader("Authorization") String token){
+        String jwtToken = token.substring(7);
+        Long memberId = jwtTokenProvider.getMemberIdFromToken(jwtToken);
+
         List<SetUniv> univList = calenderService.getUnivList(memberId);
         if(univList == null){
             return ApiResponse.onSuccess(UnivConverter.toGetUnivListDTO(memberId, null));
@@ -103,7 +110,7 @@ public class CalenderController {
         return ApiResponse.onSuccess(UnivConverter.toGetUnivListDTO(memberId, univList));
     }
 
-    @Operation(summary = "Set Alarm", description = "알람을 설정합니다.")
+    @Operation(summary = "알람 설정", description = "알람을 설정합니다.")
     @ApiResponses(value = {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "성공",
                     content = @Content(mediaType = "application/json",
@@ -120,7 +127,7 @@ public class CalenderController {
         return ApiResponse.onSuccess(AlarmConverter.toCreateAlarm(alarm));
     }
 
-    @Operation(summary = "Get Alarm", description = "알람을 조회합니다.")
+    @Operation(summary = "알람 조회", description = "알람을 조회합니다.")
     @ApiResponses(value = {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "성공",
                     content = @Content(mediaType = "application/json",
@@ -131,8 +138,11 @@ public class CalenderController {
                     content = @Content(mediaType = "application/json",
                             schema = @Schema(implementation = ErrorReasonDTO.class)))
     })
-    @GetMapping("/alarm/{memberId}")
-    public ApiResponse<AlarmResponseDTO.getAlarmListDTO> viewAlarmList(@PathVariable(name="memberId") Long memberId){
+    @GetMapping("/alarm")
+    public ApiResponse<AlarmResponseDTO.getAlarmListDTO> viewAlarmList(@RequestHeader("Authorization") String token){
+        String jwtToken = token.substring(7);
+        Long memberId = jwtTokenProvider.getMemberIdFromToken(jwtToken);
+
         List<Alarm> alarmList = calenderService.getAlarmList(memberId);
         if(alarmList == null){
             return ApiResponse.onSuccess(AlarmConverter.getAlarmListDTO(memberId, null));
