@@ -37,24 +37,26 @@ public class LabService {
     }
 
     private LabResponseDTO convertToDTO(Lab lab) {
-        LabResponseDTO dto = new LabResponseDTO();
-        dto.setLabId(lab.getId());
-        dto.setUniversityName(lab.getUniversityName());
-        dto.setDepartment(lab.getDepartmentName());
-        dto.setProfessorName(lab.getProfessorName());
-        List<String> topicNames = lab.getResearchTopics().stream()
+        List<String> researchTopics = lab.getLabResearchTopics().stream()
+                .map(LabResearchTopic::getResearchTopic)
                 .map(ResearchTopic::getTopicName)
                 .collect(Collectors.toList());
 
-        dto.setResearchTopics(topicNames);
-        return dto;
+        return LabResponseDTO.builder()
+                .labName(lab.getLabName())
+                .universityName(lab.getUniversityName())
+                .professorName(lab.getProfessorName())
+                .departmentName(lab.getDepartmentName())
+                .researchTopics(researchTopics)
+                .build();
     }
 
     public LabDetailResponseDTO getLabDetail(Long labId) {
         Lab lab = labRepository.findById(labId)
                 .orElseThrow(() -> new GeneralException(ErrorStatus.LAB_NOT_FOUND));
 
-        List<String> researchTopics = lab.getResearchTopics().stream()
+        List<String> researchTopics = lab.getLabResearchTopics().stream()
+                .map(LabResearchTopic::getResearchTopic)
                 .map(ResearchTopic::getTopicName)
                 .collect(Collectors.toList());
 
@@ -76,6 +78,20 @@ public class LabService {
         return InterestTopicsDTO.builder()
                 .topics(topics)
                 .build();
+    }
+
+    public List<LabResponseDTO> getFavoriteLabs(Long memberId) {
+        // 존재하는 회원인지 조회
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new MemberHandler(ErrorStatus.MEMBER_NOT_FOUND));
+
+        // 사용자의 즐겨찾기 목록을 가져오기
+        List<FavoriteLab> favoriteLabs = favoriteLabRepository.findByMember(member);
+
+        return favoriteLabs.stream()
+                .map(FavoriteLab::getLab) // FavoriteLab에서 연구실 객체 추출
+                .map(LabConverter::getFavoriteLabInfo)
+                .collect(Collectors.toList());
     }
 
     // 연구실 즐겨찾기 추가 및 취소
