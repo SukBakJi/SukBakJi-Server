@@ -12,20 +12,26 @@ import java.util.List;
 @Builder
 public class UnivRequestDTO {
     @Getter
-    public static class setUniv{
+    public static class setUnivList{
         @NotNull
         Long memberId;
         @NotNull
-        Long univId;
-        @NotNull
-        String season;
-        @NotNull
-        String method;
+        List<setUniv> setUnivList;
     }
 
     @Getter
     public static class getUnivList{
         @NotNull
         Long memberId;
+    }
+
+    @Getter
+    public static class setUniv{
+        @NotNull
+        Long univId;
+        @NotNull
+        String season;
+        @NotNull
+        String method;
     }
 }

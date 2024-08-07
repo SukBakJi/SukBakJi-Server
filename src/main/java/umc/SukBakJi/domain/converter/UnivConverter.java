@@ -43,10 +43,10 @@ public class UnivConverter {
                 .build();
     }
 
-    public static UnivResponseDTO.setUnivDTO toSetUnivDTO (SetUniv setUniv){
+    public static UnivResponseDTO.setUnivDTO toSetUnivDTO (Long memberId){
         return UnivResponseDTO.setUnivDTO.builder()
-                .univId(setUniv.getUniversity().getId())
-                .memberId(setUniv.getMember().getId())
+                .memberId(memberId)
+                .message("저장되었습니다.")
                 .build();
     }
 
