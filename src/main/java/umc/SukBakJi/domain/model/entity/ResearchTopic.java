@@ -21,4 +21,8 @@ public class ResearchTopic extends BaseEntity {
 
     @Column(nullable = false)
     private String topicName;
+
+    @ManyToOne
+    @JoinColumn(name = "lab_id")
+    private Lab lab;
 }
