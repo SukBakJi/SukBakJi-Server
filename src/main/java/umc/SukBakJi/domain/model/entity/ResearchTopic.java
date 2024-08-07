@@ -22,17 +22,7 @@ public class ResearchTopic extends BaseEntity {
     @Column(nullable = false)
     private String topicName;
 
-    private String category;
-
-    @ManyToMany(mappedBy = "researchTopics")
-    private List<Lab> labs;
-
-    public ResearchTopic(String topicName, String category) {
-        this.topicName = topicName;
-        this.category = category;
-    }
-
-    public void setTopicName(String researchTopicName) {
-        this.topicName = researchTopicName;
-    }
+    @ManyToOne
+    @JoinColumn(name = "lab_id")
+    private Lab lab;
 }

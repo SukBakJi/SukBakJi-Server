@@ -3,25 +3,23 @@ package umc.SukBakJi.domain.model.entity.mapping;
 import jakarta.persistence.*;
 import lombok.*;
 import umc.SukBakJi.domain.model.entity.Lab;
-import umc.SukBakJi.domain.model.entity.ResearchTopic;
+import umc.SukBakJi.domain.model.entity.Member;
 
 @Entity
 @Getter
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-@ToString
-@Table(name = "lab_research_topic")
-public class LabResearchTopic {
+public class FavoriteLab {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "lab_id", nullable = false)
-    private Lab lab;
+    @JoinColumn(name = "member_id")
+    private Member member;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "research_topic_id", nullable = false)
-    private ResearchTopic researchTopic;
+    @JoinColumn(name = "lab_id")
+    private Lab lab;
 }

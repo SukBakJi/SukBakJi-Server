@@ -10,6 +10,6 @@ import java.util.List;
 public interface LabRepository extends JpaRepository<Lab, Long> {
 
     List<Lab> findByProfessorName(String professorName);
-    @Query("SELECT l FROM Lab l JOIN l.researchTopics rt WHERE rt.topicName = :topicName")
+    @Query("SELECT l FROM Lab l JOIN l.labResearchTopics rt WHERE rt.researchTopic = :topicName")
     List<Lab> findLabsByResearchTopicName(@Param("topicName") String topicName);
 }

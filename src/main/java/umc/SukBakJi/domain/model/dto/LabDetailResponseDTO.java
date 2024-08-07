@@ -10,9 +10,7 @@ import java.util.List;
 public class LabDetailResponseDTO {
     private String professorName;
     private String universityName;
-    private String department;
-    private String professorAcademic;
-    private String professorProfile;
+    private String departmentName;
     private String labLink;
     private List<String> researchTopics;
 }
