@@ -5,6 +5,7 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+import umc.SukBakJi.domain.model.entity.mapping.FavoriteLab;
 import umc.SukBakJi.domain.model.entity.mapping.LabResearchTopic;
 import umc.SukBakJi.global.entity.BaseEntity;
 
@@ -36,6 +37,6 @@ public class Lab extends BaseEntity {
 
     private String labLink; // 연구실 링크
 
-    @OneToMany(mappedBy = "member")
+    @OneToMany(mappedBy = "lab")
     private List<LabResearchTopic> labResearchTopics;
 }
