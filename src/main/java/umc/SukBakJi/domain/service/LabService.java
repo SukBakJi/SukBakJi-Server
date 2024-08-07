@@ -78,8 +78,8 @@ public class LabService {
                 .build();
     }
 
-    // 연구실 즐겨찾기 추가
-    public void addFavoriteLab(Long memberId, Long labId) {
+    // 연구실 즐겨찾기 추가 및 취소
+    public Boolean toggleFavoriteLab(Long memberId, Long labId) {
         // 존재하는 회원인지 조회
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new MemberHandler(ErrorStatus.MEMBER_NOT_FOUND));
@@ -87,35 +87,23 @@ public class LabService {
         // 존재하는 연구실인지 조회
         Lab lab = labRepository.findById(labId)
                 .orElseThrow(() -> new GeneralException(ErrorStatus.LAB_NOT_FOUND));
-
-        if (!favoriteLabRepository.existsByMemberAndLab(member, lab)) {
-            FavoriteLab favoriteLab = LabConverter.toFavoriteLab(member, lab);
-            favoriteLabRepository.save(favoriteLab);
-        }
-    }
-
-    // 연구실 즐겨찾기 취소
-    public void cancelFavoriteLab(Long memberId, Long labId) {
-        // 존재하는 회원인지 조회
-        Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new MemberHandler(ErrorStatus.MEMBER_NOT_FOUND));
-
-        // 존재하는 연구실인지 조회
-        Lab lab = labRepository.findById(labId)
-                .orElseThrow(() -> new GeneralException(ErrorStatus.LAB_NOT_FOUND));
-
-        if (favoriteLabRepository.existsByMemberAndLab(member, lab)) {
-            favoriteLabRepository.deleteByMemberAndLab(member, lab);
-        }
 
         // 즐겨찾기 여부 확인
-        boolean exists = favoriteLabRepository.existsByMemberAndLab(member, lab);
+        boolean isFavorite = favoriteLabRepository.existsByMemberAndLab(member, lab);
 
-        if (!exists) {
-            throw new GeneralException(ErrorStatus.FAVORITE_NOT_FOUND);
+        if (isFavorite) {
+            // 즐겨찾기에 추가한 상태라면 즐겨찾기 취소
+            favoriteLabRepository.deleteByMemberAndLab(member, lab);
+            return false;
+        } else {
+            // 즐겨찾기를 하지 않은 상태라면 즐겨찾기 추가
+            try {
+                FavoriteLab favoriteLab = LabConverter.toFavoriteLab(member, lab);
+                favoriteLabRepository.save(favoriteLab);
+                return true;
+            } catch (Exception e) {
+                throw new GeneralException(ErrorStatus.FAVORITE_ADD_FAILED);
+            }
         }
-
-        // 즐겨찾기에서 삭제
-        favoriteLabRepository.deleteByMemberAndLab(member, lab);
     }
 }
