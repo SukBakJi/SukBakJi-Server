@@ -26,6 +26,7 @@ public class UnivResponseDTO {
         Long univId;
         String season;
         String method;
+        Integer showing;
     }
 
     @Builder

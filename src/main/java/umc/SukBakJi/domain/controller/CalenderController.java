@@ -87,7 +87,7 @@ public class CalenderController {
         return ApiResponse.onSuccess(UnivConverter.toSetUnivDTO(request.getMemberId()));
     }
 
-    @Operation(summary = "학교 조회", description = "선택한 학교를 조회합니다.")
+    @Operation(summary = "선택 학교 조회", description = "선택한 학교를 조회합니다.")
     @ApiResponses(value = {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "성공",
                     content = @Content(mediaType = "application/json",
