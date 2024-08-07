@@ -5,10 +5,8 @@ import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
 import umc.SukBakJi.domain.model.entity.enums.DegreeLevel;
 import umc.SukBakJi.domain.model.entity.enums.Provider;
+import umc.SukBakJi.domain.model.entity.mapping.*;
 import umc.SukBakJi.domain.model.entity.mapping.MemberResearchTopic;
-import umc.SukBakJi.domain.model.entity.mapping.BoardLike;
-import umc.SukBakJi.domain.model.entity.mapping.MemberResearchTopic;
-import umc.SukBakJi.domain.model.entity.mapping.Scrap;
 import umc.SukBakJi.global.entity.BaseEntity;
 
 import java.time.LocalDateTime;
@@ -50,6 +48,9 @@ public class Member extends BaseEntity {
     // Define relationships if necessary
     @OneToMany(mappedBy = "member")
     private List<MemberResearchTopic> memberResearchTopics;
+
+    @OneToMany(mappedBy = "member")
+    private List<FavoriteLab> favoriteLabs;
 
     @OneToMany(mappedBy = "member")
     private List<Post> posts;
