@@ -2,7 +2,7 @@ package umc.SukBakJi.domain.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import umc.SukBakJi.domain.model.dto.InterestTopicDTO;
+import umc.SukBakJi.domain.model.dto.InterestTopicsDTO;
 import umc.SukBakJi.domain.model.dto.LabDetailResponseDTO;
 import umc.SukBakJi.domain.model.dto.LabResponseDTO;
 import umc.SukBakJi.domain.model.entity.Lab;
@@ -10,7 +10,6 @@ import umc.SukBakJi.domain.model.entity.Member;
 import umc.SukBakJi.domain.model.entity.ResearchTopic;
 import umc.SukBakJi.domain.repository.LabRepository;
 import umc.SukBakJi.domain.repository.MemberRepository;
-import umc.SukBakJi.domain.repository.MemberResearchTopicRepository;
 import umc.SukBakJi.global.apiPayload.code.status.ErrorStatus;
 import umc.SukBakJi.global.apiPayload.exception.GeneralException;
 
@@ -64,12 +63,14 @@ public class LabService {
         );
     }
 
-    public List<InterestTopicDTO> getInterestTopics(Member member) {
-        return member.getMemberResearchTopics()
+    public InterestTopicsDTO getInterestTopics(Member member) {
+        List<String> topics = member.getMemberResearchTopics()
                 .stream()
-                .map(memberResearchTopic -> InterestTopicDTO.builder()
-                        .topic("#" + memberResearchTopic.getResearchTopic().getTopicName())
-                        .build())
+                .map(memberResearchTopic -> "#" + memberResearchTopic.getResearchTopic().getTopicName())
                 .collect(Collectors.toList());
+
+        return InterestTopicsDTO.builder()
+                .topics(topics)
+                .build();
     }
 }
