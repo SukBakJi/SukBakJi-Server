@@ -34,4 +34,8 @@ public class SetUniv extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "universityId")
     private University university;
+
+    public void setShowing(Integer showing){
+        this.showing = showing;
+    }
 }

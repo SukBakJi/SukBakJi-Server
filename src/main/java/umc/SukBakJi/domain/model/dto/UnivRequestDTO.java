@@ -34,4 +34,24 @@ public class UnivRequestDTO {
         @NotNull
         String method;
     }
+
+    @Getter
+    public static class setSchedule{
+        @NotNull
+        String univName;
+        @NotNull
+        String season;
+        @NotNull
+        String method;
+        @NotNull
+        Integer showing;
+    }
+
+    @Getter
+    public static class setScheduleList{
+        @NotNull
+        Long memberId;
+        @NotNull
+        List<setSchedule> setScheduleList;
+    }
 }
