@@ -28,7 +28,6 @@ public class UnivScheduleInfo extends BaseEntity {
     @Column(nullable = false)
     private String method; // 모집전형
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "universityId")
-    private University university;
+    @Column(nullable = false)
+    private Long universityId; // fk 지정 시, 데이터 입력 불가능
 }

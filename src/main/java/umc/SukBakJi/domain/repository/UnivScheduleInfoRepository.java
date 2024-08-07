@@ -7,6 +7,6 @@ import umc.SukBakJi.domain.model.entity.UnivScheduleInfo;
 import java.util.List;
 
 public interface UnivScheduleInfoRepository extends JpaRepository<UnivScheduleInfo, Long> {
-    @Query("SELECT DISTINCT u.method FROM UnivScheduleInfo u WHERE u.university.id = :univId")
+    @Query("SELECT DISTINCT u.method FROM UnivScheduleInfo u WHERE u.universityId = :univId")
     List<String> findAllByUniversityId(Long univId);
 }
