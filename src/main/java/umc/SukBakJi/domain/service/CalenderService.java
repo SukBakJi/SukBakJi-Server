@@ -42,7 +42,7 @@ public class CalenderService {
 
     @Transactional
     public List<UnivResponseDTO.searchListDTO> getSearchList(String keyword){
-        List<String> universityList = univRepository.findByName(keyword);
+        List<String> universityList = univRepository.findByKeyWord(keyword);
         return universityList.stream()
                 .map(UnivConverter::toUnivList)
                 .collect(Collectors.toList());
@@ -84,6 +84,7 @@ public class CalenderService {
         return alarmList;
     }
 
+    @Transactional
     public void setUniv(UnivRequestDTO.setUnivList request){
         List<UnivRequestDTO.setUniv> setUnivList = request.getSetUnivList();
         setUnivList.stream()
@@ -100,12 +101,34 @@ public class CalenderService {
             .forEach(s -> setUnivRepository.save(s));
     }
 
+    @Transactional
     public List<SetUniv> getUnivList(Long memberId){
         List<SetUniv> univList = setUnivRepository.findByMemberId(memberId);
         if(univList.isEmpty()){
             univList = null;
         }
         return univList;
+    }
+
+    @Transactional
+    public void setSchedule(UnivRequestDTO.setScheduleList request){
+        List<UnivRequestDTO.setSchedule> setUnivList = request.getSetScheduleList();
+        setUnivList.stream()
+                .map(s -> {
+                    University univ = univRepository.findByName(s.getUnivName())
+                            .orElseThrow(() -> new GeneralException(ErrorStatus.INVALID_UNIVERSITY));
+
+                    // 들어온 값에 해당하는 행을 조회하고, 이에 대해서 showing 업데이트하는 로직
+                    SetUniv setUniv = setUnivRepository.findByMemberIdAndUniversityIdAndMethodAndSeason(request.getMemberId(), univ.getId(), s.getMethod(), s.getSeason())
+                            .orElseThrow(() -> new GeneralException(ErrorStatus.MEMBER_NOT_FOUND));
+
+                    memberRepository.findById(request.getMemberId())
+                            .orElseThrow(() -> new GeneralException(ErrorStatus.MEMBER_NOT_FOUND));
+
+                    setUniv.setShowing(s.getShowing());
+                    return setUniv;
+                })
+                .forEach(setUniv -> setUnivRepository.save(setUniv));
     }
 
     @Transactional

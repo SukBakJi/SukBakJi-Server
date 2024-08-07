@@ -5,8 +5,10 @@ import org.springframework.data.jpa.repository.Query;
 import umc.SukBakJi.domain.model.entity.University;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface UnivRepository extends JpaRepository<University, Long> {
+    Optional<University> findByName(String name);
     @Query("SELECT u.id, u.name FROM University u WHERE u.name LIKE %:keyword%")
-    List<String> findByName(String keyword);
+    List<String> findByKeyWord(String keyword);
 }

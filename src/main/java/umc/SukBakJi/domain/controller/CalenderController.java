@@ -87,7 +87,7 @@ public class CalenderController {
         return ApiResponse.onSuccess(UnivConverter.toSetUnivDTO(request.getMemberId()));
     }
 
-    @Operation(summary = "선택 학교 조회", description = "선택한 학교를 조회합니다.")
+    @Operation(summary = "학교 조회", description = "등록한 학교를 조회합니다.")
     @ApiResponses(value = {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "성공",
                     content = @Content(mediaType = "application/json",
@@ -108,6 +108,25 @@ public class CalenderController {
             return ApiResponse.onSuccess(UnivConverter.toGetUnivListDTO(memberId, null));
         }
         return ApiResponse.onSuccess(UnivConverter.toGetUnivListDTO(memberId, univList));
+    }
+
+    @Operation(summary = "조회할 일정 선택", description = "화면에 띄우고 싶은 일정을 선택합니다.")
+    @ApiResponses(value = {
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "성공",
+                    content = @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = UnivResponseDTO.setUnivDTO.class))),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "400", description = "선택된 학교가 유효하지 않습니다.",
+                    content = @Content),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "500", description = "서버 에러, 관리자에게 문의 바랍니다.",
+                    content = @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = ErrorReasonDTO.class)))
+    })
+    @PostMapping("/schedule")
+    public ApiResponse<UnivResponseDTO.setUnivDTO> setSchedule(
+            @Parameter(description = "일정 선택 DTO", required = true)
+            @RequestBody UnivRequestDTO.setScheduleList request) {
+        calenderService.setSchedule(request);
+        return ApiResponse.onSuccess(UnivConverter.toSetUnivDTO(request.getMemberId()));
     }
 
     @Operation(summary = "알람 설정", description = "알람을 설정합니다.")
