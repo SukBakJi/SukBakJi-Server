@@ -16,6 +16,7 @@ public class UnivConverter {
                 .univId(setUniv.getId())
                 .season(setUniv.getSeason())
                 .method(setUniv.getMethod())
+                .showing(setUniv.getShowing())
                 .build();
     }
 
