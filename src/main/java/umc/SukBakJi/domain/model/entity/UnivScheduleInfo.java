@@ -2,6 +2,7 @@ package umc.SukBakJi.domain.model.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.ColumnDefault;
 import umc.SukBakJi.global.entity.BaseEntity;
 
 @Entity
@@ -18,9 +19,8 @@ public class UnivScheduleInfo extends BaseEntity {
     @Column(nullable = false)
     private String content; // 일정 내용
 
-    private String startDate; // 일정 시작 날짜
-
-    private String endDate; // 일정 종료 날짜
+    @Column(columnDefinition = "VARCHAR(255) DEFAULT ''")
+    private String date; // 일정 날짜
 
     @Column(nullable = false)
     private String season; // 모집시기

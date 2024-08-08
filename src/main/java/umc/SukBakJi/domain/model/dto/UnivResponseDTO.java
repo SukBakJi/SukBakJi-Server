@@ -52,7 +52,7 @@ public class UnivResponseDTO {
     @AllArgsConstructor
     public static class getMethodListDTO{
         Long univId;
-        List<methodListDTO> methodListDTO;
+        List<methodListDTO> methodList;
     }
 
     @Builder
@@ -71,5 +71,42 @@ public class UnivResponseDTO {
     @AllArgsConstructor
     public static class getSearchListDTO{
         List<searchListDTO> universityList;
+    }
+
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class getScheduleListDTO{
+        Long memberId;
+        List<scheduleListDTO> scheduleList;
+    }
+
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class scheduleListDTO{
+        Long dDay;
+        Long univId;
+        String content;
+    }
+
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class getSpeciDateListDTO{
+        Long memberId;
+        List<speciDateListDTO> scheduleList;
+    }
+
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class speciDateListDTO{
+        Long univId;
+        String content;
     }
 }
