@@ -11,6 +11,7 @@ import umc.SukBakJi.domain.model.dto.UnivRequestDTO;
 import umc.SukBakJi.domain.model.dto.UnivResponseDTO;
 import umc.SukBakJi.domain.model.entity.Alarm;
 import umc.SukBakJi.domain.model.entity.Member;
+import umc.SukBakJi.domain.model.entity.UnivScheduleInfo;
 import umc.SukBakJi.domain.model.entity.University;
 import umc.SukBakJi.domain.model.entity.mapping.SetUniv;
 import umc.SukBakJi.domain.repository.*;
@@ -84,7 +85,7 @@ public class CalenderService {
         return alarmList;
     }
 
-//    @Transactional
+//    @Transactional -> 학교 한 번에 여러 개 저장하기
 //    public void setUniv(UnivRequestDTO.setUnivList request){
 //        List<UnivRequestDTO.setUniv> setUnivList = request.getSetUnivList();
 //        setUnivList.stream()
@@ -100,6 +101,7 @@ public class CalenderService {
 //            })
 //            .forEach(s -> setUnivRepository.save(s));
 //    }
+    @Transactional
     public SetUniv setUniv(UnivRequestDTO.setUniv request){
         University univ = univRepository.findById(request.getUnivId())
                 .orElseThrow(() -> new GeneralException(ErrorStatus.INVALID_UNIVERSITY));
@@ -140,6 +142,23 @@ public class CalenderService {
                     return setUniv;
                 })
                 .forEach(setUniv -> setUnivRepository.save(setUniv));
+    }
+
+    @Transactional
+    public List<UnivScheduleInfo> getScheduleList(Long memberId){
+        List<SetUniv> setUnivList = setUnivRepository.findAllByMemberId(memberId);
+        if (setUnivList == null){
+            return null;
+        }
+        else {
+            // 선택한 일정만 필터링
+            List<UnivScheduleInfo> univScheduleInfoList = setUnivList.stream()
+                    .filter(setUniv -> setUniv.getShowing() == 1)
+                    .flatMap(setUniv -> univScheduleInfoRepository.findByUniversityIdAndSeasonAndMethod(
+                            setUniv.getUniversity().getId(), setUniv.getSeason(), setUniv.getMethod()).stream()) // 조건을 만족하는 UnivScheduleInfo 찾기
+                    .collect(Collectors.toList()); // 리스트로 수집
+            return univScheduleInfoList;
+        }
     }
 
     @Transactional

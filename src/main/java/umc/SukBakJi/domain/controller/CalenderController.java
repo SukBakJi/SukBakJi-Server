@@ -129,6 +129,26 @@ public class CalenderController {
         return ApiResponse.onSuccess(UnivConverter.toSetUnivDTO(request.getMemberId()));
     }
 
+    @Operation(summary = "다가오는 일정 목록 조회", description = "다가오는 일정 목록을 조회합니다.")
+    @ApiResponses(value = {
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "성공",
+                    content = @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = UnivResponseDTO.setUnivDTO.class))),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "400", description = "선택된 학교가 유효하지 않습니다.",
+                    content = @Content),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "500", description = "서버 에러, 관리자에게 문의 바랍니다.",
+                    content = @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = ErrorReasonDTO.class)))
+    })
+    @GetMapping("/schedule")
+    public ApiResponse<UnivResponseDTO.getScheduleListDTO> getSchedule(@RequestHeader("Authorization") String token){
+        String jwtToken = token.substring(7);
+        Long memberId = jwtTokenProvider.getMemberIdFromToken(jwtToken);
+        List<UnivScheduleInfo> univScheduleInfoList = calenderService.getScheduleList(memberId);
+        List<UnivResponseDTO.scheduleListDTO> scheduleListDTOList = UnivConverter.toScheduleList(univScheduleInfoList);
+        return ApiResponse.onSuccess(UnivConverter.toGetScheduleList(memberId, scheduleListDTOList));
+    }
+
     @Operation(summary = "알람 설정", description = "알람을 설정합니다.")
     @ApiResponses(value = {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "성공",
