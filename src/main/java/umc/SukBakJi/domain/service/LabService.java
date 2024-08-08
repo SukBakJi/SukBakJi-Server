@@ -39,7 +39,7 @@ public class LabService {
     private LabResponseDTO convertToDTO(Lab lab) {
         List<String> researchTopics = lab.getLabResearchTopics().stream()
                 .map(LabResearchTopic::getResearchTopic)
-                .map(ResearchTopic::getTopicName)
+                .map(rt -> rt.getTopicName())
                 .collect(Collectors.toList());
 
         return LabResponseDTO.builder()
