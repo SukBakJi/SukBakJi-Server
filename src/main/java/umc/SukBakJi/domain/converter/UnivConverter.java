@@ -44,6 +44,7 @@ public class UnivConverter {
                 .member(member)
                 .season(request.getSeason())
                 .method(request.getMethod())
+                .showing(1)
                 .university(univ)
                 .build();
     }
