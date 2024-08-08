@@ -84,21 +84,32 @@ public class CalenderService {
         return alarmList;
     }
 
-    @Transactional
-    public void setUniv(UnivRequestDTO.setUnivList request){
-        List<UnivRequestDTO.setUniv> setUnivList = request.getSetUnivList();
-        setUnivList.stream()
-            .map(setUniv -> {
-                University univ = univRepository.findById(setUniv.getUnivId())
-                        .orElseThrow(() -> new GeneralException(ErrorStatus.INVALID_UNIVERSITY));
+//    @Transactional
+//    public void setUniv(UnivRequestDTO.setUnivList request){
+//        List<UnivRequestDTO.setUniv> setUnivList = request.getSetUnivList();
+//        setUnivList.stream()
+//            .map(setUniv -> {
+//                University univ = univRepository.findById(setUniv.getUnivId())
+//                        .orElseThrow(() -> new GeneralException(ErrorStatus.INVALID_UNIVERSITY));
+//
+//                Member member = memberRepository.findById(request.getMemberId())
+//                        .orElseThrow(() -> new GeneralException(ErrorStatus.MEMBER_NOT_FOUND));
+//
+//                SetUniv s = UnivConverter.toSetUniv(setUniv, member, univ);
+//                return s;
+//            })
+//            .forEach(s -> setUnivRepository.save(s));
+//    }
+    public SetUniv setUniv(UnivRequestDTO.setUniv request){
+        University univ = univRepository.findById(request.getUnivId())
+                .orElseThrow(() -> new GeneralException(ErrorStatus.INVALID_UNIVERSITY));
 
-                Member member = memberRepository.findById(request.getMemberId())
-                        .orElseThrow(() -> new GeneralException(ErrorStatus.MEMBER_NOT_FOUND));
+        Member member = memberRepository.findById(request.getMemberId())
+                .orElseThrow(() -> new GeneralException(ErrorStatus.MEMBER_NOT_FOUND));
 
-                SetUniv s = UnivConverter.toSetUniv(setUniv, member, univ);
-                return s;
-            })
-            .forEach(s -> setUnivRepository.save(s));
+        SetUniv setUniv = UnivConverter.toSetUniv(request, member, univ);
+        setUniv = setUnivRepository.save(setUniv);
+        return setUniv;
     }
 
     @Transactional
