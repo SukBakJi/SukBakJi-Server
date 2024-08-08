@@ -72,4 +72,23 @@ public class UnivResponseDTO {
     public static class getSearchListDTO{
         List<searchListDTO> universityList;
     }
+
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class getScheduleListDTO{
+        Long memberId;
+        List<scheduleListDTO> scheduleList;
+    }
+
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class scheduleListDTO{
+        Long dDay;
+        Long univId;
+        String content;
+    }
 }
