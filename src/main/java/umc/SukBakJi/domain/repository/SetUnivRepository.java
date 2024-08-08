@@ -11,4 +11,5 @@ import java.util.Optional;
 public interface SetUnivRepository extends JpaRepository<SetUniv, Long> {
     List<SetUniv> findByMemberId(Long memberId);
     Optional<SetUniv> findByMemberIdAndUniversityIdAndMethodAndSeason(Long memberId, Long univId, String method, String season);
+    List<SetUniv> findAllByMemberId(Long memberId);
 }

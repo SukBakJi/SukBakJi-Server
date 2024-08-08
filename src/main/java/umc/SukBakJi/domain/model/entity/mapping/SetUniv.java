@@ -28,7 +28,7 @@ public class SetUniv extends BaseEntity {
     @Column(nullable = false)
     private String method; // 모집전형
 
-    @ColumnDefault("1")
+    @Column(nullable = false, columnDefinition = "INTEGER DEFAULT 1")
     private Integer showing; // 일정 보일지 여부 체크
 
     @ManyToOne(fetch = FetchType.LAZY)

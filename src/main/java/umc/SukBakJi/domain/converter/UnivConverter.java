@@ -7,6 +7,10 @@ import umc.SukBakJi.domain.model.entity.UnivScheduleInfo;
 import umc.SukBakJi.domain.model.entity.University;
 import umc.SukBakJi.domain.model.entity.mapping.SetUniv;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -62,7 +66,7 @@ public class UnivConverter {
                 .map(UnivConverter::methodListDTO).toList();
         return UnivResponseDTO.getMethodListDTO.builder()
                 .univId(univId)
-                .methodListDTO(getMethodListDTOList)
+                .methodList(getMethodListDTOList)
                 .build();
     }
 
@@ -85,5 +89,64 @@ public class UnivConverter {
                 .id(univId)
                 .name(name)
                 .build();
+    }
+
+    public static UnivResponseDTO.getScheduleListDTO toGetScheduleList(Long memberId, List<UnivResponseDTO.scheduleListDTO> univScheduleInfoList){
+        if(univScheduleInfoList == null){
+            return UnivResponseDTO.getScheduleListDTO.builder()
+                    .memberId(memberId)
+                    .scheduleList(null)
+                    .build();
+        }
+
+        return UnivResponseDTO.getScheduleListDTO.builder()
+                .memberId(memberId)
+                .scheduleList(univScheduleInfoList)
+                .build();
+    }
+
+    public static List<UnivResponseDTO.scheduleListDTO> toScheduleList(List<UnivScheduleInfo> result){
+        if(result == null){
+            return null;
+        }
+
+        return result.stream()
+            .map(scheduleInfo -> {
+                // "yyyy-MM-dd" 형식의 DateTimeFormatter 생성
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+                // 문자열로 받은 날짜를 LocalDate 객체로 변환
+                LocalDate targetDate = LocalDate.parse(scheduleInfo.getDate(), formatter);
+                // 오늘 날짜 구하기
+                LocalDate today = LocalDate.now();
+                // 두 날짜 사이의 일수 계산
+                long dDay = ChronoUnit.DAYS.between(today, targetDate);
+                return new UnivResponseDTO.scheduleListDTO(dDay, scheduleInfo.getUniversityId(), scheduleInfo.getContent());
+            })
+                .sorted((dto1, dto2) -> Long.compare(dto1.getDDay(), dto2.getDDay()))
+                .collect(Collectors.toList());
+    }
+
+    public static UnivResponseDTO.getSpeciDateListDTO toGetSpeciDateList(Long memberId, List<UnivResponseDTO.speciDateListDTO> result){
+        if(result == null){
+            return UnivResponseDTO.getSpeciDateListDTO.builder()
+                    .memberId(memberId)
+                    .scheduleList(null)
+                    .build();
+        }
+        return UnivResponseDTO.getSpeciDateListDTO.builder()
+                .memberId(memberId)
+                .scheduleList(result)
+                .build();
+    }
+
+    public static List<UnivResponseDTO.speciDateListDTO> speciDateList(List<UnivScheduleInfo> result){
+        if(result == null){
+            return null;
+        }
+        return result.stream()
+                .map(scheduleInfo -> {
+                    return new UnivResponseDTO.speciDateListDTO(scheduleInfo.getUniversityId(), scheduleInfo.getContent());
+                })
+                .collect(Collectors.toList());
     }
 }
