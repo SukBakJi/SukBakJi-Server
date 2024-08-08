@@ -11,4 +11,6 @@ public interface UnivScheduleInfoRepository extends JpaRepository<UnivScheduleIn
     List<String> findAllByUniversityId(Long univId);
     @Query("SELECT u FROM UnivScheduleInfo u WHERE u.season LIKE %:season% and u.method LIKE %:method% and u.universityId = :univId")
     List<UnivScheduleInfo> findByUniversityIdAndSeasonAndMethod(Long univId, String season, String method);
+    List<UnivScheduleInfo> findByDate(String date);
+
 }

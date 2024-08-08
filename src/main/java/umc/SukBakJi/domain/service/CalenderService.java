@@ -162,6 +162,22 @@ public class CalenderService {
     }
 
     @Transactional
+    public List<UnivScheduleInfo> getSpeciDateScheduleList(Long memberId, String date){
+        List<SetUniv> setUnivList = setUnivRepository.findAllByMemberId(memberId);
+        if (setUnivList == null){
+            return null;
+        }
+        else {
+            // 선택한 일정만 필터링
+            List<UnivScheduleInfo> univScheduleInfoList = setUnivList.stream()
+                    .filter(setUniv -> setUniv.getShowing() == 1)
+                    .flatMap(setUniv -> univScheduleInfoRepository.findByDate(date).stream()) // 조건을 만족하는 UnivScheduleInfo 찾기
+                    .collect(Collectors.toList()); // 리스트로 수집
+            return univScheduleInfoList;
+        }
+    }
+
+    @Transactional
     public Alarm onAlarm(Long alarmId){
         Alarm alarm = alarmRepository.findById(alarmId)
                 .orElseThrow(() -> new GeneralException(ErrorStatus.INVALID_ALARM));

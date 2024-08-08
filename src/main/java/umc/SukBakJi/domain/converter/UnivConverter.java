@@ -66,7 +66,7 @@ public class UnivConverter {
                 .map(UnivConverter::methodListDTO).toList();
         return UnivResponseDTO.getMethodListDTO.builder()
                 .univId(univId)
-                .methodListDTO(getMethodListDTOList)
+                .methodList(getMethodListDTOList)
                 .build();
     }
 
@@ -123,6 +123,30 @@ public class UnivConverter {
                 return new UnivResponseDTO.scheduleListDTO(dDay, scheduleInfo.getUniversityId(), scheduleInfo.getContent());
             })
                 .sorted((dto1, dto2) -> Long.compare(dto1.getDDay(), dto2.getDDay()))
+                .collect(Collectors.toList());
+    }
+
+    public static UnivResponseDTO.getSpeciDateListDTO toGetSpeciDateList(Long memberId, List<UnivResponseDTO.speciDateListDTO> result){
+        if(result == null){
+            return UnivResponseDTO.getSpeciDateListDTO.builder()
+                    .memberId(memberId)
+                    .scheduleList(null)
+                    .build();
+        }
+        return UnivResponseDTO.getSpeciDateListDTO.builder()
+                .memberId(memberId)
+                .scheduleList(result)
+                .build();
+    }
+
+    public static List<UnivResponseDTO.speciDateListDTO> speciDateList(List<UnivScheduleInfo> result){
+        if(result == null){
+            return null;
+        }
+        return result.stream()
+                .map(scheduleInfo -> {
+                    return new UnivResponseDTO.speciDateListDTO(scheduleInfo.getUniversityId(), scheduleInfo.getContent());
+                })
                 .collect(Collectors.toList());
     }
 }
