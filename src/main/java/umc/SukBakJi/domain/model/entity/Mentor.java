@@ -9,14 +9,18 @@ import umc.SukBakJi.global.entity.BaseEntity;
 @Builder
 @Setter
 @AllArgsConstructor
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @ToString
-public class University extends BaseEntity {
-
+public class Mentor extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
-    private String name; // 대학교명
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "memberId")
+    private Member member;
+
+    public Mentor(Member member){
+        this.member = member;
+    }
 }

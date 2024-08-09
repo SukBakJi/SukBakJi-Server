@@ -9,6 +9,9 @@ import umc.SukBakJi.domain.service.BoardService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import umc.SukBakJi.global.apiPayload.ApiResponse;
+import umc.SukBakJi.global.security.jwt.JwtTokenProvider;
+
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -16,10 +19,12 @@ import java.util.stream.Collectors;
 @RequestMapping("/api/boards")
 public class BoardController {
     private final BoardService boardService;
+    private final JwtTokenProvider jwtTokenProvider;
 
     @Autowired
-    public BoardController(BoardService boardService) {
+    public BoardController(BoardService boardService, JwtTokenProvider jwtTokenProvider) {
         this.boardService = boardService;
+        this.jwtTokenProvider = jwtTokenProvider;
     }
 
     @GetMapping("/{menu}")
@@ -44,5 +49,26 @@ public class BoardController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
-}
 
+    @PostMapping("/{boardId}/favorite/add")
+    public ResponseEntity<ApiResponse<String>> addFavoriteBoard(@RequestHeader("Authorization") String token,
+                                                                @PathVariable Long boardId) {
+        String jwtToken = token.substring(7);
+        Long memberId = jwtTokenProvider.getMemberIdFromToken(jwtToken);
+
+        boolean isFavorited = boardService.addFavoriteBoard(memberId, boardId);
+        String message = isFavorited ? "즐겨찾기에 추가되었습니다." : "즐겨찾기 추가 실패.";
+        return ResponseEntity.ok(ApiResponse.onSuccess(message));
+    }
+
+    @PostMapping("/{boardId}/favorite/remove")
+    public ResponseEntity<ApiResponse<String>> removeFavoriteBoard(@RequestHeader("Authorization") String token,
+                                                                   @PathVariable Long boardId) {
+        String jwtToken = token.substring(7);
+        Long memberId = jwtTokenProvider.getMemberIdFromToken(jwtToken);
+
+        boolean isUnfavorited = boardService.removeFavoriteBoard(memberId, boardId);
+        String message = isUnfavorited ? "즐겨찾기에서 제거되었습니다." : "즐겨찾기 제거 실패.";
+        return ResponseEntity.ok(ApiResponse.onSuccess(message));
+    }
+}

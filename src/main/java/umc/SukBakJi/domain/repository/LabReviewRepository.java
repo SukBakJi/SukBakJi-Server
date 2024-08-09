@@ -13,4 +13,6 @@ import java.util.Optional;
 public interface LabReviewRepository extends JpaRepository<LabReview, Long>, PagingAndSortingRepository<LabReview, Long> {
     Optional<LabReview> findByLabAndMember(Lab lab, Member member);
     List<LabReview> findByLabId(Long labId); // 특정 연구실에 대한 후기를 가져오는 메서드
+
+    List<LabReview> findByLabIn(List<Lab> labs); // 특정 연구실에 대한 후기를 가져오는 메서드
 }

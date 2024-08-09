@@ -8,15 +8,6 @@ import umc.SukBakJi.domain.model.entity.mapping.MemberResearchTopic;
 import java.util.List;
 
 public class MemberResponseDto {
-
-    @Builder
-    @Getter
-    @NoArgsConstructor
-    @AllArgsConstructor
-    public static class SignUpResponseDto {
-        private String email;
-    }
-
     @Builder
     @Getter
     @NoArgsConstructor

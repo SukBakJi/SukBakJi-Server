@@ -10,4 +10,6 @@ import java.util.List;
 
 public interface BoardLikeRepository extends JpaRepository<BoardLike, BoardLikeId> {
     List<BoardLike> findByMemberId(@Param("memberId") Long memberId);
+    boolean existsById(BoardLikeId id);
+    void deleteById(BoardLikeId id);
 }
