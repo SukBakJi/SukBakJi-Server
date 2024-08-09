@@ -10,6 +10,7 @@ import java.util.List;
 @Setter
 @Builder
 public class LabResponseDTO {
+    private Long labId;
     private String labName;
     private String universityName;
     private String departmentName;
