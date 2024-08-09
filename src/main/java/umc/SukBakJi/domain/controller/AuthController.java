@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.util.StringUtils;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import umc.SukBakJi.domain.converter.AuthConverter;
@@ -31,9 +32,9 @@ public class AuthController {
 
     @PostMapping("/signup")
     @Operation(summary = "일반 회원가입", description = "이메일과 비밀번호를 입력하여 회원가입을 진행합니다.")
-    public ApiResponse<MemberResponseDto.SignUpResponseDto> signUp(@RequestBody @Valid MemberRequestDto.SignUpDto requestDto) {
-        MemberResponseDto.SignUpResponseDto responseDto = authService.signUp(requestDto);
-        return ApiResponse.onSuccess("회원가입에 성공하였습니다.", responseDto);
+    public ApiResponse<?> signUp(@RequestBody @Valid MemberRequestDto.SignUpDto requestDto) {
+        authService.signUp(requestDto);
+        return ApiResponse.onSuccess("회원가입에 성공하였습니다.");
     }
 
     @PostMapping("/login")
@@ -100,9 +101,7 @@ public class AuthController {
 //        response.sendRedirect(loginUrl);
 //    }
 
-
-    // 로그아웃 처리 아직 안돼요..ㅇ,,.,ㅠ ㅠ ㅜㅠ ㅠ
-    @PostMapping("/auth/logout")
+    @PostMapping("/logout")
     @Operation(summary = "로그아웃", description = "로그인한 사용자가 로그아웃 처리됩니다.")
     public ApiResponse<?> logout() {
         // 현재 사용자 인증 정보 가져오기

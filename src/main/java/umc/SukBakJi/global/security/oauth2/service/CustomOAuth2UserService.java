@@ -26,6 +26,7 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
         OAuth2UserService delegate = new DefaultOAuth2UserService();
         OAuth2User oAuth2User = delegate.loadUser(userRequest);
 
+
         // OAuth 서비스 이름(kakao, apple)
         String registrationId = userRequest.getClientRegistration()
                 .getRegistrationId();

@@ -5,6 +5,7 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+import umc.SukBakJi.domain.model.entity.mapping.LabResearchTopic;
 import umc.SukBakJi.global.entity.BaseEntity;
 
 import java.util.List;
@@ -20,7 +21,7 @@ public class Lab extends BaseEntity {
     private Long id;
 
     @Column(nullable = false)
-    private String labName; // 연구실명
+    private String labName; // 연구실명 (oo학교 oo학과 oo교수)
 
     @Column(nullable = false)
     private String universityName; // 대학명
@@ -28,30 +29,13 @@ public class Lab extends BaseEntity {
     @Column(nullable = false)
     private String professorName; // 교수명
 
-    @Column(nullable = true)
-    private String professorProfile; // 교수 프로필
+    @Column(nullable = false)
+    private String departmentName; // 학과명
 
-    @Column(nullable = true)
-    private String professorAcademic; // 교수 학적
+    private String professorEmail; // 교수 이메일
 
     private String labLink; // 연구실 링크
 
-    @ManyToMany
-    @JoinTable(
-            name = "lab_research_topic",
-            joinColumns = @JoinColumn(name = "lab_id"),
-            inverseJoinColumns = @JoinColumn(name = "research_topic_id")
-    )
-    private List<ResearchTopic> researchTopics;
-
-
-    public Lab(String labName, String universityName, String professorName, String professorProfile, String professorAcademic, String labLink, List<ResearchTopic> researchTopics) {
-        this.labName = labName;
-        this.universityName = universityName;
-        this.professorName = professorName;
-        this.professorProfile = professorProfile;
-        this.professorAcademic = professorAcademic;
-        this.labLink = labLink;
-        this.researchTopics = researchTopics;
-    }
+    @OneToMany(mappedBy = "lab", fetch = FetchType.LAZY)
+    private List<LabResearchTopic> labResearchTopics;
 }

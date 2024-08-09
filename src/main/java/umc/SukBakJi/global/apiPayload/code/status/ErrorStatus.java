@@ -40,6 +40,10 @@ public enum ErrorStatus implements BaseErrorCode {
     // 연구 주제 관련 에러
     RESEARCH_NOT_FOUND(HttpStatus.NOT_FOUND, "TOPIC4001", "연구 주제를 찾을 수 없습니다."),
 
+    // 연구실 관련 에러
+    FAVORITE_NOT_FOUND(HttpStatus.NOT_FOUND, "FAVORITE4001", "즐겨찾기 목록에서 찾을 수 없습니다."),
+    FAVORITE_ADD_FAILED(HttpStatus.NOT_FOUND, "FAVORITE4002", "즐겨찾기 작업에 실패하였습니다."),
+
     // 연구실 후기 관련 에러
     LAB_REVIEW_NOT_FOUND(HttpStatus.NOT_FOUND, "LAB_REVIEW4041", "연구실 후기를 찾을 수 없습니다."),
     LAB_NOT_FOUND(HttpStatus.NOT_FOUND, "LAB4041", "연구실을 찾을 수 없습니다."),
@@ -49,6 +53,7 @@ public enum ErrorStatus implements BaseErrorCode {
     UNAUTHORIZED_REVIEW_ACCESS(HttpStatus.FORBIDDEN, "REVIEW4031", "해당 후기에 접근할 권한이 없습니다."),
     PROFESSOR_NOT_FOUND(HttpStatus.NOT_FOUND, "PROFESSOR4041", "해당 지도교수를 찾을 수 없습니다."),
     INVALID_PROFESSOR_NAME(HttpStatus.NOT_FOUND, "PROFESSOR4042", "지도교수 이름을 찾을 수 없습니다."),
+    SCRAP_NOT_FOUND(HttpStatus.NOT_FOUND, "SCRAP4001", "스크랩 목록에서 찾을 수 없습니다."),
 
     // 게시판 관련 오류
     BOARD_NOT_FOUND(HttpStatus.NOT_FOUND, "BOARD4041", "게시판을 찾을 수 없습니다."),
@@ -58,12 +63,12 @@ public enum ErrorStatus implements BaseErrorCode {
     INVALID_BOARD_NAME(HttpStatus.BAD_REQUEST, "BOARD4001", "유효하지 않은 게시판 이름입니다."),
     NO_SCRAP_FOUND(HttpStatus.NOT_FOUND, "SCRAP4041", "스크랩한 게시물이 없습니다."),
     NO_COMMENTS_FOUND(HttpStatus.NOT_FOUND, "COMMENT4041", "댓글을 작성한 게시물이 없습니다."),
+    FAVORITE_ALREADY_EXISTS(HttpStatus.CONFLICT, "FAVORITE4091", "즐겨찾기에 이미 존재합니다."),
 
     // Post-related errors
     POST_CREATION_FAILED(HttpStatus.BAD_REQUEST, "POST4001", "게시글 작성에 실패했습니다."),
     INVALID_MENU_OR_BOARD(HttpStatus.BAD_REQUEST, "POST4002", "유효하지 않은 메뉴 또는 게시판 이름입니다."),
     INVALID_MEMBER_ID(HttpStatus.BAD_REQUEST, "POST4003", "유효하지 않은 회원 ID입니다."),
-
 
     // Comment related errors
     COMMENT_CREATION_FAILED(HttpStatus.BAD_REQUEST, "COMMENT4001", "댓글 생성에 실패했습니다."),
@@ -75,7 +80,13 @@ public enum ErrorStatus implements BaseErrorCode {
     INVALID_ALARM(HttpStatus.BAD_REQUEST, "ALARM402", "유효하지 않은 알람입니다."),
 
     // 대학교 설정 관련 에러
-    INVALID_UNIVERSITY(HttpStatus.BAD_REQUEST, "UNIVERSITY400", "유효하지 않은 학교입니다.");
+    INVALID_UNIVERSITY(HttpStatus.BAD_REQUEST, "UNIVERSITY400", "유효하지 않은 학교입니다."),
+
+    // 멘토링 관려 에러
+    DUPLICATE_MENTOR(HttpStatus.BAD_REQUEST, "MENTORING400", "이미 멘토로 신청했습니다."),
+    DUPLICATE_MENTORING(HttpStatus.BAD_REQUEST, "MENTORING401", "이미 신청된 멘토링입니다."),
+    INVALID_MENTOR(HttpStatus.BAD_REQUEST, "MENTORING402", "유효하지 않은 멘토입니다.");
+
 
     private final HttpStatus httpStatus;
     private final String code;
