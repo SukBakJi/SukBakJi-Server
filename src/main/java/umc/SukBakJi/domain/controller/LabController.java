@@ -97,6 +97,6 @@ public class LabController {
         String jwtToken = token.substring(7);
         Long memberId = jwtTokenProvider.getMemberIdFromToken(jwtToken);
         labService.cancelFavoriteLab(memberId, request);
-        return ApiResponse.onSuccess("연구실을 즐겨찾기에서 취소하였습니다.");
+        return ApiResponse.onSuccess("연구실을 즐겨찾기에서 삭제하였습니다.");
     }
 }
