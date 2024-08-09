@@ -15,6 +15,7 @@ import umc.SukBakJi.domain.repository.MemberRepository;
 import umc.SukBakJi.domain.repository.MemberResearchTopicRepository;
 import umc.SukBakJi.domain.repository.ResearchTopicRepository;
 import umc.SukBakJi.global.apiPayload.code.status.ErrorStatus;
+import umc.SukBakJi.global.apiPayload.exception.GeneralException;
 import umc.SukBakJi.global.apiPayload.exception.handler.MemberHandler;
 import umc.SukBakJi.global.security.jwt.JwtTokenProvider;
 
@@ -22,6 +23,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -42,48 +44,21 @@ public class MemberService {
                 .orElseThrow(() -> new MemberHandler(ErrorStatus.MEMBER_NOT_FOUND));
 
         // 존재하는 연구 주제인지 조회
-//        Set<ResearchTopic> researchTopics = profileDto.getResearchTopics().stream()
-//                .map(researchTopicName -> researchTopicRepository.findByTopicName(researchTopicName)
-//                        .orElseThrow(() -> new GeneralException(ErrorStatus.RESEARCH_NOT_FOUND)))
-//                .collect(Collectors.toSet());
+        List<ResearchTopic> researchTopics = profileDto.getResearchTopics().stream()
+                .map(researchTopicName -> researchTopicRepository.findByTopicName(researchTopicName)
+                        .orElseThrow(() -> new GeneralException(ErrorStatus.RESEARCH_NOT_FOUND)))
+                .collect(Collectors.toList());
 
-        // 연구 주제 조회 및 존재하지 않을 경우 생성 (추후에 코드 변경 필요)
-        Set<ResearchTopic> researchTopics = new HashSet<>();
-        Set<String> existingTopicNames = new HashSet<>();
+        // 회원의 연구 주제 설정
+        List<MemberResearchTopic> memberResearchTopics = researchTopics.stream()
+                .filter(researchTopic -> !memberResearchTopicRepository.existsByMemberAndResearchTopic(member, researchTopic))
+                .map(researchTopic -> MemberResearchTopic.builder()
+                        .member(member)
+                        .researchTopic(researchTopic)
+                        .build())
+                .collect(Collectors.toList());
 
-        for (String researchTopicName : profileDto.getResearchTopics()) {
-            if (existingTopicNames.contains(researchTopicName)) {
-                continue; // 이미 존재하는 연구 주제는 건너 뜀
-            }
-
-            ResearchTopic researchTopic = researchTopicRepository.findByTopicName(researchTopicName)
-                    .orElseGet(() -> {
-                        ResearchTopic newResearchTopic = ResearchTopic.builder()
-                                .topicName(researchTopicName)
-                                .build();
-                        return researchTopicRepository.save(newResearchTopic);
-                    });
-
-            researchTopics.add(researchTopic);
-            existingTopicNames.add(researchTopicName);
-        }
-
-        List<MemberResearchTopic> memberResearchTopics = new ArrayList<>();
-
-        for (ResearchTopic researchTopic : researchTopics) {
-            boolean alreadyExists = memberResearchTopicRepository.existsByMemberAndResearchTopic(member, researchTopic);
-            if (alreadyExists) {
-                continue; // 이미 존재한다면 MemberResearchTopic에 추가하지 않음
-            }
-
-            MemberResearchTopic memberResearchTopic = MemberResearchTopic.builder()
-                    .member(member)
-                    .researchTopic(researchTopic)
-                    .build();
-
-            memberResearchTopics.add(memberResearchTopic);
-            memberResearchTopicRepository.save(memberResearchTopic);
-        }
+        memberResearchTopicRepository.saveAll(memberResearchTopics);
 
         member.setName(profileDto.getName());
         member.setDegreeLevel(profileDto.getDegreeLevel());
@@ -100,38 +75,30 @@ public class MemberService {
         Member member = memberRepository.findByEmail(email)
                 .orElseThrow(() -> new MemberHandler(ErrorStatus.MEMBER_NOT_FOUND));
 
+        // 기존 연구 주제 삭제
         memberResearchTopicService.deleteByMember(member);
 
         // 존재하는 연구 주제인지 조회
-//        Set<ResearchTopic> researchTopics = profileDto.getResearchTopics().stream()
-//                .map(researchTopicName -> researchTopicRepository.findByTopicName(researchTopicName)
-//                        .orElseThrow(() -> new GeneralException(ErrorStatus.RESEARCH_NOT_FOUND)))
-//                .collect(Collectors.toSet());
+        List<ResearchTopic> researchTopics = profileDto.getResearchTopics().stream()
+                .map(researchTopicName -> researchTopicRepository.findByTopicName(researchTopicName)
+                        .orElseThrow(() -> new GeneralException(ErrorStatus.RESEARCH_NOT_FOUND)))
+                .collect(Collectors.toList());
 
-        // 연구 주제 조회 및 존재하지 않을 경우 생성 (추후에 코드 변경 필요)
-        Set<ResearchTopic> researchTopics = new HashSet<>();
-        for (String researchTopicName : profileDto.getResearchTopics()) {
-            ResearchTopic researchTopic = researchTopicRepository.findByTopicName(researchTopicName)
-                    .orElseGet(() -> {
-                        ResearchTopic newResearchTopic = ResearchTopic.builder()
-                                .topicName(researchTopicName)
-                                .build();
-                        return researchTopicRepository.save(newResearchTopic);
-                    });
-            researchTopics.add(researchTopic);
+        // 연구 주제가 없는 경우 예외 처리
+        if (researchTopics.isEmpty()) {
+            throw new GeneralException(ErrorStatus.RESEARCH_NOT_FOUND);
         }
 
-        List<MemberResearchTopic> memberResearchTopics = new ArrayList<>();
+        // 회원의 연구 주제 설정
+        List<MemberResearchTopic> memberResearchTopics = researchTopics.stream()
+                .filter(researchTopic -> !memberResearchTopicRepository.existsByMemberAndResearchTopic(member, researchTopic))
+                .map(researchTopic -> MemberResearchTopic.builder()
+                        .member(member)
+                        .researchTopic(researchTopic)
+                        .build())
+                .collect(Collectors.toList());
 
-        for (ResearchTopic researchTopic : researchTopics) {
-            MemberResearchTopic memberResearchTopic = MemberResearchTopic.builder()
-                    .member(member)
-                    .researchTopic(researchTopic)
-                    .build();
-
-            memberResearchTopics.add(memberResearchTopic);
-            memberResearchTopicRepository.save(memberResearchTopic);
-        }
+        memberResearchTopicRepository.saveAll(memberResearchTopics);
 
         member.setDegreeLevel(profileDto.getDegreeLevel());
         member.setMemberResearchTopics(memberResearchTopics);
