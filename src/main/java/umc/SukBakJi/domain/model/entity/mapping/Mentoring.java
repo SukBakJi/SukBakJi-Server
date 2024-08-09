@@ -3,7 +3,6 @@ package umc.SukBakJi.domain.model.entity.mapping;
 import jakarta.persistence.*;
 import lombok.*;
 import umc.SukBakJi.domain.model.entity.Member;
-import umc.SukBakJi.domain.model.entity.Mentee;
 import umc.SukBakJi.domain.model.entity.Mentor;
 import umc.SukBakJi.global.entity.BaseEntity;
 
@@ -25,7 +24,7 @@ public class Mentoring extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "menteeId")
-    private Mentee menteeId;
+    private Member member;
 
     @Column(nullable = false)
     private String subject; // 멘토링 주제
