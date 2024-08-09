@@ -53,6 +53,7 @@ public enum ErrorStatus implements BaseErrorCode {
     UNAUTHORIZED_REVIEW_ACCESS(HttpStatus.FORBIDDEN, "REVIEW4031", "해당 후기에 접근할 권한이 없습니다."),
     PROFESSOR_NOT_FOUND(HttpStatus.NOT_FOUND, "PROFESSOR4041", "해당 지도교수를 찾을 수 없습니다."),
     INVALID_PROFESSOR_NAME(HttpStatus.NOT_FOUND, "PROFESSOR4042", "지도교수 이름을 찾을 수 없습니다."),
+    SCRAP_NOT_FOUND(HttpStatus.NOT_FOUND, "SCRAP4001", "스크랩 목록에서 찾을 수 없습니다."),
 
     // 게시판 관련 오류
     BOARD_NOT_FOUND(HttpStatus.NOT_FOUND, "BOARD4041", "게시판을 찾을 수 없습니다."),
@@ -62,6 +63,7 @@ public enum ErrorStatus implements BaseErrorCode {
     INVALID_BOARD_NAME(HttpStatus.BAD_REQUEST, "BOARD4001", "유효하지 않은 게시판 이름입니다."),
     NO_SCRAP_FOUND(HttpStatus.NOT_FOUND, "SCRAP4041", "스크랩한 게시물이 없습니다."),
     NO_COMMENTS_FOUND(HttpStatus.NOT_FOUND, "COMMENT4041", "댓글을 작성한 게시물이 없습니다."),
+    FAVORITE_ALREADY_EXISTS(HttpStatus.CONFLICT, "FAVORITE4091", "즐겨찾기에 이미 존재합니다."),
 
     // Post-related errors
     POST_CREATION_FAILED(HttpStatus.BAD_REQUEST, "POST4001", "게시글 작성에 실패했습니다."),
