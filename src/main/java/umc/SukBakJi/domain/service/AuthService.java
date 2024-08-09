@@ -42,7 +42,7 @@ public class AuthService {
 //    private final AppleService appleService;
 
     // 회원가입
-    public MemberResponseDto.SignUpResponseDto signUp(MemberRequestDto.SignUpDto requestDto) {
+    public void signUp(MemberRequestDto.SignUpDto requestDto) {
         // 이메일로 회원 조회
         if (memberRepository.findByEmail(requestDto.getEmail()).isPresent()) {
             throw new MemberHandler(ErrorStatus.MEMBER_ALREADY_EXISTS);
@@ -53,8 +53,6 @@ public class AuthService {
         Member member = memberRepository.save(
                 MemberConverter.toMember(requestDto.getEmail(), encodedPassword, Provider.BASIC)
         );
-
-        return AuthConverter.toSignUpDto(member);
     }
 
     // 로그인
