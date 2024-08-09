@@ -32,9 +32,9 @@ public class AuthController {
 
     @PostMapping("/signup")
     @Operation(summary = "일반 회원가입", description = "이메일과 비밀번호를 입력하여 회원가입을 진행합니다.")
-    public ApiResponse<MemberResponseDto.SignUpResponseDto> signUp(@RequestBody @Valid MemberRequestDto.SignUpDto requestDto) {
-        MemberResponseDto.SignUpResponseDto responseDto = authService.signUp(requestDto);
-        return ApiResponse.onSuccess("회원가입에 성공하였습니다.", responseDto);
+    public ApiResponse<?> signUp(@RequestBody @Valid MemberRequestDto.SignUpDto requestDto) {
+        authService.signUp(requestDto);
+        return ApiResponse.onSuccess("회원가입에 성공하였습니다.");
     }
 
     @PostMapping("/login")
