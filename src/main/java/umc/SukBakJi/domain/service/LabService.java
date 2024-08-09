@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import umc.SukBakJi.domain.converter.LabConverter;
+import umc.SukBakJi.domain.model.dto.LabRequestDTO;
 import umc.SukBakJi.domain.model.entity.Lab;
 import umc.SukBakJi.domain.model.entity.Member;
 import umc.SukBakJi.domain.model.entity.mapping.FavoriteLab;
@@ -19,7 +20,7 @@ import umc.SukBakJi.global.apiPayload.code.status.ErrorStatus;
 import umc.SukBakJi.global.apiPayload.exception.GeneralException;
 import umc.SukBakJi.global.apiPayload.exception.handler.MemberHandler;
 
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -43,6 +44,7 @@ public class LabService {
                 .collect(Collectors.toList());
 
         return LabResponseDTO.builder()
+                .labId(lab.getId())
                 .labName(lab.getLabName())
                 .universityName(lab.getUniversityName())
                 .professorName(lab.getProfessorName())
@@ -85,7 +87,7 @@ public class LabService {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new MemberHandler(ErrorStatus.MEMBER_NOT_FOUND));
 
-        // 사용자의 즐겨찾기 목록을 가져오기
+        // 사용자의 즐겨찾기 목록 가져오기
         List<FavoriteLab> favoriteLabs = favoriteLabRepository.findByMember(member);
 
         return favoriteLabs.stream()
@@ -121,5 +123,29 @@ public class LabService {
                 throw new GeneralException(ErrorStatus.FAVORITE_ADD_FAILED);
             }
         }
+    }
+
+    // 즐겨찾기 항목에서 삭제
+    public void cancelFavoriteLab(Long memberId, LabRequestDTO.CancelLabDTO request) {
+        // 존재하는 회원인지 조회
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new MemberHandler(ErrorStatus.MEMBER_NOT_FOUND));
+
+        List<FavoriteLab> favoriteLabs = favoriteLabRepository.findByMemberAndLabIdIn(member, request.getLabIds());
+
+        List<Long> requestedLabIds = new ArrayList<>(request.getLabIds());
+        List<Long> existingFavoriteLabIds = favoriteLabs.stream()
+                .map(favoriteLab -> favoriteLab.getLab().getId())
+                .collect(Collectors.toList());
+
+        // 존재하지 않는 연구실을 담은 리스트
+        List<Long> nonExistingLabIds = new ArrayList<>(requestedLabIds);
+        nonExistingLabIds.removeAll(existingFavoriteLabIds);
+
+        // 즐겨찾기 항목에 존재하지 않을 경우 예외 처리
+        if (!nonExistingLabIds.isEmpty()) {
+            throw new GeneralException(ErrorStatus.FAVORITE_NOT_FOUND);
+        }
+        favoriteLabRepository.deleteAll(favoriteLabs);
     }
 }

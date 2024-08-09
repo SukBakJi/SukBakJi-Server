@@ -18,6 +18,7 @@ public class LabConverter {
                 .collect(Collectors.toList());
 
         return LabResponseDTO.builder()
+                .labId(lab.getId())
                 .labName(lab.getLabName())
                 .universityName(lab.getUniversityName())
                 .professorName(lab.getProfessorName())

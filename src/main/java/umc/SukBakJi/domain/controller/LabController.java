@@ -5,10 +5,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import umc.SukBakJi.domain.model.dto.InterestTopicsDTO;
-import umc.SukBakJi.domain.model.dto.LabDetailResponseDTO;
-import umc.SukBakJi.domain.model.dto.LabResponseDTO;
-import umc.SukBakJi.domain.model.dto.SearchLabRequestDTO;
+import umc.SukBakJi.domain.model.dto.*;
 import umc.SukBakJi.domain.model.entity.Member;
 import umc.SukBakJi.domain.repository.MemberRepository;
 import umc.SukBakJi.domain.service.LabService;
@@ -86,9 +83,20 @@ public class LabController {
     public ApiResponse<?> toggleFavoriteLab(@RequestHeader("Authorization") String token,
                                          @RequestParam Long labId) {
         String jwtToken = token.substring(7);
-        Long userId = jwtTokenProvider.getMemberIdFromToken(jwtToken);
-        Boolean isAdded = labService.toggleFavoriteLab(userId, labId);
+        Long memberId = jwtTokenProvider.getMemberIdFromToken(jwtToken);
+        Boolean isAdded = labService.toggleFavoriteLab(memberId, labId);
         String message = isAdded ? "연구실을 즐겨찾기에 추가하였습니다." : "연구실을 즐겨찾기에서 취소하였습니다.";
         return ApiResponse.onSuccess(message);
+    }
+
+    @PostMapping("/{labId}/cancel-favorite")
+    @Operation(summary = "연구실 즐겨찾기 항목 취소",
+            description = "즐겨찾기에서 삭제할 연구실 ID를 입력해 즐겨찾기를 취소합니다.")
+    public ApiResponse<?> cancelFavoriteLab(@RequestHeader("Authorization") String token,
+                                            @RequestBody LabRequestDTO.CancelLabDTO request) {
+        String jwtToken = token.substring(7);
+        Long memberId = jwtTokenProvider.getMemberIdFromToken(jwtToken);
+        labService.cancelFavoriteLab(memberId, request);
+        return ApiResponse.onSuccess("연구실을 즐겨찾기에서 취소하였습니다.");
     }
 }
