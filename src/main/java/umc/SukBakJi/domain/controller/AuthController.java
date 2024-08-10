@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -100,6 +101,17 @@ public class AuthController {
 //        // 클라이언트에 리디렉션
 //        response.sendRedirect(loginUrl);
 //    }
+
+    @PostMapping("/email")
+    @Operation(summary = "이메일 중복 확인", description = "이메일 중복 검사를 통해 이메일을 사용할 수 있는지 확인합니다.")
+    public ResponseEntity<ApiResponse<?>> verifyEmail(@RequestBody @Valid MemberRequestDto.EmailDto request) {
+        Boolean isAvailable = authService.verifyEmail(request.getEmail());
+        if (isAvailable) {
+            return new ResponseEntity<>(ApiResponse.onSuccess("사용 가능한 이메일입니다."), HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(ApiResponse.onSuccess("이미 가입된 이메일입니다."), HttpStatus.CONFLICT);
+        }
+    }
 
     @PostMapping("/logout")
     @Operation(summary = "로그아웃", description = "로그인한 사용자가 로그아웃 처리됩니다.")
