@@ -51,7 +51,7 @@ public class SecurityConfig {
             // 요청 인증 및 인가 설정
             .authorizeHttpRequests(request ->
                     request.requestMatchers(
-                            "/api/auth/signup", "/api/auth/login", "/api/auth/kakao").permitAll()
+                            "/api/auth/signup", "/api/auth/login", "api/auth/email","/api/auth/kakao").permitAll()
                             .anyRequest().authenticated()
             )
 

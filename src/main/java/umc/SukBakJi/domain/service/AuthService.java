@@ -85,6 +85,11 @@ public class AuthService {
         return member;
     }
 
+    // 이메일 중복 확인
+    public Boolean verifyEmail(String email) {
+        return !memberRepository.findByEmail(email).isPresent();
+    }
+
     public void logOut(String email) {
         Member member = memberRepository.findByEmail(email)
                 .orElseThrow(() -> new MemberHandler(ErrorStatus.MEMBER_NOT_FOUND));
