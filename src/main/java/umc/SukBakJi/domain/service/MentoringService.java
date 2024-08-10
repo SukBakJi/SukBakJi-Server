@@ -6,9 +6,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import umc.SukBakJi.domain.converter.MentoringConverter;
 import umc.SukBakJi.domain.model.dto.MentoringRequestDTO;
+import umc.SukBakJi.domain.model.entity.Lab;
 import umc.SukBakJi.domain.model.entity.Member;
 import umc.SukBakJi.domain.model.entity.Mentor;
 import umc.SukBakJi.domain.model.entity.mapping.Mentoring;
+import umc.SukBakJi.domain.repository.LabRepository;
 import umc.SukBakJi.domain.repository.MemberRepository;
 import umc.SukBakJi.domain.repository.MentorRepository;
 import umc.SukBakJi.domain.repository.MentoringRepository;
@@ -29,14 +31,20 @@ public class MentoringService {
     @Autowired
     private MentoringRepository mentoringRepository;
 
+    @Autowired
+    private LabRepository labRepository;
+
     @Transactional
-    public void setMentor(Long memberId) {
-        Member member = memberRepository.findById(memberId)
+    public void setMentor(MentoringRequestDTO.applyMentor request) {
+        Member member = memberRepository.findById(request.getMemberId())
                 .orElseThrow(() -> new GeneralException(ErrorStatus.MEMBER_NOT_FOUND));
-        List<Mentor> existingMentor = mentorRepository.findByMemberId(memberId);
+        List<Mentor> existingMentor = mentorRepository.findByMemberId(request.getMemberId());
         if (!(existingMentor.isEmpty())) {
             throw new GeneralException(ErrorStatus.DUPLICATE_MENTOR);
         }
+        Lab lab = labRepository.findByUniversityNameAndProfessorNameAndDepartmentName(request.getUnivName(), request.getProfName(), request.getDept())
+                .orElseThrow(() -> new GeneralException(ErrorStatus.LAB_NOT_FOUND));
+        member.setLab(lab);
         Mentor mentor = new Mentor(member);
         mentorRepository.save(mentor);
         return;

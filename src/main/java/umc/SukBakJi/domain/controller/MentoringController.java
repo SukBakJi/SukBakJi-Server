@@ -36,7 +36,7 @@ public class MentoringController {
     public ApiResponse<MentoringResponseDTO.setMentorDTO> setMentor(
             @Parameter(description = "멘토 신청 DTO", required = true)
             @RequestBody MentoringRequestDTO.applyMentor request) {
-        mentoringService.setMentor(request.getMemberId());
+        mentoringService.setMentor(request);
         return ApiResponse.onSuccess(MentoringConverter.toSetMentorDTO(request.getMemberId()));
     }
 
