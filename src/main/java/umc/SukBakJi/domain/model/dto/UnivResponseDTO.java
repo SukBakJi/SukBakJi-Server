@@ -109,4 +109,12 @@ public class UnivResponseDTO {
         Long univId;
         String content;
     }
+
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class memberIdDTO{
+        Long memberId;
+    }
 }
