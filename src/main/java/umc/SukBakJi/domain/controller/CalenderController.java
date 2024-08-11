@@ -34,7 +34,26 @@ public class CalenderController {
     @Autowired
     private JwtTokenProvider jwtTokenProvider;
 
-    @Operation(summary = "대학교 이름 조회", description = "대학교에 해당하는 이름을 조회합니다")
+    @Operation(summary = "사용자 id 조회", description = "로그인된 사용자의 id를 조회합니다.")
+    @ApiResponses(value = {
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "성공",
+                    content = @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = UnivResponseDTO.getSearchListDTO.class))),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "400", description = "해당하는 사용자가 없습니다.",
+                    content = @Content),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "500", description = "서버 에러, 관리자에게 문의 바랍니다.",
+                    content = @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = ErrorReasonDTO.class)))
+    })
+    @GetMapping("/member")
+    public ApiResponse<UnivResponseDTO.memberIdDTO> getMemberId(@RequestHeader("Authorization") String token){
+        String jwtToken = token.substring(7);
+        Long memberId = jwtTokenProvider.getMemberIdFromToken(jwtToken);
+        UnivResponseDTO.memberIdDTO memberIdDTO = new UnivResponseDTO.memberIdDTO(memberId);
+        return ApiResponse.onSuccess(memberIdDTO);
+    }
+  
+  @Operation(summary = "대학교 이름 조회", description = "대학교에 해당하는 이름을 조회합니다")
     @ApiResponses(value = {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "성공",
                     content = @Content(mediaType = "application/json",
