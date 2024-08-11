@@ -110,6 +110,59 @@ public class MentoringService {
     }
 
     @Transactional
+    public List<MentoringResponseDTO.MentorDTO> searchMentor(String keyword){
+        List<Lab> labList = labRepository.findByDepartmentName(keyword);
+
+        List<Member> members = labList.stream()
+                .flatMap(lab -> memberRepository.findByLabId(lab.getId()).stream())
+                .collect(Collectors.toList());
+
+        // Step 3: Member 리스트에서 각 Member에 해당하는 Mentor를 개별적으로 조회하여 Mentor 리스트로 저장
+        List<Mentor> mentors = members.stream()
+                .map(Member::getId)
+                .map(mentorRepository::findByMemberId)
+                .flatMap(List::stream)
+                .collect(Collectors.toList());
+
+        return mentors.stream()
+                .map(mentor -> {
+                    // Step 2.1: 멘토의 Member 객체를 가져옴
+                    Member member = mentor.getMember();
+                    Long mid = member.getId();
+
+                    // Step 2.2: memberId를 통해 labId를 가져옴
+                    Long labId = member.getLabId();
+
+                    // Step 2.3: labId를 통해 Lab 정보를 가져옴
+                    Lab lab = labRepository.findById(labId)
+                            .orElseThrow(() -> new GeneralException(ErrorStatus.LAB_NOT_FOUND));
+
+                    // Step 2.4: labId를 통해 LabResearchTopic 목록을 가져옴
+                    List<LabResearchTopic> labResearchTopicList = labResearchTopicRepository.findByLabId(labId);
+
+                    // Step 2.5: LabResearchTopic 목록을 통해 ResearchTopic의 TopicName 목록을 가져옴
+                    List<String> researchTopicNames = labResearchTopicList.stream()
+                            .map(labResearchTopic -> {
+                                Long researchTopicId = labResearchTopic.getResearchTopic().getId();
+                                return researchTopicRepository.findById(researchTopicId)
+                                        .map(ResearchTopic::getTopicName)
+                                        .orElse("Unknown Topic");
+                            })
+                            .collect(Collectors.toList());
+
+                    // Step 2.6: 멘토와 Lab 정보, 그리고 연구 주제 이름들을 사용하여 MentorDTO 생성
+                    return MentoringResponseDTO.MentorDTO.builder()
+                            .mentorId(mid)
+                            .univName(lab.getUniversityName())
+                            .profName(lab.getProfessorName())
+                            .deptName(lab.getDepartmentName())
+                            .researchTopic(researchTopicNames)
+                            .build();
+                })
+                .collect(Collectors.toList());
+    }
+
+    @Transactional
     public void setMentoring(MentoringRequestDTO.applyMentoring request){
         List<Mentoring> existingMentoring = mentoringRepository.findByMemberIdAndMentorId(request.getMemberId(), request.getMentorId());
         if (!(existingMentoring.isEmpty())) {
