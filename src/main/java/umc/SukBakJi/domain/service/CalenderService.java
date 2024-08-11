@@ -19,6 +19,7 @@ import umc.SukBakJi.global.apiPayload.code.status.ErrorStatus;
 import umc.SukBakJi.global.apiPayload.exception.GeneralException;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 
@@ -40,6 +41,15 @@ public class CalenderService {
 
     @Autowired
     private UnivScheduleInfoRepository univScheduleInfoRepository;
+
+    @Transactional
+    public UnivResponseDTO.getUnivIdDTO getUnivId(Long univId){
+        Optional<University> univ = univRepository.findById(univId);
+        return UnivResponseDTO.getUnivIdDTO.builder()
+                .univId(univId)
+                .univName(univ.get().getName())
+                .build();
+    }
 
     @Transactional
     public List<UnivResponseDTO.searchListDTO> getSearchList(String keyword){
