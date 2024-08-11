@@ -45,9 +45,7 @@ public class Member extends BaseEntity {
 
     private String refreshToken;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "labId")
-    private Lab lab;
+    private Long labId;
 
     // Define relationships if necessary
     @OneToMany(mappedBy = "member")
