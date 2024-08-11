@@ -14,4 +14,6 @@ public interface LabRepository extends JpaRepository<Lab, Long> {
     @Query("SELECT l FROM Lab l JOIN l.labResearchTopics lrt JOIN lrt.researchTopic rt WHERE rt.topicName = :topicName")
     List<Lab> findLabsByResearchTopicName(@Param("topicName") String topicName);
     Optional<Lab> findByUniversityNameAndProfessorNameAndDepartmentName(String universityName, String professorName, String departmentName);
+    @Query("SELECT l FROM Lab l WHERE l.departmentName Like %:keyword%")
+    List<Lab> findByDepartmentName(String keyword);
 }

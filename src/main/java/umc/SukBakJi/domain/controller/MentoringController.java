@@ -51,7 +51,7 @@ public class MentoringController {
     @ApiResponses(value = {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "성공",
                     content = @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = MentoringResponseDTO.setMentorDTO.class))),
+                            schema = @Schema(implementation = MentoringResponseDTO.getMentorDTO.class))),
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "400", description = "사용자가 유효하지 않습니다.",
                     content = @Content),
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "500", description = "서버 에러, 관리자에게 문의 바랍니다.",
@@ -63,6 +63,25 @@ public class MentoringController {
         String jwtToken = token.substring(7);
         Long memberId = jwtTokenProvider.getMemberIdFromToken(jwtToken);
         List<MentoringResponseDTO.MentorDTO> mentorList = mentoringService.getMentor(memberId);
+        return ApiResponse.onSuccess(MentoringConverter.toGetMentoringDTO(memberId, mentorList));
+    }
+
+    @Operation(summary = "멘토 검색", description = "멘토를 검색합니다.")
+    @ApiResponses(value = {
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "성공",
+                    content = @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = MentoringResponseDTO.setMentorDTO.class))),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "400", description = "사용자가 유효하지 않습니다.",
+                    content = @Content),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "500", description = "서버 에러, 관리자에게 문의 바랍니다.",
+                    content = @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = ErrorReasonDTO.class)))
+    })
+    @GetMapping("/search")
+    public ApiResponse<MentoringResponseDTO.getMentorDTO> searchMentor(@RequestHeader("Authorization") String token, @RequestParam("keyword") String keyword){
+        String jwtToken = token.substring(7);
+        Long memberId = jwtTokenProvider.getMemberIdFromToken(jwtToken);
+        List<MentoringResponseDTO.MentorDTO> mentorList = mentoringService.searchMentor(keyword);
         return ApiResponse.onSuccess(MentoringConverter.toGetMentoringDTO(memberId, mentorList));
     }
 
