@@ -7,7 +7,9 @@ import org.springframework.web.bind.annotation.*;
 import umc.SukBakJi.domain.model.dto.HotBoardPostDTO;
 import umc.SukBakJi.domain.model.dto.LatestQuestionDTO;
 import umc.SukBakJi.domain.model.dto.PostListDTO;
+import umc.SukBakJi.domain.model.dto.PostSearchDTO;
 import umc.SukBakJi.domain.model.entity.Member;
+import umc.SukBakJi.domain.model.entity.enums.Menu;
 import umc.SukBakJi.domain.repository.MemberRepository;
 import umc.SukBakJi.domain.service.CommunityService;
 import umc.SukBakJi.global.apiPayload.ApiResponse;
@@ -113,5 +115,21 @@ public class CommunityController {
         Long userId = jwtTokenProvider.getMemberIdFromToken(jwtToken);
         List<PostListDTO> favoritePosts = communityService.getFavoritePosts(userId);
         return ApiResponse.onSuccess(favoritePosts);
+    }
+
+    @Operation(summary = "게시글 검색", description = "키워드를 통해 게시글을 검색합니다. 특정 메뉴와 게시판 이름을 기준으로 검색하거나, 전체 게시판에서 검색할 수 있습니다.")
+    @ApiResponses(value = {
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "성공"),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "게시글을 찾을 수 없습니다."),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "500", description = "서버 에러, 관리자에게 문의 바랍니다.")
+    })
+    @GetMapping("/search")
+    public ApiResponse<List<PostSearchDTO>> searchPosts(
+            @RequestParam String keyword,
+            @RequestParam(required = false) Menu menu, // 선택적 파라미터
+            @RequestParam(required = false) String boardName // 선택적 파라미터
+    ) {
+        List<PostSearchDTO> postList = communityService.searchPosts(keyword, menu, boardName);
+        return ApiResponse.onSuccess(postList);
     }
 }

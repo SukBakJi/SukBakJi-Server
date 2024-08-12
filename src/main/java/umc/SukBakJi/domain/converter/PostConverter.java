@@ -4,6 +4,7 @@ import org.springframework.stereotype.Component;
 import umc.SukBakJi.domain.model.dto.HotBoardPostDTO;
 import umc.SukBakJi.domain.model.dto.LatestQuestionDTO;
 import umc.SukBakJi.domain.model.dto.PostListDTO;
+import umc.SukBakJi.domain.model.dto.PostSearchDTO;
 import umc.SukBakJi.domain.model.entity.Post;
 
 @Component
@@ -45,6 +46,25 @@ public class PostConverter {
                 .views(post.getViews())
                 .boardName(post.getBoard().getBoardName())
                 .menu(post.getBoard().getMenu().name())
+                .commentCount(commentCount)
+                .build();
+    }
+
+    public static PostSearchDTO toPostSearchDTO(Post post) {
+        long commentCount = post.getComments() != null ? post.getComments().size() : 0;
+        if (post.getComments() != null) {
+            commentCount += post.getComments().stream()
+                    .mapToInt(comment -> comment.getReplies() != null ? comment.getReplies().size() : 0)
+                    .sum();
+        }
+
+        return PostSearchDTO.builder()
+                .postId(post.getPostId())
+                .menu(post.getBoard().getMenu().name())
+                .boardName(post.getBoard().getBoardName())
+                .title(post.getTitle())
+                .content(post.getContent())
+                .views(post.getViews())
                 .commentCount(commentCount)
                 .build();
     }
