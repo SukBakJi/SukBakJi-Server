@@ -5,6 +5,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 public class MentoringResponseDTO {
     @Builder
     @Getter
@@ -14,23 +16,26 @@ public class MentoringResponseDTO {
         Long memberId;
         String message;
     }
-//    @Builder
-//    @Getter
-//    @NoArgsConstructor
-//    @AllArgsConstructor
-//    public static class getMentorDTO{
-//
-//    }
-//
-//    @Builder
-//    @Getter
-//    @NoArgsConstructor
-//    @AllArgsConstructor
-//    public static class MentorDTO{
-//        Long mentorId;
-//        String univName;
-//        String
-//    }
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class getMentorDTO{
+        Long memberId;
+        List<MentorDTO> mentorList;
+    }
+
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class MentorDTO{
+        Long mentorId;
+        String univName;
+        String profName;
+        String deptName;
+        List<String> researchTopic;
+    }
 
     @Builder
     @Getter

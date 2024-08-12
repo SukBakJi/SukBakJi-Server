@@ -1,5 +1,6 @@
 package umc.SukBakJi.domain.service;
 
+import umc.SukBakJi.domain.converter.PostConverter;
 import umc.SukBakJi.domain.model.dto.*;
 import umc.SukBakJi.domain.model.entity.Board;
 import umc.SukBakJi.domain.model.entity.Comment;
