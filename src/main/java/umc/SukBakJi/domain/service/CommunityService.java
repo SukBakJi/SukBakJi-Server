@@ -7,6 +7,7 @@ import umc.SukBakJi.domain.converter.PostConverter;
 import umc.SukBakJi.domain.model.dto.HotBoardPostDTO;
 import umc.SukBakJi.domain.model.dto.LatestQuestionDTO;
 import umc.SukBakJi.domain.model.dto.PostListDTO;
+import umc.SukBakJi.domain.model.dto.PostSearchDTO;
 import umc.SukBakJi.domain.model.entity.mapping.BoardLike;
 import umc.SukBakJi.domain.model.entity.Post;
 import umc.SukBakJi.domain.model.entity.enums.Menu;
@@ -98,6 +99,26 @@ public class CommunityService {
                     }
                 })
                 .filter(dto -> dto != null)
+                .collect(Collectors.toList());
+    }
+
+    public List<PostSearchDTO> searchPosts(String keyword, Menu menu, String boardName) {
+        List<Post> posts;
+
+        if (menu != null && boardName != null) {
+            // 특정 메뉴와 게시판 이름에서 검색
+            posts = postRepository.searchPostsByMenuAndBoardName(menu, boardName, keyword);
+        } else {
+            // 전체 게시판에서 검색
+            posts = postRepository.searchAllPosts(keyword);
+        }
+
+        if (posts.isEmpty()) {
+            throw new GeneralException(ErrorStatus.POST_NOT_FOUND);
+        }
+
+        return posts.stream()
+                .map(PostConverter::toPostSearchDTO)
                 .collect(Collectors.toList());
     }
 }
