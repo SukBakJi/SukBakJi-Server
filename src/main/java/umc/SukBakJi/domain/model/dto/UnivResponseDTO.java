@@ -14,6 +14,15 @@ public class UnivResponseDTO {
     @Getter
     @NoArgsConstructor
     @AllArgsConstructor
+    public static class getUnivIdDTO{
+        Long univId;
+        String univName;
+    }
+
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
     public static class setUnivDTO{
         Long memberId;
         String message;
