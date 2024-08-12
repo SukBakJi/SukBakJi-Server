@@ -38,4 +38,11 @@ public interface PostRepository extends JpaRepository<Post, Long> {
     @Query("SELECT p FROM Post p WHERE p.board.boardId = :boardId ORDER BY p.createdAt DESC")
     List<Post> findTop1ByBoardIdOrderByCreatedAtDesc(@Param("boardId") Long boardId);
 
+    // 특정 메뉴와 게시판 이름에서 검색
+    @Query("SELECT p FROM Post p WHERE p.board.menu = :menu AND p.board.boardName = :boardName AND (p.title LIKE %:keyword% OR p.content LIKE %:keyword%)")
+    List<Post> searchPostsByMenuAndBoardName(@Param("menu") Menu menu, @Param("boardName") String boardName, @Param("keyword") String keyword);
+
+    // 전체 게시판에서 검색
+    @Query("SELECT p FROM Post p WHERE p.title LIKE %:keyword% OR p.content LIKE %:keyword%")
+    List<Post> searchAllPosts(@Param("keyword") String keyword);
 }
