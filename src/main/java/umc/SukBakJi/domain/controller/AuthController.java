@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -12,6 +13,8 @@ import org.springframework.util.StringUtils;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import umc.SukBakJi.domain.converter.AuthConverter;
+import umc.SukBakJi.domain.model.dto.RefreshTokenRequest;
+import umc.SukBakJi.global.apiPayload.exception.GeneralException;
 import umc.SukBakJi.global.security.jwt.JwtToken;
 import umc.SukBakJi.domain.model.dto.auth.kakao.KakaoDto;
 import umc.SukBakJi.domain.model.dto.member.MemberRequestDto;
@@ -25,7 +28,7 @@ import umc.SukBakJi.global.security.jwt.JwtTokenProvider;
 
 @RestController
 @RequiredArgsConstructor
-@Validated
+@Slf4j
 @RequestMapping("/api/auth")
 public class AuthController {
     private final AuthService authService;
@@ -110,6 +113,19 @@ public class AuthController {
             return new ResponseEntity<>(ApiResponse.onSuccess("사용 가능한 이메일입니다."), HttpStatus.OK);
         } else {
             return new ResponseEntity<>(ApiResponse.onSuccess("이미 가입된 이메일입니다."), HttpStatus.CONFLICT);
+        }
+    }
+
+    @PostMapping("/refresh-token")
+    @Operation(summary = "토큰 재발급", description = "Refresh Token을 입력하여 토큰 재발급을 진행합니다.")
+    public ApiResponse<?> refreshToken(@RequestBody RefreshTokenRequest refreshTokenRequest) {
+        log.info("Received refresh token request: " + refreshTokenRequest.getRefreshToken());
+        try {
+            MemberResponseDto.LoginResponseDto responseDto = authService.refreshAccessToken(refreshTokenRequest.getRefreshToken());
+            return ApiResponse.onSuccess(responseDto);
+        } catch (Exception e) {
+            log.error("Error processing refresh token request", e);
+            return ApiResponse.onSuccess(e.getMessage());
         }
     }
 

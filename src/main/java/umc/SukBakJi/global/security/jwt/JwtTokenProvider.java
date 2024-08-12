@@ -74,8 +74,12 @@ public class JwtTokenProvider {
         // Refresh Token 생성
         String refreshToken = Jwts.builder()
                 .setExpiration(new Date(now + refreshTokenExpiration))
+                .setSubject(principal.getUsername())
                 .signWith(key, SignatureAlgorithm.HS256)
                 .compact();
+
+        log.info("Access Token: " + accessToken);
+        log.info("Refresh Token: " + refreshToken);
 
         return JwtToken.builder()
                 .accessToken(accessToken)
@@ -146,6 +150,11 @@ public class JwtTokenProvider {
                 .parseClaimsJws(token)
                 .getBody();
         return claims.getSubject(); // 사용자 이메일
+    }
+
+    public String getEmailFromRefreshToken(String refreshToken) {
+        Claims claims = parseClaims(refreshToken);
+        return claims.getSubject();
     }
 
     public Long getMemberIdFromToken(String token) {
