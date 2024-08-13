@@ -45,6 +45,8 @@ public class Member extends BaseEntity {
 
     private String refreshToken;
 
+    private Long labId;
+
     // Define relationships if necessary
     @OneToMany(mappedBy = "member")
     private List<MemberResearchTopic> memberResearchTopics;
