@@ -125,6 +125,18 @@ public class CalenderService {
     }
 
     @Transactional
+    public void deleteUniv(UnivRequestDTO.setUniv request){
+        univRepository.findById(request.getUnivId())
+                .orElseThrow(() -> new GeneralException(ErrorStatus.INVALID_UNIVERSITY));
+
+        memberRepository.findById(request.getMemberId())
+                .orElseThrow(() -> new GeneralException(ErrorStatus.MEMBER_NOT_FOUND));
+
+        setUnivRepository.deleteByMemberIdAndUniversityIdAndSeasonAndMethod(request.getMemberId(), request.getUnivId(), request.getSeason(), request.getMethod());
+        return;
+    }
+
+    @Transactional
     public List<SetUniv> getUnivList(Long memberId){
         List<SetUniv> univList = setUnivRepository.findByMemberId(memberId);
         if(univList.isEmpty()){
