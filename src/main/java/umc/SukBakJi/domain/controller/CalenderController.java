@@ -146,6 +146,25 @@ public class CalenderController {
         return ApiResponse.onSuccess(UnivConverter.toGetUnivListDTO(memberId, univList));
     }
 
+    @Operation(summary = "등록된 학교 삭제", description = "등록된 학교를 삭제합니다.")
+    @ApiResponses(value = {
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "성공",
+                    content = @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = UnivResponseDTO.setUnivDTO.class))),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "400", description = "선택된 학교가 유효하지 않습니다.",
+                    content = @Content),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "500", description = "서버 에러, 관리자에게 문의 바랍니다.",
+                    content = @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = ErrorReasonDTO.class)))
+    })
+    @DeleteMapping("/univ")
+    public ApiResponse<UnivResponseDTO.setUnivDTO> deleteUniv(
+            @Parameter(description = "삭제할 학교 DTO", required = true)
+            @RequestBody UnivRequestDTO.setUniv request) {
+        calenderService.deleteUniv(request);
+        return ApiResponse.onSuccess(UnivConverter.toSetUnivDTO(request.getMemberId()));
+    }
+
     @Operation(summary = "조회할 일정 선택", description = "화면에 띄우고 싶은 일정을 선택합니다.")
     @ApiResponses(value = {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "성공",
