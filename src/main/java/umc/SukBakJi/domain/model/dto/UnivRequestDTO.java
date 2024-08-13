@@ -11,13 +11,6 @@ import java.util.List;
 @Setter
 @Builder
 public class UnivRequestDTO {
-//    @Getter
-//    public static class setUnivList{
-//        @NotNull
-//        Long memberId;
-//        @NotNull
-//        List<setUniv> setUnivList;
-//    }
 
     @Getter
     public static class getUnivList{

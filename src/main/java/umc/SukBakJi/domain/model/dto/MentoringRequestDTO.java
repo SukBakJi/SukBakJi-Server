@@ -8,6 +8,12 @@ public class MentoringRequestDTO {
     public static class applyMentor{
         @NotNull
         Long memberId;
+        @NotNull
+        String univName;
+        @NotNull
+        String dept;
+        @NotNull
+        String profName;
     }
 
     @Getter

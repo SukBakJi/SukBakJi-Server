@@ -1,6 +1,8 @@
 package umc.SukBakJi.domain.service;
 
+import io.jsonwebtoken.Claims;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -31,6 +33,7 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 @Transactional
+@Slf4j
 public class AuthService {
 
     private final JwtTokenProvider jwtTokenProvider;
@@ -83,6 +86,36 @@ public class AuthService {
                 });
 
         return member;
+    }
+
+    // 이메일 중복 확인
+    public Boolean verifyEmail(String email) {
+        return !memberRepository.findByEmail(email).isPresent();
+    }
+
+    public MemberResponseDto.LoginResponseDto refreshAccessToken(String refreshToken) {
+        String token = refreshToken.startsWith("Bearer ") ? refreshToken.substring(7) : refreshToken;
+
+        // refresh token 검증
+        if (!jwtTokenProvider.validateToken(token)) {
+            throw new GeneralException(ErrorStatus.INVALID_REFRESH_TOKEN);
+        }
+
+        // refresh token에서 사용자 이메일 추출
+        String email = jwtTokenProvider.getEmailFromRefreshToken(token);
+
+        Member member = memberRepository.findByEmail(email)
+                .orElseThrow(() -> new MemberHandler(ErrorStatus.MEMBER_NOT_FOUND));
+
+        JwtToken newJwtToken = jwtTokenProvider.generateJwtToken(member);
+
+        log.info("New Access Token: {}", newJwtToken.getAccessToken());
+        log.info("New Refresh Token: {}", newJwtToken.getRefreshToken());
+
+        member.updateRefreshToken(newJwtToken.getRefreshToken());
+        memberRepository.save(member);
+
+        return AuthConverter.toLoginDto(member, newJwtToken);
     }
 
     public void logOut(String email) {

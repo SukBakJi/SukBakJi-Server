@@ -14,4 +14,6 @@ public interface ResearchTopicRepository extends JpaRepository<ResearchTopic, Lo
     Optional<ResearchTopic> findByTopicName(String topicName);
     @Query("SELECT rt FROM ResearchTopic rt WHERE rt.topicName LIKE %:topicName%")
     List<ResearchTopic> findByTopicNameContaining(@Param("topicName") String topicName);
+
+    List<ResearchTopic> findByLabId(Long labId);
 }

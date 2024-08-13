@@ -15,7 +15,6 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import umc.SukBakJi.global.security.jwt.JwtTokenProvider;
 import umc.SukBakJi.global.security.oauth2.handler.OAuth2AuthenticationFailureHandler;
 import umc.SukBakJi.global.security.oauth2.handler.OAuth2AuthenticationSuccessHandler;
-import umc.SukBakJi.global.security.jwt.JwtAuthenticationEntryPoint;
 import umc.SukBakJi.global.security.jwt.JwtAuthenticationFilter;
 import umc.SukBakJi.global.security.oauth2.service.CustomOAuth2UserService;
 
@@ -24,7 +23,6 @@ import umc.SukBakJi.global.security.oauth2.service.CustomOAuth2UserService;
 @RequiredArgsConstructor
 public class SecurityConfig {
     private final JwtTokenProvider jwtTokenProvider;
-    private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
     private final CustomOAuth2UserService customOAuth2UserService;
     private final OAuth2AuthenticationSuccessHandler oAuth2AuthenticationSuccessHandler;
     private final OAuth2AuthenticationFailureHandler oAuth2AuthenticationFailureHandler;
@@ -51,7 +49,9 @@ public class SecurityConfig {
             // 요청 인증 및 인가 설정
             .authorizeHttpRequests(request ->
                     request.requestMatchers(
-                            "/api/auth/signup", "/api/auth/login", "/api/auth/kakao").permitAll()
+                            "/api/auth/signup", "/api/auth/login","/api/auth/kakao",
+                                    "/api/auth/refresh-token", "/api/auth/email")
+                            .permitAll()
                             .anyRequest().authenticated()
             )
 
@@ -68,12 +68,7 @@ public class SecurityConfig {
             )
 
             // jwt 필터 설정
-            .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class)
-
-            // 인증 예외 처리
-            .exceptionHandling(exceptions ->
-                    exceptions.authenticationEntryPoint(jwtAuthenticationEntryPoint)
-            );
+            .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
