@@ -17,7 +17,7 @@ import java.util.stream.Collectors;
 public class UnivConverter {
     public static UnivResponseDTO.univDTO univDTO(SetUniv setUniv){
         return UnivResponseDTO.univDTO.builder()
-                .univId(setUniv.getId())
+                .univId(setUniv.getUniversity().getId())
                 .season(setUniv.getSeason())
                 .method(setUniv.getMethod())
                 .showing(setUniv.getShowing())
