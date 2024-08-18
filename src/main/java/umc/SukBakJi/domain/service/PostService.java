@@ -117,16 +117,11 @@ public class PostService {
         response.setMenu(post.getBoard().getMenu().name());
         response.setTitle(post.getTitle());
         response.setContent(post.getContent());
+        response.setSupportField(post.getSupportField()); // Setting supportField
+        response.setHiringType(post.getHiringType());     // Setting hiringType
         response.setViews(post.getViews());
         response.setCommentCount((long) post.getComments().size());
-        response.setComments(post.getComments().stream().map(comment -> {
-            PostDetailResponseDTO.CommentDTO commentDTO = new PostDetailResponseDTO.CommentDTO();
-            commentDTO.setAnonymousName(comment.getNickname());
-            commentDTO.setDegreeLevel(comment.getMember().getDegreeLevel().name());
-            commentDTO.setContent(comment.getContent());
-            commentDTO.setCreatedDate(comment.getCreatedAt());
-            return commentDTO;
-        }).collect(Collectors.toList()));
+        response.setComments(post.getComments().stream().map(this::convertToCommentDTO).collect(Collectors.toList()));
         return response;
     }
 
@@ -140,6 +135,8 @@ public class PostService {
             dto.setPostId(post.getPostId());
             dto.setTitle(post.getTitle());
             dto.setPreviewContent(post.getContent().length() > 30 ? post.getContent().substring(0, 30) + "..." : post.getContent());
+            dto.setSupportField(post.getSupportField()); // Setting supportField
+            dto.setHiringType(post.getHiringType());     // Setting hiringType
             dto.setCommentCount((long) post.getComments().size());
             dto.setViews(post.getViews());
             return dto;

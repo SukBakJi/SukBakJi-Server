@@ -15,6 +15,8 @@ public class PostDetailResponseDTO {
     private String title;
     private String content;
     private List<CommentDTO> comments;
+    private String supportField; // New field
+    private String hiringType;
     private Long commentCount;
     private Long views;
 
