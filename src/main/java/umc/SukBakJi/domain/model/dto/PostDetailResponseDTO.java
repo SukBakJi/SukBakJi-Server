@@ -18,6 +18,7 @@ public class PostDetailResponseDTO {
     private String supportField; // New field
     private String hiringType;
     private Long commentCount;
+    private Long memberId; // New field for member ID
     private Long views;
 
     @Getter
