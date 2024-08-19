@@ -101,9 +101,11 @@ public class PostService {
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new GeneralException(ErrorStatus.POST_NOT_FOUND));
 
+        // Increment the view count
         post.setViews(post.getViews() + 1);
         postRepository.save(post);
 
+        // Set hot timestamp if needed
         if (post.getViews() >= 100 && post.getHotTimestamp() == null) {
             post.setHotTimestamp(LocalDateTime.now());
             postRepository.save(post);
@@ -117,10 +119,12 @@ public class PostService {
         response.setMenu(post.getBoard().getMenu().name());
         response.setTitle(post.getTitle());
         response.setContent(post.getContent());
-        response.setSupportField(post.getSupportField()); // Setting supportField
-        response.setHiringType(post.getHiringType());     // Setting hiringType
+        response.setSupportField(post.getSupportField()); // If needed
+        response.setHiringType(post.getHiringType());     // If needed
         response.setViews(post.getViews());
         response.setCommentCount((long) post.getComments().size());
+        response.setMemberId(post.getMember().getId()); // Set the member ID
+
         response.setComments(post.getComments().stream().map(this::convertToCommentDTO).collect(Collectors.toList()));
         return response;
     }
