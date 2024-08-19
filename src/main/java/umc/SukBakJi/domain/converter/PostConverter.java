@@ -25,6 +25,7 @@ public class PostConverter {
         }
 
         return HotBoardPostDTO.builder()
+                .postId(post.getPostId())
                 .menu(post.getBoard().getMenu())
                 .boardName(post.getBoard().getBoardName())
                 .title(post.getTitle())
