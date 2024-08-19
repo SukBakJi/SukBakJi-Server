@@ -9,6 +9,7 @@ import umc.SukBakJi.domain.model.entity.enums.Menu;
 @AllArgsConstructor
 @Builder
 public class HotBoardPostDTO {
+    private Long postId;
     private Menu menu;
     private String boardName;
     private String title;
