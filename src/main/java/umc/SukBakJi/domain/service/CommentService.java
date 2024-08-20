@@ -81,6 +81,7 @@ public class CommentService {
         responseDTO.setCommentId(savedComment.getCommentId());
         responseDTO.setContent(savedComment.getContent());
         responseDTO.setNickname(savedComment.getNickname());
+        responseDTO.setMemberId(savedComment.getMember().getId()); // Set the member ID
         responseDTO.setCreatedAt(savedComment.getCreatedAt());
         responseDTO.setUpdatedAt(savedComment.getUpdatedAt());
 
