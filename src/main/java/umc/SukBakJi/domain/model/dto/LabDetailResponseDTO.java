@@ -13,4 +13,5 @@ public class LabDetailResponseDTO {
     private String departmentName;
     private String labLink;
     private List<String> researchTopics;
+    private String professorEmail;
 }
