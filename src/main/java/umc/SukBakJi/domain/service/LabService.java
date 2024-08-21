@@ -59,7 +59,7 @@ public class LabService {
 
         List<String> researchTopics = lab.getLabResearchTopics().stream()
                 .map(LabResearchTopic::getResearchTopic)
-                .map(ResearchTopic::getTopicName)
+                .map(rt -> rt.getTopicName())
                 .collect(Collectors.toList());
 
         return new LabDetailResponseDTO(
@@ -67,7 +67,8 @@ public class LabService {
                 lab.getUniversityName(),
                 lab.getDepartmentName(),
                 lab.getLabLink(),
-                researchTopics
+                researchTopics,
+                lab.getProfessorEmail() // Include professor email
         );
     }
 
