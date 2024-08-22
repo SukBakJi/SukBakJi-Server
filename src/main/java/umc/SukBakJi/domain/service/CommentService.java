@@ -52,7 +52,7 @@ public class CommentService {
                     .findFirst();
 
             if (existingNickname.isPresent()) {
-                nickname = existingNickname.get();
+                nickname = existingNickname.get();  // Reuse existing anonymous number
             } else {
                 Set<Integer> usedNumbers = postComments.stream()
                         .map(Comment::getNickname)
