@@ -52,7 +52,7 @@ public class CommentService {
                     .findFirst();
 
             if (existingNickname.isPresent()) {
-                nickname = existingNickname.get();
+                nickname = existingNickname.get();  // Reuse existing anonymous number
             } else {
                 Set<Integer> usedNumbers = postComments.stream()
                         .map(Comment::getNickname)
@@ -81,6 +81,7 @@ public class CommentService {
         responseDTO.setCommentId(savedComment.getCommentId());
         responseDTO.setContent(savedComment.getContent());
         responseDTO.setNickname(savedComment.getNickname());
+        responseDTO.setMemberId(savedComment.getMember().getId()); // Set the member ID
         responseDTO.setCreatedAt(savedComment.getCreatedAt());
         responseDTO.setUpdatedAt(savedComment.getUpdatedAt());
 
