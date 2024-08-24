@@ -99,7 +99,7 @@ public class MentoringService {
 
                     // Step 2.6: 멘토와 Lab 정보, 그리고 연구 주제 이름들을 사용하여 MentorDTO 생성
                     return MentoringResponseDTO.MentorDTO.builder()
-                            .mentorId(mid)
+                            .mentorId(mentor.getId())
                             .univName(lab.getUniversityName())
                             .profName(lab.getProfessorName())
                             .deptName(lab.getDepartmentName())
@@ -129,6 +129,7 @@ public class MentoringService {
                     // Step 2.1: 멘토의 Member 객체를 가져옴
                     Member member = mentor.getMember();
                     Long mid = member.getId();
+                    System.out.println(mid);
 
                     // Step 2.2: memberId를 통해 labId를 가져옴
                     Long labId = member.getLabId();
@@ -152,7 +153,7 @@ public class MentoringService {
 
                     // Step 2.6: 멘토와 Lab 정보, 그리고 연구 주제 이름들을 사용하여 MentorDTO 생성
                     return MentoringResponseDTO.MentorDTO.builder()
-                            .mentorId(mid)
+                            .mentorId(mentor.getId())
                             .univName(lab.getUniversityName())
                             .profName(lab.getProfessorName())
                             .deptName(lab.getDepartmentName())

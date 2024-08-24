@@ -16,8 +16,7 @@ import umc.SukBakJi.global.apiPayload.code.status.ErrorStatus;
 import umc.SukBakJi.global.apiPayload.exception.GeneralException;
 
 import java.time.LocalDateTime;
-import java.util.Optional;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -96,14 +95,15 @@ public class PostService {
         return responseDTO;
     }
 
-
     public PostDetailResponseDTO getPostDetail(Long postId) {
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new GeneralException(ErrorStatus.POST_NOT_FOUND));
 
+        // Increment the view count
         post.setViews(post.getViews() + 1);
         postRepository.save(post);
 
+        // Set hot timestamp if needed
         if (post.getViews() >= 100 && post.getHotTimestamp() == null) {
             post.setHotTimestamp(LocalDateTime.now());
             postRepository.save(post);
@@ -117,17 +117,49 @@ public class PostService {
         response.setMenu(post.getBoard().getMenu().name());
         response.setTitle(post.getTitle());
         response.setContent(post.getContent());
+        response.setSupportField(post.getSupportField()); // If needed
+        response.setHiringType(post.getHiringType());     // If needed
         response.setViews(post.getViews());
         response.setCommentCount((long) post.getComments().size());
+        response.setMemberId(post.getMember().getId()); // Set the member ID
+
+        // Map to store Member IDs and their assigned anonymous names
+        Map<Long, String> memberAnonymousMap = new HashMap<>();
+        Set<Integer> usedNumbers = new HashSet<>();
+
         response.setComments(post.getComments().stream().map(comment -> {
-            PostDetailResponseDTO.CommentDTO commentDTO = new PostDetailResponseDTO.CommentDTO();
-            commentDTO.setAnonymousName(comment.getNickname());
-            commentDTO.setDegreeLevel(comment.getMember().getDegreeLevel().name());
-            commentDTO.setContent(comment.getContent());
-            commentDTO.setCreatedDate(comment.getCreatedAt());
-            return commentDTO;
+            // Reuse or generate anonymous names consistently
+            if (!memberAnonymousMap.containsKey(comment.getMember().getId())) {
+                String newAnonymousName;
+                do {
+                    int nextNumber = usedNumbers.size() + 1;
+                    newAnonymousName = "익명" + nextNumber;
+                    usedNumbers.add(nextNumber);
+                } while (usedNumbers.contains(newAnonymousName));
+
+                memberAnonymousMap.put(comment.getMember().getId(), newAnonymousName);
+            }
+
+            return convertToCommentDTO(comment, memberAnonymousMap.get(comment.getMember().getId()));
         }).collect(Collectors.toList()));
+
         return response;
+    }
+
+    private PostDetailResponseDTO.CommentDTO convertToCommentDTO(Comment comment, String anonymousName) {
+        PostDetailResponseDTO.CommentDTO dto = new PostDetailResponseDTO.CommentDTO();
+        dto.setAnonymousName(anonymousName);
+
+        // Check for null DegreeLevel and handle accordingly
+        if (comment.getMember().getDegreeLevel() != null) {
+            dto.setDegreeLevel(comment.getMember().getDegreeLevel().toString());
+        } else {
+            dto.setDegreeLevel("Unknown"); // or any other default value you prefer
+        }
+
+        dto.setContent(comment.getContent());
+        dto.setCreatedDate(comment.getCreatedAt());
+        return dto;
     }
 
     public List<PostListResponseDTO> getPostList(String menu, String boardName) {
@@ -140,18 +172,11 @@ public class PostService {
             dto.setPostId(post.getPostId());
             dto.setTitle(post.getTitle());
             dto.setPreviewContent(post.getContent().length() > 30 ? post.getContent().substring(0, 30) + "..." : post.getContent());
+            dto.setSupportField(post.getSupportField()); // Setting supportField
+            dto.setHiringType(post.getHiringType());     // Setting hiringType
             dto.setCommentCount((long) post.getComments().size());
             dto.setViews(post.getViews());
             return dto;
         }).collect(Collectors.toList());
-    }
-
-    private PostDetailResponseDTO.CommentDTO convertToCommentDTO(Comment comment) {
-        PostDetailResponseDTO.CommentDTO dto = new PostDetailResponseDTO.CommentDTO();
-        dto.setAnonymousName("익명" + (comment.getCommentId() + 1)); // Adjust as needed for actual anonymous naming logic
-        dto.setDegreeLevel(comment.getMember().getDegreeLevel().toString());
-        dto.setContent(comment.getContent());
-        dto.setCreatedDate(comment.getCreatedAt());
-        return dto;
     }
 }
