@@ -54,8 +54,11 @@ dependencies {
 	// Servlet API
 	implementation 'javax.servlet:javax.servlet-api:4.0.1'
 
-}
+    // coolsms
+    implementation 'net.nurigo:sdk:4.3.2'
 
+    implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+}
 tasks.named('test') {
 	useJUnitPlatform()
 }

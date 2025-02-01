@@ -22,12 +22,6 @@ public class SecurityConfig {
     private final JwtTokenProvider jwtTokenProvider;
 
     @Bean
-    public WebSecurityCustomizer webSecurityCustomizer() { // security를 적용하지 않을 리소스
-        return web -> web.ignoring()
-                .requestMatchers( "/v3/api-docs/**", "/swagger-ui/**", "/swagger-resources/**");
-    }
-
-    @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) throws Exception {
         return configuration.getAuthenticationManager();
     }
@@ -43,6 +37,7 @@ public class SecurityConfig {
             // 요청 인증 및 인가 설정
             .authorizeHttpRequests(request ->
                     request.requestMatchers(
+                            "/v3/api-docs/**", "/swagger-ui/**", "/swagger-resources/**",
                             "/api/auth/**").permitAll()
                             .anyRequest().authenticated()
             )
