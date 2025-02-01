@@ -20,6 +20,12 @@ public enum ErrorStatus implements BaseErrorCode {
     // 검증 관련 에러
     INVALID_REFRESH_TOKEN(HttpStatus.BAD_REQUEST, "AUTH4001", "유효하지 않은 Refresh Token입니다."),
 
+    // 카카오 관련 에러
+    KAKAO_INVALID_ACCESS_TOKEN(HttpStatus.UNAUTHORIZED, "KAKAO401", "유효하지 않거나 만료된 카카오 액세스 토큰입니다."),
+    KAKAO_FORBIDDEN_API_ACCESS(HttpStatus.FORBIDDEN, "KAKAO403", "카카오 API 접근 권한이 없습니다."),
+    KAKAO_USER_NOT_FOUND(HttpStatus.NOT_FOUND, "KAKAO404", "카카오 사용자 정보를 찾을 수 없습니다."),
+    KAKAO_BAD_REQUEST(HttpStatus.BAD_REQUEST, "KAKAO400", "잘못된 카카오 API 요청입니다."),
+
     // 멤버 관련 에러
     MEMBER_NOT_FOUND(HttpStatus.BAD_REQUEST, "MEMBER4001", "사용자가 없습니다."),
     NICKNAME_NOT_EXIST(HttpStatus.BAD_REQUEST, "MEMBER4002", "닉네임은 필수 입니다."),

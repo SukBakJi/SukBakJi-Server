@@ -1,30 +1,23 @@
 package umc.SukBakJi.domain.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.util.StringUtils;
-import org.springframework.validation.annotation.Validated;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
-import umc.SukBakJi.domain.converter.AuthConverter;
+import org.springframework.web.client.RestTemplate;
 import umc.SukBakJi.domain.model.dto.RefreshTokenRequest;
-import umc.SukBakJi.global.apiPayload.exception.GeneralException;
-import umc.SukBakJi.global.security.jwt.JwtToken;
-import umc.SukBakJi.domain.model.dto.auth.kakao.KakaoDto;
+import umc.SukBakJi.domain.model.dto.auth.OAuth2RequestDTO;
 import umc.SukBakJi.domain.model.dto.member.MemberRequestDto;
 import umc.SukBakJi.domain.model.dto.member.MemberResponseDto;
-import umc.SukBakJi.domain.model.entity.Member;
-import umc.SukBakJi.domain.model.entity.enums.Provider;
 import umc.SukBakJi.domain.service.AuthService;
 import umc.SukBakJi.global.apiPayload.ApiResponse;
 import umc.SukBakJi.global.security.jwt.JwtTokenProvider;
-
 
 @RestController
 @RequiredArgsConstructor
@@ -48,62 +41,42 @@ public class AuthController {
         return ApiResponse.onSuccess(responseDto);
     }
 
-    @PostMapping("/kakao")
-    @Operation(summary = "카카오톡 회원가입 및 로그인",
-               description = "카카오톡 사용자 정보로 회원가입을 진행하고 이미 존재하는 회원이라면 카카오톡으로 로그인합니다.")
-    public ApiResponse<MemberResponseDto.LoginResponseDto> kakaoLogin(@RequestBody KakaoDto.KakaoRequestDto request) {
+//    테스트용
+    @GetMapping("/kakao-token")
+    public ResponseEntity<String> getKakaoToken(@RequestParam String code) {
+        String tokenUri = "https://kauth.kakao.com/oauth/token";
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
 
-        String email = request.getEmail();
+        MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
+        params.add("grant_type", "authorization_code");
+        params.add("client_id", "56f99bce8ffde665f895fa0169d0c751");
+        params.add("client_secret", "G9KBpEbRYQzCYjt6Yc0Ic0ztvpmPGL1s");
+        params.add("redirect_uri", "http://localhost:8080/login/oauth2/code/kakao");
+        params.add("code", code);
 
-        // 액세스 토큰으로 사용자 정보 요청
-//        Map<String, Object> userAttributes = kakaoService.getKakaoUserInfo(accessToken);
+        // HTTP 요청 생성
+        HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(params, headers);
 
-        // OAuthAttributes 객체 생성
-//        OAuthAttributes oAuthAttributes = OAuthAttributes.of("kakao", "id", userAttributes);
+        // RestTemplate을 사용하여 POST 요청 보내기
+        RestTemplate restTemplate = new RestTemplate();
+        ResponseEntity<String> response;
+        try {
+            response = restTemplate.postForEntity(tokenUri, request, String.class);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("401 Unauthorized: " + e.getMessage());
+        }
 
-        // 사용자 정보로 회원가입 또는 로그인 처리
-        Member member = authService.findOrCreateMember(Provider.KAKAO, email);
-
-        // JWT 토큰을 클라이언트에 반환
-        JwtToken jwtToken = jwtTokenProvider.generateJwtToken(member);
-        MemberResponseDto.LoginResponseDto loginResponse = AuthConverter.toLoginDto(member, jwtToken);
-
-        return ApiResponse.onSuccess(loginResponse);
+        return ResponseEntity.ok(response.getBody());
     }
 
-//    @PostMapping("auth/apple/login")
-//    @Operation(summary = "애플 로그인", description = "애플 로그인 후 액세스 토큰을 사용하여 로그인합니다.")
-//    public ApiResponse<MemberResponseDto.LoginResponseDto> appleLogin(@RequestBody KakaoLoginRequestDto requestDto) {
-//        String accessToken = requestDto.getAccessToken();
-//        MemberResponseDto.LoginResponseDto loginResponse = authService.handleOAuth2Callback(email);
-//        return ApiResponse.onSuccess(loginResponse);
-//    }
-
-//    @GetMapping("/login/oauth2/code/{providerId}")
-//    public void handleOAuth2Login(
-//            @PathVariable String providerId,
-//            @RequestParam String code,
-//            HttpServletResponse response) throws IOException {
-//
-//        // OAuth2 인증 코드로 액세스 토큰을 요청
-//        String accessToken = authService.getAccessToken(providerId, code);
-//
-//        // 액세스 토큰으로 사용자 정보를 요청
-//        Map<String, Object> userAttributes = authService.getUserInfo(providerId, accessToken);
-//
-//        // OAuthAttributes 객체 생성
-//        OAuthAttributes oAuthAttributes = OAuthAttributes.of(providerId, "id", userAttributes);
-//
-//        // 사용자 정보로 회원가입 또는 로그인 처리
-//        Member member = authService.findOrCreateMember(Provider.valueOf(providerId.toUpperCase()), providerId, oAuthAttributes.getEmail());
-//
-//        // JWT 토큰을 생성하고 클라이언트로 리디렉션
-//        JwtToken jwtToken = jwtTokenProvider.generateJwtToken(member);
-//        String loginUrl = "http://localhost:8080/api/auth/login?token=" + jwtToken.getAccessToken();
-//
-//        // 클라이언트에 리디렉션
-//        response.sendRedirect(loginUrl);
-//    }
+    // OAuth2 로그인 (카카오, 애플)
+    @PostMapping("/oauth2/login")
+    @Operation(summary = "OAuth2 로그인", description = "OAuth2 로그인 후 액세스 토큰을 전달해 JWT를 발급받습니다. 존재하지 않는 회원이라면 회원가입을 진행하고 이미 존재하는 회원이라면 로그인을 진행합니다.")
+    public ResponseEntity<ApiResponse<MemberResponseDto.LoginResponseDto>> oauthLogin(@RequestBody OAuth2RequestDTO request) {
+        MemberResponseDto.LoginResponseDto response = authService.oauthLogin(request.getProvider(), request.getAccessToken());
+        return ResponseEntity.ok(ApiResponse.onSuccess(response));
+    }
 
     @PostMapping("/email")
     @Operation(summary = "이메일 중복 확인", description = "이메일 중복 검사를 통해 이메일을 사용할 수 있는지 확인합니다.")
