@@ -1,18 +1,14 @@
 package umc.SukBakJi.domain.service;
 
-import io.jsonwebtoken.Claims;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import umc.SukBakJi.domain.converter.AuthConverter;
 import umc.SukBakJi.domain.converter.MemberConverter;
-import umc.SukBakJi.domain.model.entity.ResearchTopic;
-import umc.SukBakJi.domain.model.entity.mapping.MemberResearchTopic;
-import umc.SukBakJi.domain.repository.MemberResearchTopicRepository;
-import umc.SukBakJi.domain.repository.ResearchTopicRepository;
+import umc.SukBakJi.domain.model.dto.auth.OAuthResponseDTO;
+import umc.SukBakJi.domain.model.dto.auth.userInfo.OAuth2UserInfo;
 import umc.SukBakJi.global.apiPayload.exception.GeneralException;
 import umc.SukBakJi.global.security.jwt.JwtToken;
 import umc.SukBakJi.domain.model.dto.member.MemberRequestDto;
@@ -23,12 +19,8 @@ import umc.SukBakJi.domain.repository.MemberRepository;
 import umc.SukBakJi.global.apiPayload.code.status.ErrorStatus;
 import umc.SukBakJi.global.apiPayload.exception.handler.MemberHandler;
 import umc.SukBakJi.global.security.jwt.JwtTokenProvider;
-
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
+import umc.SukBakJi.global.security.oauth2.service.AppleService;
+import umc.SukBakJi.global.security.oauth2.service.KakaoService;
 
 @Service
 @RequiredArgsConstructor
@@ -38,11 +30,9 @@ public class AuthService {
 
     private final JwtTokenProvider jwtTokenProvider;
     private final MemberRepository memberRepository;
-    private final ResearchTopicRepository researchTopicRepository;
-    private final MemberResearchTopicRepository memberResearchTopicRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
-//    private final KakaoService kakaoService;
-//    private final AppleService appleService;
+    private final KakaoService kakaoService;
+    private final AppleService appleService;
 
     // 회원가입
     public void signUp(MemberRequestDto.SignUpDto requestDto) {
@@ -69,7 +59,7 @@ public class AuthService {
         }
 
         JwtToken jwtToken = jwtTokenProvider.generateJwtToken(member);
-        return AuthConverter.toLoginDto(member, jwtToken);
+        return AuthConverter.toLoginDto(Provider.BASIC, member, jwtToken);
     }
 
     // 소셜 회원가입 및 로그인
@@ -115,7 +105,7 @@ public class AuthService {
         member.updateRefreshToken(newJwtToken.getRefreshToken());
         memberRepository.save(member);
 
-        return AuthConverter.toLoginDto(member, newJwtToken);
+        return AuthConverter.toLoginDto(Provider.BASIC, member, newJwtToken);
     }
 
     public void logOut(String email) {
@@ -124,56 +114,14 @@ public class AuthService {
         member.resetRefreshToken();
     }
 
-//    public JwtToken generateJwtToken(Member member) {
-//        return jwtTokenProvider.generateToken(new UsernamePasswordAuthenticationToken(
-//                member.getEmail(), member.getPassword()
-//        ));
-//    }
+    public MemberResponseDto.LoginResponseDto oauthLogin(String provider, String accessToken) {
+        Provider oauthProvider = Provider.valueOf(provider.toUpperCase());
 
-//    private JwtToken getToken(Member member) {
-//        JwtToken token = generateJwtToken(member);
-//        member.updateRefreshToken(token.getRefreshToken());
-//        return token;
-//    }
-//
-//
-//
-//    public String getAccessToken(String providerId, String code) {
-//        return switch (Provider.valueOf(providerId.toUpperCase())) {
-//            case KAKAO -> kakaoService.getAccessToken(code);
-//            case APPLE -> appleService.getAccessToken(code);
-//            default -> throw new IllegalArgumentException("지원하지 않는 로그인 방식: " + providerId);
-//        };
-//    }
-//
-//    public Map<String, Object> getUserInfo(String providerId, String accessToken) {
-//        return switch (Provider.valueOf(providerId.toUpperCase())) {
-//            case KAKAO -> kakaoService.getKakaoUserInfo(accessToken);
-//            case APPLE -> appleService.getAppleUserInfo(accessToken);
-//            default -> throw new IllegalArgumentException("지원하지 않는 로그인 방식: " + providerId);
-//        };
-//    }
-//
-//    private Member saveMember(Provider provider, String email) {
-//        Member member = Member.builder()
-//                .email(email)
-//                .provider(provider)
-//                .build();
-//        return memberRepository.save(member);
-//    }
-//
-//    public Member getMemberFromToken(String token) {
-//        // JWT 토큰 검증
-//        if (!jwtTokenProvider.validateToken(token)) {
-//            throw new IllegalArgumentException("Invalid Token");
-//        }
-//
-//        // JWT 토큰에서 사용자 이메일 추출
-//        String email = jwtTokenProvider.getEmailFromToken(token);
-//
-//        // 이메일로 사용자 조회
-//        return memberRepository.findByEmail(email)
-//                .orElseThrow(() -> new MemberHandler(ErrorStatus.MEMBER_NOT_FOUND));
-//    }
+        return switch (oauthProvider) {
+            case KAKAO -> kakaoService.kakaoLogin(accessToken);
+//            case APPLE -> appleService.appleLogin(accessToken);
+            default -> throw new IllegalArgumentException("지원하지 않는 로그인 방식: " + provider);
+        };
+    }
 }
 

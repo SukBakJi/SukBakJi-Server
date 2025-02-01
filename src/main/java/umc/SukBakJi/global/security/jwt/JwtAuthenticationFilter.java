@@ -9,7 +9,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -32,11 +31,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             throws ServletException, IOException {
 
         // 로그인 및 회원가입 관련 요청은 JWT 검증 안함
-        if (request.getRequestURI().startsWith("/api/auth/login") ||
-                request.getRequestURI().startsWith("/api/auth/signup") ||
-                request.getRequestURI().startsWith("/api/auth/kakao") ||
-                request.getRequestURI().startsWith("/api/auth/email") ||
-                request.getRequestURI().startsWith("/api/auth/refresh-token")) {
+        if (request.getRequestURI().startsWith("/api/auth/")) {
             filterChain.doFilter(request, response);
             return;
         }
