@@ -13,25 +13,13 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import umc.SukBakJi.global.security.jwt.JwtTokenProvider;
-import umc.SukBakJi.global.security.oauth2.handler.OAuth2AuthenticationFailureHandler;
-import umc.SukBakJi.global.security.oauth2.handler.OAuth2AuthenticationSuccessHandler;
 import umc.SukBakJi.global.security.jwt.JwtAuthenticationFilter;
-import umc.SukBakJi.global.security.oauth2.service.CustomOAuth2UserService;
 
 @Configuration
 @EnableMethodSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
     private final JwtTokenProvider jwtTokenProvider;
-    private final CustomOAuth2UserService customOAuth2UserService;
-    private final OAuth2AuthenticationSuccessHandler oAuth2AuthenticationSuccessHandler;
-    private final OAuth2AuthenticationFailureHandler oAuth2AuthenticationFailureHandler;
-
-    @Bean
-    public WebSecurityCustomizer webSecurityCustomizer() { // security를 적용하지 않을 리소스
-        return web -> web.ignoring()
-                .requestMatchers( "/v3/api-docs/**", "/swagger-ui/**", "/swagger-resources/**");
-    }
 
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) throws Exception {
@@ -49,22 +37,15 @@ public class SecurityConfig {
             // 요청 인증 및 인가 설정
             .authorizeHttpRequests(request ->
                     request.requestMatchers(
-                            "/api/auth/signup", "/api/auth/login","/api/auth/kakao",
-                                    "/api/auth/refresh-token", "/api/auth/email")
-                            .permitAll()
+                            "/v3/api-docs/**", "/swagger-ui/**", "/swagger-resources/**",
+                            "/api/auth/**").permitAll()
                             .anyRequest().authenticated()
             )
 
-            .formLogin(formLogin -> formLogin
-                    .loginPage("/login")
-                    .permitAll()
-            )
-
-            // oauth2 설정
-            .oauth2Login(oauth -> oauth
-                    .userInfoEndpoint(userInfo -> userInfo.userService(customOAuth2UserService))
-                    .successHandler(oAuth2AuthenticationSuccessHandler)
-                    .failureHandler(oAuth2AuthenticationFailureHandler)
+            .logout(logout -> logout
+                    .logoutUrl("/api/auth/logout")
+                    .logoutSuccessUrl("/")
+                    .invalidateHttpSession(true)  // 세션 무효화
             )
 
             // jwt 필터 설정
