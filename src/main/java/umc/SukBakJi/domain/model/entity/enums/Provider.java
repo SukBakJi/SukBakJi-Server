@@ -1,7 +1,17 @@
 package umc.SukBakJi.domain.model.entity.enums;
 
 public enum Provider {
-    BASIC,  // 일반 로그인
-    KAKAO,  // Kakao 로그인
-    APPLE   // Apple 로그인
+    BASIC("일반"),  // 일반 로그인
+    KAKAO("카카오"),  // Kakao 로그인
+    APPLE("애플");   // Apple 로그인
+
+    private final String value;
+
+    Provider(String value) {
+        this.value = value;
+    }
+
+    public String getValue() {
+        return value;
+    }
 }

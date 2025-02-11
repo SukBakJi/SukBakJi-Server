@@ -1,77 +1,63 @@
 package umc.SukBakJi.global.security.oauth2.service;
 
-
 import com.fasterxml.jackson.databind.ObjectMapper;
-import lombok.Builder;
-import lombok.Getter;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jwts;
 import lombok.RequiredArgsConstructor;
-import lombok.SneakyThrows;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import umc.SukBakJi.domain.converter.AuthConverter;
+import umc.SukBakJi.domain.model.dto.auth.userInfo.AppleUserInfo;
+import umc.SukBakJi.domain.model.dto.member.MemberResponseDto;
+import umc.SukBakJi.domain.model.entity.Member;
 import umc.SukBakJi.domain.model.entity.enums.Provider;
+import umc.SukBakJi.domain.repository.MemberRepository;
+import umc.SukBakJi.global.security.jwt.JwtToken;
+import umc.SukBakJi.global.security.jwt.JwtTokenProvider;
 
+import java.security.PublicKey;
 import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
 public class AppleService {
-    public String getAccessToken(String accessToken) {
-        return null;
+    private final MemberRepository memberRepository;
+    private final JwtTokenProvider jwtTokenProvider;
+    private final AppleTokenValidator appleTokenValidator;
+
+    public MemberResponseDto.LoginResponseDto appleLogin(String idToken) {
+        AppleUserInfo userInfo = validateAppleToken(idToken);
+
+        // 회원 가입 또는 로그인 처리
+        Member member = saveOrUpdate(userInfo);
+        JwtToken jwtToken = jwtTokenProvider.generateJwtToken(member);
+
+        return AuthConverter.toLoginDto(Provider.KAKAO, member, jwtToken);
     }
-    public Map<String, Object> getAppleUserInfo(String accessToken) {
-        return null;
+
+    // 애플 ID 토큰 검증
+    private AppleUserInfo validateAppleToken(String idToken) {
+        try {
+            PublicKey applePublicKey = appleTokenValidator.getApplePublicKey(idToken);
+            Claims claims = Jwts.parserBuilder()
+                    .setSigningKey(applePublicKey)
+                    .build()
+                    .parseClaimsJws(idToken)
+                    .getBody();
+
+            String email = claims.get("email", String.class);
+
+            return new AppleUserInfo(Map.of("email", email));
+        } catch (Exception e) {
+            throw new IllegalStateException("애플 ID 토큰 검증 실패", e);
+        }
     }
 
-    @Slf4j
-    @Getter
-    public static class OAuthAttributes {
-        private final Map<String, Object> attributes;
-        private final String nameAttributeKey;
-        private final Provider provider;
-        private final String email;
-
-        @Builder
-        public OAuthAttributes(Map<String, Object> attributes, String nameAttributeKey, Provider provider, String email) {
-            this.attributes = attributes;
-            this.nameAttributeKey = nameAttributeKey;
-            this.provider = provider;
-            this.email = email;
-        }
-
-        @SneakyThrows
-        public static OAuthAttributes of(String registrationId, String userNameAttributeName, Map<String, Object> attributes) {
-            log.info("userNameAttributeName = {}", new ObjectMapper().writerWithDefaultPrettyPrinter().writeValueAsString(userNameAttributeName));
-            log.info("attributes = {}", new ObjectMapper().writerWithDefaultPrettyPrinter().writeValueAsString(attributes));
-
-            switch (registrationId) {
-                case "kakao":
-                    return ofKakao(userNameAttributeName, attributes);
-                case "apple":
-                    return ofApple(userNameAttributeName, attributes);
-                default:
-                    throw new IllegalArgumentException("지원하지 않는 로그인 방식: " + registrationId);
-            }
-        }
-
-        private static OAuthAttributes ofKakao(String userNameAttributeName, Map<String, Object> attributes) {
-            Map<String, Object> kakaoAccount = (Map<String, Object>) attributes.get("kakao_account");
-
-            return OAuthAttributes.builder()
-                    .email((String) kakaoAccount.get("email"))
-                    .provider(Provider.KAKAO)
-                    .attributes(attributes)
-                    .nameAttributeKey(userNameAttributeName)
-                    .build();
-        }
-
-        private static OAuthAttributes ofApple(String userNameAttributeName, Map<String, Object> attributes) {
-
-            return OAuthAttributes.builder()
-                    .email((String) attributes.get("email"))
-                    .provider(Provider.APPLE)
-                    .attributes(attributes)
-                    .nameAttributeKey(userNameAttributeName)
-                    .build();
-        }
+    // 사용자 정보 저장 및 업데이트
+    private Member saveOrUpdate(AppleUserInfo appleUserInfo) {
+        return memberRepository.findByEmailAndProvider(appleUserInfo.getEmail(), appleUserInfo.getProvider())
+                .orElseGet(() -> memberRepository.save(Member.builder()
+                        .email(appleUserInfo.getEmail())
+                        .provider(appleUserInfo.getProvider())
+                        .build()));
     }
 }

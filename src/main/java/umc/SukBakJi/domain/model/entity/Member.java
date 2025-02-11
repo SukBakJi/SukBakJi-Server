@@ -1,6 +1,7 @@
 package umc.SukBakJi.domain.model.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
 import umc.SukBakJi.domain.model.entity.enums.DegreeLevel;
@@ -40,8 +41,16 @@ public class Member extends BaseEntity {
     private Integer point;
 
     @Enumerated(EnumType.STRING)
-//    @Column(nullable = false)
+    @Column(nullable = false)
     private Provider provider;
+
+    private String providerId;
+
+    @Builder
+    public Member(Provider provider, String providerId) {
+        this.provider = provider;
+        this.providerId = providerId;
+    }
 
     private String refreshToken;
 
