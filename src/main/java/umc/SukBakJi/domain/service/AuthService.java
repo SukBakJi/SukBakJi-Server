@@ -114,10 +114,8 @@ public class AuthService {
         member.resetRefreshToken();
     }
 
-    public MemberResponseDto.LoginResponseDto oauthLogin(String provider, String accessToken) {
-        Provider oauthProvider = Provider.valueOf(provider.toUpperCase());
-
-        return switch (oauthProvider) {
+    public MemberResponseDto.LoginResponseDto oauthLogin(Provider provider, String accessToken) {
+        return switch (provider) {
             case KAKAO -> kakaoService.kakaoLogin(accessToken);
 //            case APPLE -> appleService.appleLogin(accessToken);
             default -> throw new IllegalArgumentException("지원하지 않는 로그인 방식: " + provider);

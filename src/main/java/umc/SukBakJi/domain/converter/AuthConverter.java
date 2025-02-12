@@ -8,7 +8,7 @@ import umc.SukBakJi.domain.model.entity.Member;
 public class AuthConverter {
     public static MemberResponseDto.LoginResponseDto toLoginDto(Provider provider, Member member, JwtToken jwtToken) {
         return MemberResponseDto.LoginResponseDto.builder()
-                .provider(provider.getValue())
+                .provider(provider)
                 .email(member.getEmail())
                 .accessToken(jwtToken.getAccessToken())
                 .refreshToken(jwtToken.getRefreshToken())

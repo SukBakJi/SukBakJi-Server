@@ -13,7 +13,7 @@ public class MemberResponseDto {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class LoginResponseDto {
-        private String provider;
+        private Provider provider;
         private String email;
         private String accessToken;
         private String refreshToken;
