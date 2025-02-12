@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import umc.SukBakJi.domain.converter.AlarmConverter;
 import umc.SukBakJi.domain.converter.UnivConverter;
 import umc.SukBakJi.domain.model.dto.AlarmRequestDTO;
+import umc.SukBakJi.domain.model.dto.AlarmResponseDTO;
 import umc.SukBakJi.domain.model.dto.UnivRequestDTO;
 import umc.SukBakJi.domain.model.dto.UnivResponseDTO;
 import umc.SukBakJi.domain.model.entity.Alarm;
@@ -17,6 +18,8 @@ import umc.SukBakJi.domain.model.entity.mapping.SetUniv;
 import umc.SukBakJi.domain.repository.*;
 import umc.SukBakJi.global.apiPayload.code.status.ErrorStatus;
 import umc.SukBakJi.global.apiPayload.exception.GeneralException;
+import umc.SukBakJi.global.apiPayload.exception.handler.CalendarHandler;
+import umc.SukBakJi.global.apiPayload.exception.handler.MemberHandler;
 
 import java.util.List;
 import java.util.Optional;
@@ -84,6 +87,45 @@ public class CalenderService {
         alarm = alarmRepository.save(alarm);
 
         return alarm;
+    }
+
+    @Transactional
+    public AlarmResponseDTO.alarmDTO updateAlarm(Long alarmId, AlarmRequestDTO.updateAlarm request){
+        Member member = memberRepository.findById(request.getMemberId())
+                .orElseThrow(() -> new MemberHandler(ErrorStatus.MEMBER_NOT_FOUND));
+
+        Alarm existingAlarm = alarmRepository.findById(alarmId)
+                .orElseThrow(() -> new CalendarHandler(ErrorStatus.INVALID_ALARM));
+
+        boolean isNameChanged = !existingAlarm.getName().equals(request.getName());
+        boolean isUnivNameChanged = !existingAlarm.getUnivName().equals(request.getUnivName());
+
+        if ((isNameChanged || isUnivNameChanged) && (request.getName() != null || request.getUnivName() != null)) {
+            boolean isDuplicate = alarmRepository.existsByNameAndMemberAndIdNot(request.getName(), member, alarmId) ||
+                    alarmRepository.existsByUnivNameAndMemberAndIdNot(request.getUnivName(), member, alarmId);
+
+            if (isDuplicate) {
+                throw new GeneralException(ErrorStatus.DUPLICATE_ALARM_NAME);
+            }
+        }
+        existingAlarm.updateAlarm(request.getName(), request.getUnivName(), request.getDate(), request.getTime(), request.getOnoff());
+
+        return AlarmConverter.alarmDTO(existingAlarm);
+    }
+
+    @Transactional
+    public void deleteAlarm(Long memberId, Long alarmId){
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new MemberHandler(ErrorStatus.MEMBER_NOT_FOUND));
+
+        Alarm alarm = alarmRepository.findById(alarmId)
+                .orElseThrow(() -> new CalendarHandler(ErrorStatus.INVALID_ALARM));
+
+        if (!alarm.getMember().getId().equals(member.getId())) {
+            throw new CalendarHandler(ErrorStatus.UNAUTHORIZED_ALARM_ACCESS);
+        }
+
+        alarmRepository.delete(alarm);
     }
 
     @Transactional
