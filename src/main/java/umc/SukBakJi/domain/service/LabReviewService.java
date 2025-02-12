@@ -125,6 +125,10 @@ public class LabReviewService {
         LabReview labReview = labReviewRepository.findById(request.getLabReviewId())
                 .orElseThrow(() -> new LabHandler(ErrorStatus.LAB_REVIEW_NOT_FOUND));
 
+        if (request.getContent() == null || request.getContent().trim().isEmpty()) {
+            throw new LabHandler(ErrorStatus.INVALID_INQUIRY_CONTENT);
+        }
+
         labReviewUpdateRequestRepository.save(
                 LabReviewUpdateRequest.builder()
                         .member(member)

@@ -163,6 +163,10 @@ public class LabService {
         Lab lab = labRepository.findById(request.getLabId())
                 .orElseThrow(() -> new LabHandler(ErrorStatus.LAB_NOT_FOUND));
 
+        if (request.getContent() == null || request.getContent().trim().isEmpty()) {
+            throw new LabHandler(ErrorStatus.INVALID_INQUIRY_CONTENT);
+        }
+
         labUpdateRequestRepository.save(
                 LabUpdateRequest.builder()
                         .member(member)
