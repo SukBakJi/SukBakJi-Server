@@ -26,6 +26,22 @@ public class AlarmRequestDTO {
     }
 
     @Getter
+    public static class updateAlarm{
+        @NotNull
+        Long memberId;
+        @NotNull
+        String univName;
+        @NotNull
+        String name;
+        @NotNull
+        String date;
+        @NotNull
+        String time;
+        @NotNull
+        Long onoff;
+    }
+
+    @Getter
     public static class viewAlarmList{
         @NotNull
         Long memberId;
