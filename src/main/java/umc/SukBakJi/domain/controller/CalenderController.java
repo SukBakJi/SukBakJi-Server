@@ -143,6 +143,26 @@ public class CalenderController {
         return ApiResponse.onSuccess(UnivConverter.toGetUnivListDTO(memberId, univList));
     }
 
+    @Operation(summary = "학교 일정 수정", description = "학교 일정을 수정합니다.")
+    @ApiResponses(value = {
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "성공",
+                    content = @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = Object.class))),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "400", description = "해당하는 사용자가 없습니다.",
+                    content = @Content),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "500", description = "서버 에러, 관리자에게 문의 바랍니다.",
+                    content = @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = ErrorReasonDTO.class)))
+    })
+    @PatchMapping("/univ/{univId}")
+    public ApiResponse<Void> updateUniv(
+            @AuthenticationPrincipal Long memberId,
+            @PathVariable Long univId,
+            @RequestBody UnivRequestDTO.UpdateUnivDTO request){
+        calenderService.updateUnivSchedule(memberId, univId, request);
+        return ApiResponse.onSuccess("대학 일정을 성공적으로 수정하였습니다.", null);
+    }
+
     @Operation(summary = "등록된 학교 삭제", description = "등록된 학교를 삭제합니다.")
     @ApiResponses(value = {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "성공",
@@ -178,7 +198,7 @@ public class CalenderController {
             @AuthenticationPrincipal Long memberId,
             @Parameter(description = "삭제할 학교 DTO", required = true)
             @RequestBody UnivRequestDTO.DeleteSelectedUnivDTO request) {
-        calenderService.deleteOptionUniv(memberId, request);
+        calenderService.deleteSelectedUniv(memberId, request);
         return ApiResponse.onSuccess("대학 일정을 선택 삭제하였습니다.", null);
     }
 
