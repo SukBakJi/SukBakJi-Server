@@ -1,24 +1,27 @@
 package umc.SukBakJi.domain.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import umc.SukBakJi.domain.converter.LabConverter;
 import umc.SukBakJi.domain.model.dto.LabRequestDTO;
 import umc.SukBakJi.domain.model.entity.Lab;
 import umc.SukBakJi.domain.model.entity.Member;
+import umc.SukBakJi.domain.model.entity.University;
 import umc.SukBakJi.domain.model.entity.enums.LabUpdateStatus;
 import umc.SukBakJi.domain.model.entity.mapping.FavoriteLab;
 import umc.SukBakJi.domain.model.entity.mapping.LabResearchTopic;
 import umc.SukBakJi.domain.model.entity.mapping.LabUpdateRequest;
-import umc.SukBakJi.domain.repository.FavoriteLabRepository;
+import umc.SukBakJi.domain.model.entity.mapping.SetUniv;
+import umc.SukBakJi.domain.repository.*;
 import umc.SukBakJi.domain.model.dto.InterestTopicsDTO;
 import umc.SukBakJi.domain.model.dto.LabDetailResponseDTO;
 import umc.SukBakJi.domain.model.dto.LabResponseDTO;
 import umc.SukBakJi.domain.model.entity.ResearchTopic;
-import umc.SukBakJi.domain.repository.LabRepository;
-import umc.SukBakJi.domain.repository.LabUpdateRequestRepository;
-import umc.SukBakJi.domain.repository.MemberRepository;
 import umc.SukBakJi.global.apiPayload.code.status.ErrorStatus;
 import umc.SukBakJi.global.apiPayload.exception.GeneralException;
 import umc.SukBakJi.global.apiPayload.exception.handler.LabHandler;
@@ -36,19 +39,24 @@ public class LabService {
     private final LabRepository labRepository;
     private final FavoriteLabRepository favoriteLabRepository;
     private final LabUpdateRequestRepository labUpdateRequestRepository;
+    private final UnivRepository univRepository;
+    private final SetUnivRepository setUnivRepository;
 
-    public List<LabResponseDTO> searchLabsByTopicName(String topicName) {
-        List<Lab> labs = labRepository.findLabsByResearchTopicName(topicName);
-        return labs.stream().map(this::convertToDTO).collect(Collectors.toList());
+    public LabResponseDTO.LabSearchResponseDTO searchLabsByTopicName(String topicName, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "id"));
+
+        Page<Lab> labPage = labRepository.findLabsByResearchTopicName(topicName, pageable);
+
+        return LabConverter.toLabSearchResponseDTO(labPage.getContent(), (int) labPage.getTotalElements());
     }
 
-    private LabResponseDTO convertToDTO(Lab lab) {
+    private LabResponseDTO.LabPreviewResponseDTO convertToDTO(Lab lab) {
         List<String> researchTopics = lab.getLabResearchTopics().stream()
                 .map(LabResearchTopic::getResearchTopic)
                 .map(rt -> rt.getTopicName())
                 .collect(Collectors.toList());
 
-        return LabResponseDTO.builder()
+        return LabResponseDTO.LabPreviewResponseDTO.builder()
                 .labId(lab.getId())
                 .labName(lab.getLabName())
                 .universityName(lab.getUniversityName())
@@ -77,6 +85,31 @@ public class LabService {
         );
     }
 
+    @Transactional(readOnly = true)
+    public LabResponseDTO.LabSearchResponseDTO filterLabsByUniversity(Long univId, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "id"));
+
+        University university = univRepository.findById(univId)
+                .orElseThrow(() -> new GeneralException(ErrorStatus.INVALID_UNIVERSITY));
+
+        Page<Lab> labPage = labRepository.findByUniversityName(university.getName(), pageable);
+        return LabConverter.toLabSearchResponseDTO(labPage.getContent(), (int) labPage.getTotalElements());
+    }
+
+    @Transactional(readOnly = true)
+    public List<LabResponseDTO.UniversityFilterResponseDTO> getFilterableUniversities(Long memberId) {
+        List<SetUniv> userUniversities = setUnivRepository.findByMemberId(memberId);
+
+        return userUniversities.stream()
+                .map(setUniv -> LabResponseDTO.UniversityFilterResponseDTO.builder()
+                        .universityId(setUniv.getUniversity().getId())
+                        .universityName(setUniv.getUniversity().getName())
+                        .build()
+                )
+                .distinct()
+                .collect(Collectors.toList());
+    }
+
     public InterestTopicsDTO getInterestTopics(Member member) {
         List<String> topics = member.getMemberResearchTopics()
                 .stream()
@@ -88,7 +121,7 @@ public class LabService {
                 .build();
     }
 
-    public List<LabResponseDTO> getFavoriteLabs(Long memberId) {
+    public List<LabResponseDTO.LabPreviewResponseDTO> getFavoriteLabs(Long memberId) {
         // 존재하는 회원인지 조회
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new MemberHandler(ErrorStatus.MEMBER_NOT_FOUND));
