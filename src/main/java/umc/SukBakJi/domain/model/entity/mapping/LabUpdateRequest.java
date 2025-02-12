@@ -19,8 +19,10 @@ public class LabUpdateRequest {
     private Long id;
 
     @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private RequestCategory requestCategory;
 
+    @Column(nullable = false)
     private String content;
 
     @Enumerated(EnumType.STRING)

@@ -7,11 +7,8 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import umc.SukBakJi.domain.model.dto.LabReviewSearchDTO;
-import umc.SukBakJi.domain.model.dto.LabReviewSummaryDTO;
+import umc.SukBakJi.domain.model.dto.*;
 import umc.SukBakJi.global.apiPayload.ApiResponse;
-import umc.SukBakJi.domain.model.dto.LabReviewCreateDTO;
-import umc.SukBakJi.domain.model.dto.LabReviewDetailsDTO;
 import umc.SukBakJi.domain.service.LabReviewService;
 import umc.SukBakJi.global.apiPayload.code.ErrorReasonDTO;
 import umc.SukBakJi.global.security.jwt.JwtTokenProvider;
@@ -125,5 +122,16 @@ public class LabReviewController {
     ) {
         List<LabReviewDetailsDTO> reviewList = labReviewService.searchLabReviews(searchDTO.getProfessorName());
         return ApiResponse.onSuccess(reviewList);
+    }
+
+    @PostMapping("/{labId}/inquiries")
+    @Operation(summary = "연구실 후기 문의 등록",
+            description = "연구실 후기에 잘못 기입되어 있는 정보에 대한 문의를 등록합니다.")
+    public ApiResponse<String> inquiryLabInfo(@RequestHeader("Authorization") String token,
+                                         @RequestBody LabRequestDTO.InquireLabReviewDTO request) {
+        String jwtToken = token.substring(7);
+        Long memberId = jwtTokenProvider.getMemberIdFromToken(jwtToken);
+        labReviewService.labReviewUpdateRequest(memberId, request);
+        return ApiResponse.onSuccess("연구실 후기에 대한 문의를 등록하였습니다.");
     }
 }
