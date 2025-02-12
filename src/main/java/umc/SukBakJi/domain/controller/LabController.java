@@ -55,6 +55,16 @@ public class LabController {
         return ApiResponse.onSuccess(response);
     }
 
+    @GetMapping("/labs/filters/universities")
+    @Operation(summary = "필터링 대학 목록 조회",
+            description = "필터링이 가능한 대학 목록을 조회합니다.")
+    public ApiResponse<List<LabResponseDTO.UniversityFilterResponseDTO>> getFilterableUniversities(
+            @AuthenticationPrincipal Long memberId) {
+
+        List<LabResponseDTO.UniversityFilterResponseDTO> universities = labService.getFilterableUniversities(memberId);
+        return ApiResponse.onSuccess(universities);
+    }
+
     @Operation(summary = "사용자의 관심 연구 주제 목록 조회", description = "사용자가 설정한 관심 주제 목록을 조회합니다.")
     @ApiResponses(value = {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "성공"),
