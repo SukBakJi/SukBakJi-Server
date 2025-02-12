@@ -31,6 +31,12 @@ public class UnivRequestDTO {
     }
 
     @Getter
+    public static class DeleteSelectedUnivDTO {
+        @NotNull
+        private List<Long> univIds;
+    }
+
+    @Getter
     public static class setSchedule{
         @NotNull
         String univName;

@@ -162,6 +162,44 @@ public class CalenderController {
         return ApiResponse.onSuccess(UnivConverter.toSetUnivDTO(request.getMemberId()));
     }
 
+    @Operation(summary = "등록된 학교 선택 삭제", description = "등록된 학교를 선택해서 삭제합니다.")
+    @ApiResponses(value = {
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "성공",
+                    content = @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = Object.class))),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "400", description = "선택된 학교가 유효하지 않습니다.",
+                    content = @Content),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "500", description = "서버 에러, 관리자에게 문의 바랍니다.",
+                    content = @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = ErrorReasonDTO.class)))
+    })
+    @DeleteMapping("/univ/selected")
+    public ApiResponse<Void> deleteOptionUniv(
+            @AuthenticationPrincipal Long memberId,
+            @Parameter(description = "삭제할 학교 DTO", required = true)
+            @RequestBody UnivRequestDTO.DeleteSelectedUnivDTO request) {
+        calenderService.deleteOptionUniv(memberId, request);
+        return ApiResponse.onSuccess("대학 일정을 선택 삭제하였습니다.", null);
+    }
+
+    @Operation(summary = "등록된 학교 전체 삭제", description = "등록된 학교를 전체 삭제합니다.")
+    @ApiResponses(value = {
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "성공",
+                    content = @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = Object.class))),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "400", description = "선택된 학교가 유효하지 않습니다.",
+                    content = @Content),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "500", description = "서버 에러, 관리자에게 문의 바랍니다.",
+                    content = @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = ErrorReasonDTO.class)))
+    })
+    @DeleteMapping("/univ/all")
+    public ApiResponse<Void> deleteAllUniv(
+            @AuthenticationPrincipal Long memberId) {
+        calenderService.deleteAllUniv(memberId);
+        return ApiResponse.onSuccess("대학 일정을 전체 삭제하였습니다.", null);
+    }
+
     @Operation(summary = "조회할 일정 선택", description = "화면에 띄우고 싶은 일정을 선택합니다.")
     @ApiResponses(value = {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "성공",
@@ -279,7 +317,7 @@ public class CalenderController {
     @ApiResponses(value = {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "성공",
                     content = @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = String.class))),
+                            schema = @Schema(implementation = Object.class))),
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "400", description = "올바른 날짜나 시간이 아닙니다.",
                     content = @Content),
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "500", description = "서버 에러, 관리자에게 문의 바랍니다.",
