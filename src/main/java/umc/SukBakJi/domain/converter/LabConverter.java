@@ -11,13 +11,13 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class LabConverter {
-    public static LabResponseDTO getFavoriteLabInfo(Lab lab) {
+    public static LabResponseDTO.LabPreviewResponseDTO getFavoriteLabInfo(Lab lab) {
         List<String> researchTopics = lab.getLabResearchTopics().stream()
                 .map(LabResearchTopic::getResearchTopic)
                 .map(ResearchTopic::getTopicName)
                 .collect(Collectors.toList());
 
-        return LabResponseDTO.builder()
+        return LabResponseDTO.LabPreviewResponseDTO.builder()
                 .labId(lab.getId())
                 .labName(lab.getLabName())
                 .universityName(lab.getUniversityName())
@@ -31,6 +31,19 @@ public class LabConverter {
         return FavoriteLab.builder()
                 .member(member)
                 .lab(lab)
+                .build();
+    }
+
+    public static List<LabResponseDTO.LabPreviewResponseDTO> getLabPreviewList(List<Lab> labs) {
+        return labs.stream()
+                .map(LabConverter::getFavoriteLabInfo)
+                .collect(Collectors.toList());
+    }
+
+    public static LabResponseDTO.LabSearchResponseDTO toLabSearchResponseDTO(List<Lab> labs, int totalNumber) {
+        return LabResponseDTO.LabSearchResponseDTO.builder()
+                .responseDTOList(getLabPreviewList(labs))
+                .totalNumber(totalNumber)
                 .build();
     }
 }
