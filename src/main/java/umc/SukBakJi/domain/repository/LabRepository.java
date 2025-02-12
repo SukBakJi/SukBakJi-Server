@@ -13,8 +13,8 @@ import java.util.Optional;
 public interface LabRepository extends JpaRepository<Lab, Long> {
 
     List<Lab> findByProfessorName(String professorName);
-    @Query("SELECT l FROM Lab l JOIN l.labResearchTopics lrt JOIN lrt.researchTopic rt WHERE rt.topicName = :topicName")
-    List<Lab> findLabsByResearchTopicName(@Param("topicName") String topicName);
+    @Query("SELECT l FROM Lab l JOIN l.labResearchTopics lrt JOIN lrt.researchTopic rt WHERE rt.topicName LIKE %:topicName%")
+    Page<Lab> findLabsByResearchTopicName(@Param("topicName") String topicName, Pageable pageable);
     Optional<Lab> findByUniversityNameAndProfessorNameAndDepartmentName(String universityName, String professorName, String departmentName);
     @Query("SELECT l FROM Lab l WHERE l.departmentName Like %:keyword%")
     List<Lab> findByDepartmentName(String keyword);

@@ -42,9 +42,12 @@ public class LabService {
     private final UnivRepository univRepository;
     private final SetUnivRepository setUnivRepository;
 
-    public List<LabResponseDTO.LabPreviewResponseDTO> searchLabsByTopicName(String topicName) {
-        List<Lab> labs = labRepository.findLabsByResearchTopicName(topicName);
-        return labs.stream().map(this::convertToDTO).collect(Collectors.toList());
+    public LabResponseDTO.LabSearchResponseDTO searchLabsByTopicName(String topicName, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "id"));
+
+        Page<Lab> labPage = labRepository.findLabsByResearchTopicName(topicName, pageable);
+
+        return LabConverter.toLabSearchResponseDTO(labPage.getContent(), (int) labPage.getTotalElements());
     }
 
     private LabResponseDTO.LabPreviewResponseDTO convertToDTO(Lab lab) {

@@ -27,8 +27,11 @@ public class LabController {
     private final MemberRepository memberRepository;
 
     @PostMapping("/search")
-    public ResponseEntity<ApiResponse<List<LabResponseDTO.LabPreviewResponseDTO>>> searchLabs(@RequestBody SearchLabRequestDTO searchRequest) {
-        List<LabResponseDTO.LabPreviewResponseDTO> labs = labService.searchLabsByTopicName(searchRequest.getTopicName());
+    public ResponseEntity<ApiResponse<LabResponseDTO.LabSearchResponseDTO>> searchLabs(
+            @RequestParam String topicName,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "6") int size) {
+        LabResponseDTO.LabSearchResponseDTO labs = labService.searchLabsByTopicName(topicName, page, size);
         return ResponseEntity.ok(ApiResponse.onSuccess(labs));
     }
 
