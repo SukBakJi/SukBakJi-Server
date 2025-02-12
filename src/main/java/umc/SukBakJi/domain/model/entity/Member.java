@@ -56,6 +56,8 @@ public class Member extends BaseEntity {
 
     private Long labId;
 
+    private boolean isEducationVerified;
+
     // Define relationships if necessary
     @OneToMany(mappedBy = "member")
     private List<MemberResearchTopic> memberResearchTopics;

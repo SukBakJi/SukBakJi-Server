@@ -1,28 +1,31 @@
 package umc.SukBakJi.domain.service;
 
 import lombok.RequiredArgsConstructor;
+import org.hibernate.validator.internal.constraintvalidators.hv.UUIDValidator;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.multipart.MultipartFile;
 import umc.SukBakJi.domain.converter.MemberConverter;
 import umc.SukBakJi.domain.model.dto.member.MemberRequestDto;
 import umc.SukBakJi.domain.model.dto.member.MemberResponseDto;
+import umc.SukBakJi.domain.model.entity.Image;
 import umc.SukBakJi.domain.model.entity.Member;
 import umc.SukBakJi.domain.model.entity.ResearchTopic;
+import umc.SukBakJi.domain.model.entity.enums.EducationCertificateType;
 import umc.SukBakJi.domain.model.entity.mapping.MemberResearchTopic;
+import umc.SukBakJi.domain.repository.ImageRepository;
 import umc.SukBakJi.domain.repository.MemberRepository;
 import umc.SukBakJi.domain.repository.MemberResearchTopicRepository;
 import umc.SukBakJi.domain.repository.ResearchTopicRepository;
 import umc.SukBakJi.global.apiPayload.code.status.ErrorStatus;
 import umc.SukBakJi.global.apiPayload.exception.GeneralException;
 import umc.SukBakJi.global.apiPayload.exception.handler.MemberHandler;
+import umc.SukBakJi.global.aws.s3.AmazonS3Manager;
 import umc.SukBakJi.global.security.jwt.JwtTokenProvider;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -36,6 +39,8 @@ public class MemberService {
     private final MemberResearchTopicService memberResearchTopicService;
     private final JwtTokenProvider jwtTokenProvider;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
+    private final ImageRepository imageRepository;
+    private final AmazonS3Manager amazonS3Manager;
 
     // 프로필 설정
     public MemberResponseDto.ProfileResultDto setMemberProfile(@RequestHeader("Authorization") String token, MemberRequestDto.ProfileDto profileDto) {
@@ -105,6 +110,34 @@ public class MemberService {
         memberRepository.save(member);
 
         return MemberConverter.toModifyMemberProfile(member, profileDto.getResearchTopics());
+    }
+
+    // 학력 인증 이미지 업로드
+    public void uploadEducationCertificate(@RequestHeader("Authorization") String token, MultipartFile certificationPicture, String educationCertificateType) {
+        String email = jwtTokenProvider.getEmailFromToken(token);
+        Member member = memberRepository.findByEmail(email)
+                .orElseThrow(() -> new MemberHandler(ErrorStatus.MEMBER_NOT_FOUND));
+
+        String uuid = UUID.randomUUID().toString();
+        Image savedImage = imageRepository.save(
+                Image.builder()
+                        .uuid(uuid)
+                        .build()
+        );
+
+//        String pictureUrl = amazonS3Manager.uploadFile(amazonS3Manager.generateEducationCertificateKeyName(savedImage), certificateDto.getCertificationPicture());
+
+        EducationCertificateType type = EducationCertificateType.fromString(educationCertificateType);
+        try {
+            String s3Key = amazonS3Manager.generateEducationCertificateKeyName(member.getId(), type, uuid);
+            amazonS3Manager.uploadFile(s3Key, certificationPicture);
+
+            member.setEducationVerified(true);
+            memberRepository.save(member);
+        } catch (Exception e) {
+            imageRepository.delete(savedImage); // 업로드 실패 시 롤백
+            throw new RuntimeException("학력 인증서 업로드 실패", e);
+        }
     }
 
     // 프로필 보기
