@@ -28,6 +28,5 @@ public class MemberResponseDto {
         private Provider provider;
         private DegreeLevel degreeLevel;
         private List<String> researchTopics;
-        private Integer point;
     }
 }
