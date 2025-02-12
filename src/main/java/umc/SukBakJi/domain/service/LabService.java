@@ -7,17 +7,21 @@ import umc.SukBakJi.domain.converter.LabConverter;
 import umc.SukBakJi.domain.model.dto.LabRequestDTO;
 import umc.SukBakJi.domain.model.entity.Lab;
 import umc.SukBakJi.domain.model.entity.Member;
+import umc.SukBakJi.domain.model.entity.enums.LabUpdateStatus;
 import umc.SukBakJi.domain.model.entity.mapping.FavoriteLab;
 import umc.SukBakJi.domain.model.entity.mapping.LabResearchTopic;
+import umc.SukBakJi.domain.model.entity.mapping.LabUpdateRequest;
 import umc.SukBakJi.domain.repository.FavoriteLabRepository;
 import umc.SukBakJi.domain.model.dto.InterestTopicsDTO;
 import umc.SukBakJi.domain.model.dto.LabDetailResponseDTO;
 import umc.SukBakJi.domain.model.dto.LabResponseDTO;
 import umc.SukBakJi.domain.model.entity.ResearchTopic;
 import umc.SukBakJi.domain.repository.LabRepository;
+import umc.SukBakJi.domain.repository.LabUpdateRequestRepository;
 import umc.SukBakJi.domain.repository.MemberRepository;
 import umc.SukBakJi.global.apiPayload.code.status.ErrorStatus;
 import umc.SukBakJi.global.apiPayload.exception.GeneralException;
+import umc.SukBakJi.global.apiPayload.exception.handler.LabHandler;
 import umc.SukBakJi.global.apiPayload.exception.handler.MemberHandler;
 
 import java.util.*;
@@ -31,6 +35,7 @@ public class LabService {
     private final MemberRepository memberRepository;
     private final LabRepository labRepository;
     private final FavoriteLabRepository favoriteLabRepository;
+    private final LabUpdateRequestRepository labUpdateRequestRepository;
 
     public List<LabResponseDTO> searchLabsByTopicName(String topicName) {
         List<Lab> labs = labRepository.findLabsByResearchTopicName(topicName);
@@ -148,5 +153,28 @@ public class LabService {
             throw new GeneralException(ErrorStatus.FAVORITE_NOT_FOUND);
         }
         favoriteLabRepository.deleteAll(favoriteLabs);
+    }
+
+    // 연구실 문의 등록
+    public void labUpdateRequest(Long memberId, LabRequestDTO.InquireLabDTO request) {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new MemberHandler(ErrorStatus.MEMBER_NOT_FOUND));
+
+        Lab lab = labRepository.findById(request.getLabId())
+                .orElseThrow(() -> new LabHandler(ErrorStatus.LAB_NOT_FOUND));
+
+        if (request.getContent() == null || request.getContent().trim().isEmpty()) {
+            throw new LabHandler(ErrorStatus.INVALID_INQUIRY_CONTENT);
+        }
+
+        labUpdateRequestRepository.save(
+                LabUpdateRequest.builder()
+                        .member(member)
+                        .lab(lab)
+                        .requestCategory(request.getRequestCategory())
+                        .content(request.getContent())
+                        .labUpdateStatus(LabUpdateStatus.PENDING)
+                        .build()
+        );
     }
 }

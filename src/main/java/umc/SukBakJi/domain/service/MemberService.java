@@ -68,7 +68,6 @@ public class MemberService {
         member.setName(profileDto.getName());
         member.setDegreeLevel(profileDto.getDegreeLevel());
         member.setMemberResearchTopics(memberResearchTopics);
-        member.setPoint(1000); // 회원가입 시 프로필 설정까지 진행되면 1000 포인트 부여
         memberRepository.save(member);
 
         return MemberConverter.toSetMemberProfile(member, profileDto.getResearchTopics());
@@ -160,7 +159,6 @@ public class MemberService {
                 .provider(member.getProvider())
                 .degreeLevel(member.getDegreeLevel())
                 .researchTopics(memberResearchTopics)
-                .point(member.getPoint())
                 .build();
     }
 
