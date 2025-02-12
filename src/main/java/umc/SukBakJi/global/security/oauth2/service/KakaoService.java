@@ -1,81 +1,72 @@
 package umc.SukBakJi.global.security.oauth2.service;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.*;
-import org.springframework.security.oauth2.client.registration.ClientRegistration;
-import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
-import org.springframework.security.oauth2.client.userinfo.OAuth2UserService;
-import org.springframework.security.oauth2.core.AuthorizationGrantType;
-import org.springframework.security.oauth2.core.OAuth2AccessToken;
-import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
-import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
-import org.springframework.web.reactive.function.client.WebClient;
+import umc.SukBakJi.domain.converter.AuthConverter;
+import umc.SukBakJi.domain.model.dto.auth.userInfo.KakaoUserInfo;
+import umc.SukBakJi.domain.model.dto.auth.userInfo.OAuth2UserInfo;
+import umc.SukBakJi.domain.model.dto.member.MemberResponseDto;
+import umc.SukBakJi.domain.model.entity.Member;
+import umc.SukBakJi.domain.model.entity.enums.Provider;
+import umc.SukBakJi.domain.repository.MemberRepository;
+import umc.SukBakJi.global.security.jwt.JwtToken;
+import umc.SukBakJi.global.security.jwt.JwtTokenProvider;
 
 import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
 public class KakaoService {
-    private final RestTemplate restTemplate;
 
-    @Value("${spring.security.oauth2.client.registration.kakao.client-id}")
-    private String clientId;
+    private final RestTemplate restTemplate = new RestTemplate();
+    private final MemberRepository memberRepository;
+    private final ObjectMapper objectMapper = new ObjectMapper();
+    private final JwtTokenProvider jwtTokenProvider;
 
-    @Value("${spring.security.oauth2.client.registration.kakao.client-secret}")
-    private String clientSecret;
+    @Value("${spring.security.oauth2.client.provider.kakao.user-info-uri}")
+    private String kakaoApiUri;
 
-    @Value("${spring.security.oauth2.client.registration.kakao.redirect-uri}")
-    private String redirectUri;
+    public MemberResponseDto.LoginResponseDto kakaoLogin(String accessToken) {
+        // 액세스 토큰 검증 및 사용자 정보 조회
+        OAuth2UserInfo userInfo = getUserInfo(accessToken);
+        if (userInfo == null) {
+            throw new IllegalStateException("카카오 사용자 정보를 가져올 수 없습니다.");
+        }
 
-    @Value("${spring.security.oauth2.client.registration.kakao.authorization-grant-type}")
-    private String grantType;
+        // 회원 가입 또는 로그인 처리
+        Member member = saveOrUpdate(userInfo);
+        JwtToken jwtToken = jwtTokenProvider.generateJwtToken(member);
 
-    public Map<String, Object> getKakaoUserInfo(String accessToken) {
-        String url = "https://kapi.kakao.com/v2/user/me";
-        HttpHeaders headers = new HttpHeaders();
-        headers.setBearerAuth(accessToken);
-
-        HttpEntity<String> entity = new HttpEntity<>(headers);
-        ResponseEntity<Map> response = restTemplate.exchange(url, HttpMethod.GET, entity, Map.class);
-
-        return response.getBody();
+        return AuthConverter.toLoginDto(Provider.KAKAO, member, jwtToken);
     }
 
-    // 액세스 토큰 요청
-    public String getAccessToken(String authorizationCode) {
-        String url = "https://kauth.kakao.com/oauth/token";
+    // 카카오 사용자 정보 요청
+    private OAuth2UserInfo getUserInfo(String accessToken) {
         HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+        headers.set("Authorization", "Bearer " + accessToken);
+        headers.setContentType(MediaType.APPLICATION_JSON);
 
-        MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
-        map.add("grant_type", grantType);
-        map.add("client_id", clientId);
-        map.add("client_secret", clientSecret);
-        map.add("redirect_uri", redirectUri);
-        map.add("code", authorizationCode);
+        HttpEntity<String> request = new HttpEntity<>(headers);
+        ResponseEntity<String> response = restTemplate.exchange(kakaoApiUri, HttpMethod.GET, request, String.class);
 
-        HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(map, headers);
         try {
-            ResponseEntity<Map> response = restTemplate.postForEntity(url, request, Map.class);
-            System.out.println("Response Status Code: " + response.getStatusCode());
-            System.out.println("Response Body: " + response.getBody());
-
-            if (response.getStatusCode() == HttpStatus.OK) {
-                Map<String, Object> responseBody = response.getBody();
-                return (String) responseBody.get("access_token");
-            } else {
-                throw new RuntimeException("Failed to retrieve access token");
-            }
-        } catch (HttpClientErrorException e) {
-            System.out.println("HTTP Status Code: " + e.getStatusCode());
-            System.out.println("Response Body: " + e.getResponseBodyAsString());
-            throw e; // 재발생
+            Map<String, Object> attributes = objectMapper.readValue(response.getBody(), Map.class);
+            return new KakaoUserInfo(attributes);
+        } catch (Exception e) {
+            throw new IllegalStateException("카카오 사용자 정보 파싱 실패", e);
         }
+    }
+
+    // 사용자 정보 저장 및 업데이트
+    private Member saveOrUpdate(OAuth2UserInfo kakaoUserInfo) {
+        return memberRepository.findByEmailAndProvider(kakaoUserInfo.getEmail(), kakaoUserInfo.getProvider())
+                .orElseGet(() -> memberRepository.save(Member.builder()
+                        .email(kakaoUserInfo.getEmail())
+                        .provider(kakaoUserInfo.getProvider())
+                        .build()));
     }
 }

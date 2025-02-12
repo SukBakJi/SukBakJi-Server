@@ -38,4 +38,9 @@ public class SetUniv extends BaseEntity {
     public void setShowing(Integer showing){
         this.showing = showing;
     }
+
+    public void updateUnivSchedule(String season, String method) {
+        this.season = season;
+        this.method = method;
+    }
 }

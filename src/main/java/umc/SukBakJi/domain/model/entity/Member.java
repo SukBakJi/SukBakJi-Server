@@ -1,6 +1,7 @@
 package umc.SukBakJi.domain.model.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
 import umc.SukBakJi.domain.model.entity.enums.DegreeLevel;
@@ -36,16 +37,23 @@ public class Member extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private DegreeLevel degreeLevel;
 
-    @ColumnDefault("0")
-    private Integer point;
-
     @Enumerated(EnumType.STRING)
-//    @Column(nullable = false)
+    @Column(nullable = false)
     private Provider provider;
+
+    private String providerId;
+
+    @Builder
+    public Member(Provider provider, String providerId) {
+        this.provider = provider;
+        this.providerId = providerId;
+    }
 
     private String refreshToken;
 
     private Long labId;
+
+    private boolean isEducationVerified;
 
     // Define relationships if necessary
     @OneToMany(mappedBy = "member")
@@ -69,13 +77,12 @@ public class Member extends BaseEntity {
     @OneToMany(mappedBy = "member")
     private List<Scrap> scraps;
 
-    public Member(String name, String password, String email, String phoneNumber, DegreeLevel degreeLevel, int point, Provider provider) {
+    public Member(String name, String password, String email, String phoneNumber, DegreeLevel degreeLevel, Provider provider) {
         this.name = name;
         this.password = password;
         this.email = email;
         this.phoneNumber = phoneNumber;
         this.degreeLevel = degreeLevel;
-        this.point = point;
         this.provider = provider;
     }
 
@@ -89,11 +96,6 @@ public class Member extends BaseEntity {
 
     public void resetRefreshToken() {
         this.refreshToken = null;
-    }
-
-    @PrePersist
-    public void setPoint() {
-        this.point = 0;
     }
 
     public Long getMemberId() {
