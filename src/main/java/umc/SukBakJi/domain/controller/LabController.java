@@ -99,4 +99,15 @@ public class LabController {
         labService.cancelFavoriteLab(memberId, request);
         return ApiResponse.onSuccess("연구실을 즐겨찾기에서 삭제하였습니다.");
     }
+
+    @PostMapping("/{labId}/inquiries")
+    @Operation(summary = "연구실 정보 문의 등록",
+            description = "연구실에 잘못 기입되어 있는 정보에 대한 문의를 등록합니다.")
+    public ApiResponse<String> inquiryLabInfo(@RequestHeader("Authorization") String token,
+                                            @RequestBody LabRequestDTO.InquireLabDTO request) {
+        String jwtToken = token.substring(7);
+        Long memberId = jwtTokenProvider.getMemberIdFromToken(jwtToken);
+        labService.labUpdateRequest(memberId, request);
+        return ApiResponse.onSuccess("연구실 정보에 대한 문의를 등록하였습니다.");
+    }
 }
