@@ -26,4 +26,13 @@ public class LabResponseDTO {
         private List<LabPreviewResponseDTO> responseDTOList;
         private int totalNumber;
     }
+
+    @Getter
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class UniversityFilterResponseDTO {
+        private Long universityId;
+        private String universityName;
+    }
 }

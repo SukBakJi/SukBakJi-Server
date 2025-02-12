@@ -16,6 +16,7 @@ import umc.SukBakJi.domain.model.entity.enums.LabUpdateStatus;
 import umc.SukBakJi.domain.model.entity.mapping.FavoriteLab;
 import umc.SukBakJi.domain.model.entity.mapping.LabResearchTopic;
 import umc.SukBakJi.domain.model.entity.mapping.LabUpdateRequest;
+import umc.SukBakJi.domain.model.entity.mapping.SetUniv;
 import umc.SukBakJi.domain.repository.*;
 import umc.SukBakJi.domain.model.dto.InterestTopicsDTO;
 import umc.SukBakJi.domain.model.dto.LabDetailResponseDTO;
@@ -39,6 +40,7 @@ public class LabService {
     private final FavoriteLabRepository favoriteLabRepository;
     private final LabUpdateRequestRepository labUpdateRequestRepository;
     private final UnivRepository univRepository;
+    private final SetUnivRepository setUnivRepository;
 
     public List<LabResponseDTO.LabPreviewResponseDTO> searchLabsByTopicName(String topicName) {
         List<Lab> labs = labRepository.findLabsByResearchTopicName(topicName);
@@ -89,6 +91,20 @@ public class LabService {
 
         Page<Lab> labPage = labRepository.findByUniversityName(university.getName(), pageable);
         return LabConverter.toLabSearchResponseDTO(labPage.getContent(), (int) labPage.getTotalElements());
+    }
+
+    @Transactional(readOnly = true)
+    public List<LabResponseDTO.UniversityFilterResponseDTO> getFilterableUniversities(Long memberId) {
+        List<SetUniv> userUniversities = setUnivRepository.findByMemberId(memberId);
+
+        return userUniversities.stream()
+                .map(setUniv -> LabResponseDTO.UniversityFilterResponseDTO.builder()
+                        .universityId(setUniv.getUniversity().getId())
+                        .universityName(setUniv.getUniversity().getName())
+                        .build()
+                )
+                .distinct()
+                .collect(Collectors.toList());
     }
 
     public InterestTopicsDTO getInterestTopics(Member member) {
