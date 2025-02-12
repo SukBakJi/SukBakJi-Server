@@ -31,6 +31,14 @@ public class UnivRequestDTO {
     }
 
     @Getter
+    public static class UpdateUnivDTO {
+        @NotNull
+        private String season;
+        @NotNull
+        private String method;
+    }
+
+    @Getter
     public static class DeleteSelectedUnivDTO {
         @NotNull
         private List<Long> univIds;

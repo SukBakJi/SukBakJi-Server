@@ -167,6 +167,22 @@ public class CalenderService {
     }
 
     @Transactional
+    public void updateUnivSchedule(Long memberId, Long univId, UnivRequestDTO.UpdateUnivDTO request) {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new GeneralException(ErrorStatus.MEMBER_NOT_FOUND));
+
+        University univ = univRepository.findById(univId)
+                .orElseThrow(() -> new GeneralException(ErrorStatus.INVALID_UNIVERSITY));
+
+        SetUniv setUniv = setUnivRepository.findByMemberAndUniversity(member, univ)
+                .orElseThrow(() -> new GeneralException(ErrorStatus.SET_UNIV_NOT_FOUND));
+
+        setUniv.updateUnivSchedule(request.getSeason(), request.getMethod());
+
+        setUnivRepository.save(setUniv);
+    }
+
+    @Transactional
     public void deleteUniv(UnivRequestDTO.setUniv request){
         univRepository.findById(request.getUnivId())
                 .orElseThrow(() -> new GeneralException(ErrorStatus.INVALID_UNIVERSITY));
@@ -179,7 +195,7 @@ public class CalenderService {
     }
 
     @Transactional
-    public void deleteOptionUniv(Long memberId, UnivRequestDTO.DeleteSelectedUnivDTO univDTO){
+    public void deleteSelectedUniv(Long memberId, UnivRequestDTO.DeleteSelectedUnivDTO univDTO){
         if (univDTO.getUnivIds() == null || univDTO.getUnivIds().isEmpty()) {
             throw new GeneralException(ErrorStatus.INVALID_UNIVERSITY);
         }
