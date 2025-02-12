@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import umc.SukBakJi.domain.converter.AlarmConverter;
@@ -286,9 +287,9 @@ public class CalenderController {
                             schema = @Schema(implementation = ErrorReasonDTO.class)))
     })
     @DeleteMapping("/alarm/{alarmId}")
-    public ApiResponse<String> deleteAlarm(@AuthenticationPrincipal Long memberId, @PathVariable Long alarmId) {
+    public ApiResponse<Void> deleteAlarm(@AuthenticationPrincipal Long memberId, @PathVariable Long alarmId) {
         calenderService.deleteAlarm(memberId, alarmId);
-        return ApiResponse.onSuccess("알람을 성공적으로 삭제하였습니다.");
+        return ApiResponse.onSuccess("알람이 성공적으로 삭제되었습니다.", null);
     }
 
     @Operation(summary = "알람 켜기", description = "알람을 킵니다.")
