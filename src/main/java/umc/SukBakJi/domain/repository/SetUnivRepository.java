@@ -13,4 +13,6 @@ public interface SetUnivRepository extends JpaRepository<SetUniv, Long> {
     Optional<SetUniv> findByMemberIdAndUniversityIdAndMethodAndSeason(Long memberId, Long univId, String method, String season);
     List<SetUniv> findAllByMemberId(Long memberId);
     void deleteByMemberIdAndUniversityIdAndSeasonAndMethod(Long memberId, Long univId, String season, String method);
+    void deleteByMemberIdAndUniversityIdIn(Long memberId, List<Long> univIds);
+    void deleteByMemberId(Long memberId);
 }
