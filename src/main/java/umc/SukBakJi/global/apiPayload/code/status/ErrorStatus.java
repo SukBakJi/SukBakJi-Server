@@ -92,11 +92,12 @@ public enum ErrorStatus implements BaseErrorCode {
     INVALID_DATE(HttpStatus.BAD_REQUEST, "ALARM400", "올바르지 않는 날짜입니다."),
     DUPLICATE_ALARM_NAME(HttpStatus.BAD_REQUEST, "ALARM401", "중복된 알람 이름입니다."),
     INVALID_ALARM(HttpStatus.BAD_REQUEST, "ALARM402", "유효하지 않은 알람입니다."),
+    UNAUTHORIZED_ALARM_ACCESS(HttpStatus.BAD_REQUEST, "ALARM403", "해당 알람을 삭제할 권한이 없습니다."),
 
     // 대학교 설정 관련 에러
     INVALID_UNIVERSITY(HttpStatus.BAD_REQUEST, "UNIVERSITY400", "유효하지 않은 학교입니다."),
 
-    // 멘토링 관려 에러
+    // 멘토링 관련 에러
     DUPLICATE_MENTOR(HttpStatus.BAD_REQUEST, "MENTORING400", "이미 멘토로 신청했습니다."),
     DUPLICATE_MENTORING(HttpStatus.BAD_REQUEST, "MENTORING401", "이미 신청된 멘토링입니다."),
     INVALID_MENTOR(HttpStatus.BAD_REQUEST, "MENTORING402", "유효하지 않은 멘토입니다.");

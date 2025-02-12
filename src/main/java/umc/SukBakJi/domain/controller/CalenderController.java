@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import umc.SukBakJi.domain.converter.AlarmConverter;
 import umc.SukBakJi.domain.converter.UnivConverter;
@@ -46,9 +47,7 @@ public class CalenderController {
                             schema = @Schema(implementation = ErrorReasonDTO.class)))
     })
     @GetMapping("/member")
-    public ApiResponse<UnivResponseDTO.memberIdDTO> getMemberId(@RequestHeader("Authorization") String token){
-        String jwtToken = token.substring(7);
-        Long memberId = jwtTokenProvider.getMemberIdFromToken(jwtToken);
+    public ApiResponse<UnivResponseDTO.memberIdDTO> getMemberId(@AuthenticationPrincipal Long memberId){
         UnivResponseDTO.memberIdDTO memberIdDTO = new UnivResponseDTO.memberIdDTO(memberId);
         return ApiResponse.onSuccess(memberIdDTO);
     }
@@ -135,10 +134,7 @@ public class CalenderController {
                             schema = @Schema(implementation = ErrorReasonDTO.class)))
     })
     @GetMapping("/univ")
-    public ApiResponse<UnivResponseDTO.getUnivListDTO> getUnivList(@RequestHeader("Authorization") String token){
-        String jwtToken = token.substring(7);
-        Long memberId = jwtTokenProvider.getMemberIdFromToken(jwtToken);
-
+    public ApiResponse<UnivResponseDTO.getUnivListDTO> getUnivList(@AuthenticationPrincipal Long memberId){
         List<SetUniv> univList = calenderService.getUnivList(memberId);
         if(univList == null){
             return ApiResponse.onSuccess(UnivConverter.toGetUnivListDTO(memberId, null));
@@ -196,9 +192,7 @@ public class CalenderController {
                             schema = @Schema(implementation = ErrorReasonDTO.class)))
     })
     @GetMapping("/schedule")
-    public ApiResponse<UnivResponseDTO.getScheduleListDTO> getSchedule(@RequestHeader("Authorization") String token){
-        String jwtToken = token.substring(7);
-        Long memberId = jwtTokenProvider.getMemberIdFromToken(jwtToken);
+    public ApiResponse<UnivResponseDTO.getScheduleListDTO> getSchedule(@AuthenticationPrincipal Long memberId) {
         List<UnivScheduleInfo> univScheduleInfoList = calenderService.getScheduleList(memberId);
         List<UnivResponseDTO.scheduleListDTO> scheduleListDTOList = UnivConverter.toScheduleList(univScheduleInfoList);
         return ApiResponse.onSuccess(UnivConverter.toGetScheduleList(memberId, scheduleListDTOList));
@@ -216,9 +210,7 @@ public class CalenderController {
                             schema = @Schema(implementation = ErrorReasonDTO.class)))
     })
     @GetMapping("/schedule/{date}")
-    public ApiResponse<UnivResponseDTO.getSpeciDateListDTO> getSpeciDateSchedule(@RequestHeader("Authorization") String token, @RequestParam("date") String date){
-        String jwtToken = token.substring(7);
-        Long memberId = jwtTokenProvider.getMemberIdFromToken(jwtToken);
+    public ApiResponse<UnivResponseDTO.getSpeciDateListDTO> getSpeciDateSchedule(@AuthenticationPrincipal Long memberId, @RequestParam("date") String date){
         List<UnivScheduleInfo> univScheduleInfoList = calenderService.getSpeciDateScheduleList(memberId, date);
         List<UnivResponseDTO.speciDateListDTO> speciDateList = UnivConverter.speciDateList(univScheduleInfoList);
         return ApiResponse.onSuccess(UnivConverter.toGetSpeciDateList(memberId, speciDateList));
@@ -253,15 +245,50 @@ public class CalenderController {
                             schema = @Schema(implementation = ErrorReasonDTO.class)))
     })
     @GetMapping("/alarm")
-    public ApiResponse<AlarmResponseDTO.getAlarmListDTO> viewAlarmList(@RequestHeader("Authorization") String token){
-        String jwtToken = token.substring(7);
-        Long memberId = jwtTokenProvider.getMemberIdFromToken(jwtToken);
-
+    public ApiResponse<AlarmResponseDTO.getAlarmListDTO> viewAlarmList(@AuthenticationPrincipal Long memberId){
         List<Alarm> alarmList = calenderService.getAlarmList(memberId);
         if(alarmList == null){
             return ApiResponse.onSuccess(AlarmConverter.getAlarmListDTO(memberId, null));
         }
         return ApiResponse.onSuccess(AlarmConverter.getAlarmListDTO(memberId, alarmList));
+    }
+
+    @Operation(summary = "알람 수정", description = "알람을 수정합니다.")
+    @ApiResponses(value = {
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "성공",
+                    content = @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = AlarmResponseDTO.alarmDTO.class))),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "400", description = "올바른 날짜나 시간이 아닙니다.",
+                    content = @Content),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "403", description = "알람을 수정할 권한이 없습니다.",
+                    content = @Content),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "존재하지 않는 알람입니다.",
+                    content = @Content),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "500", description = "서버 에러, 관리자에게 문의 바랍니다.",
+                    content = @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = ErrorReasonDTO.class)))
+    })
+    @PatchMapping("/alarm/{alarmId}")
+    public ApiResponse<AlarmResponseDTO.alarmDTO> updateAlarm(@AuthenticationPrincipal Long alarmId, @RequestBody @Valid AlarmRequestDTO.updateAlarm request){
+        AlarmResponseDTO.alarmDTO updatedAlarm = calenderService.updateAlarm(alarmId, request);
+        return ApiResponse.onSuccess("알람이 성공적으로 수정되었습니다.", updatedAlarm);
+    }
+
+    @Operation(summary = "알람 삭제", description = "알람을 삭제합니다.")
+    @ApiResponses(value = {
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "성공",
+                    content = @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = String.class))),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "400", description = "올바른 날짜나 시간이 아닙니다.",
+                    content = @Content),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "500", description = "서버 에러, 관리자에게 문의 바랍니다.",
+                    content = @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = ErrorReasonDTO.class)))
+    })
+    @DeleteMapping("/alarm/{alarmId}")
+    public ApiResponse<String> deleteAlarm(@AuthenticationPrincipal Long memberId, @PathVariable Long alarmId) {
+        calenderService.deleteAlarm(memberId, alarmId);
+        return ApiResponse.onSuccess("알람을 성공적으로 삭제하였습니다.");
     }
 
     @Operation(summary = "알람 켜기", description = "알람을 킵니다.")
