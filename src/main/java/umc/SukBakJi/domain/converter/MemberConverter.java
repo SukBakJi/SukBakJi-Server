@@ -25,7 +25,6 @@ public class MemberConverter {
                 .name(member.getName())
                 .degreeLevel(member.getDegreeLevel())
                 .researchTopics(resarchTopics)
-                .point(member.getPoint())
                 .build();
     }
 
@@ -34,7 +33,6 @@ public class MemberConverter {
                 .name(member.getName())
                 .degreeLevel(member.getDegreeLevel())
                 .researchTopics(resarchTopics)
-                .point(member.getPoint())
                 .build();
     }
 }

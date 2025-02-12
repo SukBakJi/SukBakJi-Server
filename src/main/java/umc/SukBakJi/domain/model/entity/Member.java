@@ -37,9 +37,6 @@ public class Member extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private DegreeLevel degreeLevel;
 
-    @ColumnDefault("0")
-    private Integer point;
-
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private Provider provider;
@@ -80,13 +77,12 @@ public class Member extends BaseEntity {
     @OneToMany(mappedBy = "member")
     private List<Scrap> scraps;
 
-    public Member(String name, String password, String email, String phoneNumber, DegreeLevel degreeLevel, int point, Provider provider) {
+    public Member(String name, String password, String email, String phoneNumber, DegreeLevel degreeLevel, Provider provider) {
         this.name = name;
         this.password = password;
         this.email = email;
         this.phoneNumber = phoneNumber;
         this.degreeLevel = degreeLevel;
-        this.point = point;
         this.provider = provider;
     }
 
@@ -100,11 +96,6 @@ public class Member extends BaseEntity {
 
     public void resetRefreshToken() {
         this.refreshToken = null;
-    }
-
-    @PrePersist
-    public void setPoint() {
-        this.point = 0;
     }
 
     public Long getMemberId() {

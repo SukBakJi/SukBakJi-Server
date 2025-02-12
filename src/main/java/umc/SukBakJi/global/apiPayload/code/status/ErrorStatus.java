@@ -66,6 +66,9 @@ public enum ErrorStatus implements BaseErrorCode {
     INVALID_PROFESSOR_NAME(HttpStatus.NOT_FOUND, "PROFESSOR4042", "지도교수 이름을 찾을 수 없습니다."),
     SCRAP_NOT_FOUND(HttpStatus.NOT_FOUND, "SCRAP4001", "스크랩 목록에서 찾을 수 없습니다."),
 
+    // 문의 관련 에러
+    INVALID_INQUIRY_CONTENT(HttpStatus.BAD_REQUEST, "REQUEST4001", "문의 내용이 유효하지 않습니다."),
+
     // 게시판 관련 오류
     BOARD_NOT_FOUND(HttpStatus.NOT_FOUND, "BOARD4041", "게시판을 찾을 수 없습니다."),
     POST_NOT_FOUND(HttpStatus.NOT_FOUND, "POST4041", "게시글을 찾을 수 없습니다."),

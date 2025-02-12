@@ -1,5 +1,6 @@
 package umc.SukBakJi.domain.service;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -10,32 +11,36 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import umc.SukBakJi.domain.converter.LabReviewConverter;
-import umc.SukBakJi.domain.model.dto.LabReviewSummaryDTO;
-import umc.SukBakJi.domain.model.dto.TriangleGraphData;
+import umc.SukBakJi.domain.model.dto.*;
+import umc.SukBakJi.domain.model.entity.Member;
+import umc.SukBakJi.domain.model.entity.enums.LabUpdateStatus;
+import umc.SukBakJi.domain.model.entity.mapping.LabReviewUpdateRequest;
+import umc.SukBakJi.domain.model.entity.mapping.LabUpdateRequest;
+import umc.SukBakJi.domain.repository.LabReviewUpdateRequestRepository;
+import umc.SukBakJi.domain.repository.MemberRepository;
 import umc.SukBakJi.global.apiPayload.code.status.ErrorStatus;
 import umc.SukBakJi.global.apiPayload.exception.GeneralException;
-import umc.SukBakJi.domain.model.dto.LabReviewCreateDTO;
-import umc.SukBakJi.domain.model.dto.LabReviewDetailsDTO;
 import umc.SukBakJi.domain.model.entity.Lab;
 import umc.SukBakJi.domain.model.entity.mapping.LabReview;
 import umc.SukBakJi.domain.repository.LabRepository;
 import umc.SukBakJi.domain.repository.LabReviewRepository;
+import umc.SukBakJi.global.apiPayload.exception.handler.LabHandler;
+import umc.SukBakJi.global.apiPayload.exception.handler.MemberHandler;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class LabReviewService {
 
-    @Autowired
-    private LabReviewRepository labReviewRepository;
+    private final LabReviewUpdateRequestRepository labReviewUpdateRequestRepository;
+    private final MemberRepository memberRepository;
+    private final LabReviewRepository labReviewRepository;
+    private final LabRepository labRepository;
 
-    @Autowired
-    private LabRepository labRepository;
-
-    @Autowired
-    private LabReviewConverter labReviewConverter;
+    private final LabReviewConverter labReviewConverter;
 
     public LabReviewSummaryDTO getLabReviews(Long labId) {
         List<LabReview> reviews = labReviewRepository.findByLabId(labId);
@@ -110,5 +115,27 @@ public class LabReviewService {
         }
 
         return labReviewConverter.toDto(reviews);
+    }
+
+    // 연구실 후기 문의 등록
+    public void labReviewUpdateRequest(Long memberId, LabRequestDTO.InquireLabReviewDTO request) {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new MemberHandler(ErrorStatus.MEMBER_NOT_FOUND));
+
+        LabReview labReview = labReviewRepository.findById(request.getLabReviewId())
+                .orElseThrow(() -> new LabHandler(ErrorStatus.LAB_REVIEW_NOT_FOUND));
+
+        if (request.getContent() == null || request.getContent().trim().isEmpty()) {
+            throw new LabHandler(ErrorStatus.INVALID_INQUIRY_CONTENT);
+        }
+
+        labReviewUpdateRequestRepository.save(
+                LabReviewUpdateRequest.builder()
+                        .member(member)
+                        .labReview(labReview)
+                        .content(request.getContent())
+                        .labUpdateStatus(LabUpdateStatus.PENDING)
+                        .build()
+        );
     }
 }
