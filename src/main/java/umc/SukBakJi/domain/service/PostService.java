@@ -179,4 +179,39 @@ public class PostService {
             return dto;
         }).collect(Collectors.toList());
     }
+
+    public PostResponseDTO updatePost(Long postId, UpdatePostRequestDTO request, Long memberId) {
+        // 게시글 존재 여부 확인
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new GeneralException(ErrorStatus.POST_NOT_FOUND));
+
+        // 게시글 작성자와 요청자가 같은지 확인
+        if (!post.getMember().getId().equals(memberId)) {
+            throw new GeneralException(ErrorStatus.INVALID_MEMBER_ID);
+        }
+
+        // 수정 가능한 필드 업데이트
+        if (request.getTitle() != null) post.setTitle(request.getTitle());
+        if (request.getContent() != null) post.setContent(request.getContent());
+        if (request.getSupportField() != null) post.setSupportField(request.getSupportField());
+        if (request.getJob() != null) post.setJob(request.getJob());
+        if (request.getHiringType() != null) post.setHiringType(request.getHiringType());
+        if (request.getFinalEducation() != null) post.setFinalEducation(request.getFinalEducation());
+
+        // 수정된 게시글 저장
+        Post updatedPost = postRepository.save(post);
+
+        // 응답 DTO 생성 및 반환
+        PostResponseDTO responseDTO = new PostResponseDTO();
+        responseDTO.setPostId(updatedPost.getPostId());
+        responseDTO.setTitle(updatedPost.getTitle());
+        responseDTO.setContent(updatedPost.getContent());
+        responseDTO.setViews(updatedPost.getViews());
+        responseDTO.setCreatedAt(updatedPost.getCreatedAt().toString());
+        responseDTO.setUpdatedAt(updatedPost.getUpdatedAt().toString());
+        responseDTO.setBoardId(updatedPost.getBoard().getBoardId());
+        responseDTO.setMemberId(updatedPost.getMember().getId());
+
+        return responseDTO;
+    }
 }
