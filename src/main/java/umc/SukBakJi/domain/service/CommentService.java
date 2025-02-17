@@ -2,6 +2,7 @@ package umc.SukBakJi.domain.service;
 
 import umc.SukBakJi.domain.model.dto.CommentResponseDTO;
 import umc.SukBakJi.domain.model.dto.CreateCommentRequestDTO;
+import umc.SukBakJi.domain.model.dto.UpdateCommentRequestDTO;
 import umc.SukBakJi.domain.model.entity.Comment;
 import umc.SukBakJi.domain.model.entity.Member;
 import umc.SukBakJi.domain.model.entity.Post;
@@ -84,6 +85,31 @@ public class CommentService {
         responseDTO.setMemberId(savedComment.getMember().getId()); // Set the member ID
         responseDTO.setCreatedAt(savedComment.getCreatedAt());
         responseDTO.setUpdatedAt(savedComment.getUpdatedAt());
+
+        return responseDTO;
+    }
+
+    public CommentResponseDTO updateComment(UpdateCommentRequestDTO request, Long memberId) {
+        Comment comment = commentRepository.findById(request.getCommentId())
+                .orElseThrow(() -> new GeneralException(ErrorStatus.COMMENT_NOT_FOUND));
+
+        // 작성자 확인
+        if (!comment.getMember().getId().equals(memberId)) {
+            throw new GeneralException(ErrorStatus.UNAUTHORIZED_COMMENT_ACCESS);
+        }
+
+        // 내용 수정
+        comment.setContent(request.getContent());
+        Comment updatedComment = commentRepository.save(comment);
+
+        // 수정된 댓글 정보를 반환
+        CommentResponseDTO responseDTO = new CommentResponseDTO();
+        responseDTO.setCommentId(updatedComment.getCommentId());
+        responseDTO.setContent(updatedComment.getContent());
+        responseDTO.setNickname(updatedComment.getNickname());
+        responseDTO.setMemberId(updatedComment.getMember().getId());
+        responseDTO.setCreatedAt(updatedComment.getCreatedAt());
+        responseDTO.setUpdatedAt(updatedComment.getUpdatedAt());
 
         return responseDTO;
     }
