@@ -83,10 +83,16 @@ public enum ErrorStatus implements BaseErrorCode {
     POST_CREATION_FAILED(HttpStatus.BAD_REQUEST, "POST4001", "게시글 작성에 실패했습니다."),
     INVALID_MENU_OR_BOARD(HttpStatus.BAD_REQUEST, "POST4002", "유효하지 않은 메뉴 또는 게시판 이름입니다."),
     INVALID_MEMBER_ID(HttpStatus.BAD_REQUEST, "POST4003", "유효하지 않은 회원 ID입니다."),
+    POST_UPDATE_UNAUTHORIZED(HttpStatus.FORBIDDEN, "POST4032", "해당 게시글을 수정할 권한이 없습니다."),
 
     // Comment related errors
     COMMENT_CREATION_FAILED(HttpStatus.BAD_REQUEST, "COMMENT4001", "댓글 생성에 실패했습니다."),
     COMMENT_NOT_FOUND(HttpStatus.NOT_FOUND, "COMMENT4041", "댓글을 찾을 수 없습니다."),
+    UNAUTHORIZED_COMMENT_ACCESS(HttpStatus.FORBIDDEN, "COMMENT4031", "댓글 수정 권한이 없습니다."),
+
+    // 댓글 및 게시글 신고 관련 오류 추가
+    ALREADY_REPORTED(HttpStatus.CONFLICT, "REPORT4091", "이미 신고된 항목입니다."),
+    REPORT_NOT_FOUND(HttpStatus.NOT_FOUND, "REPORT4041", "신고 내역을 찾을 수 없습니다."),
 
     // 알람 설정 관련 에러
     INVALID_DATE(HttpStatus.BAD_REQUEST, "ALARM400", "올바르지 않는 날짜입니다."),
