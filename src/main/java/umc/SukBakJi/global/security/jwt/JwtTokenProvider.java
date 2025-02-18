@@ -105,10 +105,7 @@ public class JwtTokenProvider {
         Member member = memberRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("회원 정보를 찾을 수 없습니다."));
 
-        // PrincipalDetails 생성
-        UserDetails principal = new PrincipalDetails(member);
-
-        return new UsernamePasswordAuthenticationToken(principal, "", authorities);
+        return new UsernamePasswordAuthenticationToken(member.getId(), "", authorities);
     }
 
     // 토큰 정보 검증

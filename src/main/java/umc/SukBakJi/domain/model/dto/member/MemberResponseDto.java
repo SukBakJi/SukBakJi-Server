@@ -13,6 +13,7 @@ public class MemberResponseDto {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class LoginResponseDto {
+        private Provider provider;
         private String email;
         private String accessToken;
         private String refreshToken;
@@ -27,6 +28,5 @@ public class MemberResponseDto {
         private Provider provider;
         private DegreeLevel degreeLevel;
         private List<String> researchTopics;
-        private Integer point;
     }
 }
