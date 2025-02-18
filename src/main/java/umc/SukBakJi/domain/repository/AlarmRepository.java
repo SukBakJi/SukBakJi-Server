@@ -10,5 +10,7 @@ import java.util.Optional;
 public interface AlarmRepository extends JpaRepository<Alarm, Long> {
     List<Alarm> findByNameAndMember(String name, Member member);
     List<Alarm> findByUnivNameAndMember(String univName, Member member);
+    boolean existsByNameAndMemberAndIdNot(String name, Member member, Long id);
+    boolean existsByUnivNameAndMemberAndIdNot(String univName, Member member, Long id);
     List<Alarm> findByMemberId(Long memberId);
 }

@@ -19,6 +19,14 @@ public enum ErrorStatus implements BaseErrorCode {
 
     // 검증 관련 에러
     INVALID_REFRESH_TOKEN(HttpStatus.BAD_REQUEST, "AUTH4001", "유효하지 않은 Refresh Token입니다."),
+    INVALID_CODE(HttpStatus.BAD_REQUEST, "AUTH4002", "인증번호가 일치하지 않습니다."),
+    EMAIL_NOT_FOUND(HttpStatus.BAD_REQUEST, "AUTH4003", "가입된 이메일이 없습니다."),
+
+    // 카카오 관련 에러
+    KAKAO_INVALID_ACCESS_TOKEN(HttpStatus.UNAUTHORIZED, "KAKAO401", "유효하지 않거나 만료된 카카오 액세스 토큰입니다."),
+    KAKAO_FORBIDDEN_API_ACCESS(HttpStatus.FORBIDDEN, "KAKAO403", "카카오 API 접근 권한이 없습니다."),
+    KAKAO_USER_NOT_FOUND(HttpStatus.NOT_FOUND, "KAKAO404", "카카오 사용자 정보를 찾을 수 없습니다."),
+    KAKAO_BAD_REQUEST(HttpStatus.BAD_REQUEST, "KAKAO400", "잘못된 카카오 API 요청입니다."),
 
     // 멤버 관련 에러
     MEMBER_NOT_FOUND(HttpStatus.BAD_REQUEST, "MEMBER4001", "사용자가 없습니다."),
@@ -58,6 +66,9 @@ public enum ErrorStatus implements BaseErrorCode {
     INVALID_PROFESSOR_NAME(HttpStatus.NOT_FOUND, "PROFESSOR4042", "지도교수 이름을 찾을 수 없습니다."),
     SCRAP_NOT_FOUND(HttpStatus.NOT_FOUND, "SCRAP4001", "스크랩 목록에서 찾을 수 없습니다."),
 
+    // 문의 관련 에러
+    INVALID_INQUIRY_CONTENT(HttpStatus.BAD_REQUEST, "REQUEST4001", "문의 내용이 유효하지 않습니다."),
+
     // 게시판 관련 오류
     BOARD_NOT_FOUND(HttpStatus.NOT_FOUND, "BOARD4041", "게시판을 찾을 수 없습니다."),
     POST_NOT_FOUND(HttpStatus.NOT_FOUND, "POST4041", "게시글을 찾을 수 없습니다."),
@@ -87,11 +98,13 @@ public enum ErrorStatus implements BaseErrorCode {
     INVALID_DATE(HttpStatus.BAD_REQUEST, "ALARM400", "올바르지 않는 날짜입니다."),
     DUPLICATE_ALARM_NAME(HttpStatus.BAD_REQUEST, "ALARM401", "중복된 알람 이름입니다."),
     INVALID_ALARM(HttpStatus.BAD_REQUEST, "ALARM402", "유효하지 않은 알람입니다."),
+    UNAUTHORIZED_ALARM_ACCESS(HttpStatus.BAD_REQUEST, "ALARM403", "해당 알람을 삭제할 권한이 없습니다."),
 
     // 대학교 설정 관련 에러
     INVALID_UNIVERSITY(HttpStatus.BAD_REQUEST, "UNIVERSITY400", "유효하지 않은 학교입니다."),
+    SET_UNIV_NOT_FOUND(HttpStatus.BAD_REQUEST, "UNIVERSITY400", "학교 일정을 찾을 수 없습니다."),
 
-    // 멘토링 관려 에러
+    // 멘토링 관련 에러
     DUPLICATE_MENTOR(HttpStatus.BAD_REQUEST, "MENTORING400", "이미 멘토로 신청했습니다."),
     DUPLICATE_MENTORING(HttpStatus.BAD_REQUEST, "MENTORING401", "이미 신청된 멘토링입니다."),
     INVALID_MENTOR(HttpStatus.BAD_REQUEST, "MENTORING402", "유효하지 않은 멘토입니다.");

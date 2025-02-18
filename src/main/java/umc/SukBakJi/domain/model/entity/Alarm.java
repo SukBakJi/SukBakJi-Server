@@ -1,6 +1,7 @@
 package umc.SukBakJi.domain.model.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
 import umc.SukBakJi.global.entity.BaseEntity;
@@ -35,5 +36,13 @@ public class Alarm extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "memberId")
     private Member member;
+
+    public void updateAlarm(String name, String univName, String date, String time, Long onoff) {
+        this.univName = univName;
+        this.name = name;
+        this.date = date;
+        this.time = time;
+        this.onoff = onoff;
+    }
 }
 
