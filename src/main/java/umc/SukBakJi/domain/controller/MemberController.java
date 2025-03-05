@@ -1,10 +1,12 @@
 package umc.SukBakJi.domain.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
+import jakarta.mail.MessagingException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -60,11 +62,26 @@ public class MemberController {
     }
 
     @PostMapping("/password")
-    @Operation(summary = "비밀번호 재설정", description = "현재 비밀번호를 올바르게 입력했는지 검사하고, 새 비밀번호를 설정합니다.")
-    public ApiResponse<String> resetPassword(@RequestHeader("Authorization") String token,
-                                        @Valid @RequestBody MemberRequestDto.PasswordDto passwordDto) {
-        String jwtToken = token.substring(7);
-        memberService.resetPassword(jwtToken, passwordDto);
+    @Operation(summary = "비밀번호 찾기", description = "이메일을 입력하여 해당 이메일로 인증번호를 전송합니다.")
+    public ApiResponse<String> findPassword(@AuthenticationPrincipal Long memberId,
+                                             @Valid @RequestBody MemberRequestDto.SearchPasswordDto searchPasswordDto) throws MessagingException {
+        memberService.searchPassword(memberId, searchPasswordDto);
+        return ApiResponse.onSuccess("비밀번호 재설정에 필요한 인증번호가 이메일로 전송되었습니다.");
+    }
+
+    @PostMapping("/email-code")
+    @Operation(summary = "이메일 인증번호 인증", description = "이메일로 전달된 인증번재를 검사합니다.")
+    public ApiResponse<String> verifyEmailCode(@AuthenticationPrincipal Long memberId,
+                                            @Valid @RequestBody MemberRequestDto.EmailCodeDto emailCodeDto) throws MessagingException {
+        String response = memberService.verifyEmailCode(memberId, emailCodeDto);
+        return ApiResponse.onSuccess(response);
+    }
+
+    @PostMapping("/password-reset")
+    @Operation(summary = "비밀번호 재설정", description = "비밀번호를 재설정합니다.")
+    public ApiResponse<String> resetPassword(@AuthenticationPrincipal Long memberId,
+                                        @Valid @RequestBody MemberRequestDto.ModifyPasswordDto modifyPasswordDto) {
+        memberService.resetPassword(memberId, modifyPasswordDto);
         return ApiResponse.onSuccess("비밀번호를 재설정하였습니다.");
     }
 }
