@@ -47,7 +47,38 @@ public class SmsService {
 
         // 인증 성공 후 이메일 조회
         Optional<Member> member = memberRepository.findByPhoneNumber(requestDto.getPhoneNumber());
-        return member.map(Member::getEmail).orElse("EMAIL_NOT_FOUND");  // 이메일이 존재하지 않음
+        return member.map(m -> maskEmail(m.getEmail()))
+                .orElse("EMAIL_NOT_FOUND");  // 이메일이 존재하지 않음
+    }
+
+    private String maskEmail(String email) {
+        if (email == null || !email.contains("@")) {
+            return "INVALID_EMAIL";
+        }
+
+        String[] parts = email.split("@");
+        String localPart = parts[0];
+        String domainPart = parts[1];
+
+        int length = localPart.length();
+        String visiblePart;
+        String maskedPart;
+
+        if (length == 1) {
+            visiblePart = "*";
+            maskedPart = "";
+        } else if (length == 2) {
+            visiblePart = localPart.substring(0, 1);
+            maskedPart = "*";
+        } else if (length == 3) {
+            visiblePart = localPart.substring(0, 2);
+            maskedPart = "*";
+        } else {
+            visiblePart = localPart.substring(0, 3);
+            maskedPart = "*".repeat(length - 3);
+        }
+
+        return visiblePart + maskedPart + "@" + domainPart;
     }
 
     private String generateVerificationCode() {
