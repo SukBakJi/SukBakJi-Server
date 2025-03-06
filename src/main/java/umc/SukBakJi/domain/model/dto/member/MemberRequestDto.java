@@ -76,6 +76,15 @@ public class MemberRequestDto {
     @Getter
     @NoArgsConstructor
     @AllArgsConstructor
+    public static class searchEmailDto {
+        private String name;
+        private String phoneNumber;
+    }
+
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
     public static class SearchPasswordDto {
         private String email;
     }
