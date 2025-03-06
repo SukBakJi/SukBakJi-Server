@@ -1,5 +1,6 @@
 package umc.SukBakJi.domain.controller;
 
+import com.google.protobuf.Api;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.mail.MessagingException;
 import jakarta.validation.Valid;
@@ -16,6 +17,7 @@ import umc.SukBakJi.domain.model.dto.member.MemberResponseDto;
 import umc.SukBakJi.domain.model.entity.enums.EducationCertificateType;
 import umc.SukBakJi.domain.service.MemberService;
 import umc.SukBakJi.global.apiPayload.ApiResponse;
+import umc.SukBakJi.global.apiPayload.code.status.ErrorStatus;
 
 @RestController
 @RequiredArgsConstructor
@@ -61,6 +63,13 @@ public class MemberController {
         return ApiResponse.onSuccess(responseDto);
     }
 
+    @PostMapping("/email")
+    @Operation(summary = "이름과 전화번호로 이메일 찾기", description = "이름과 전화번호로 등록된 이메일을 일부 반환합니다.")
+    public ResponseEntity<ApiResponse<String>> findEmail(@RequestBody MemberRequestDto.searchEmailDto requestDto) {
+        String response = memberService.findEmail(requestDto);
+        return ResponseEntity.ok(ApiResponse.onSuccess(response));
+    }
+
     @PostMapping("/password")
     @Operation(summary = "비밀번호 찾기", description = "이메일을 입력하여 해당 이메일로 인증번호를 전송합니다.")
     public ApiResponse<String> findPassword(@AuthenticationPrincipal Long memberId,
@@ -70,11 +79,11 @@ public class MemberController {
     }
 
     @PostMapping("/email-code")
-    @Operation(summary = "이메일 인증번호 인증", description = "이메일로 전달된 인증번재를 검사합니다.")
-    public ApiResponse<String> verifyEmailCode(@AuthenticationPrincipal Long memberId,
+    @Operation(summary = "이메일 인증번호 인증", description = "이메일로 전달된 인증번호를 검사합니다.")
+    public ResponseEntity<ApiResponse<String>> verifyEmailCode(@AuthenticationPrincipal Long memberId,
                                             @Valid @RequestBody MemberRequestDto.EmailCodeDto emailCodeDto) throws MessagingException {
         String response = memberService.verifyEmailCode(memberId, emailCodeDto);
-        return ApiResponse.onSuccess(response);
+        return ResponseEntity.ok(ApiResponse.onSuccess(response));
     }
 
     @PostMapping("/password-reset")
