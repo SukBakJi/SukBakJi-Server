@@ -81,7 +81,7 @@ public class MailService {
     public void saveVerificationCode(String email, String code) {
         String key = "email_verification:" + email;
         redisTemplate.opsForValue().set(key, code);
-        redisTemplate.expire(key, Duration.ofDays(300));
+        redisTemplate.expire(key, Duration.ofMinutes(5));
     }
 
     // 인증 코드 검증

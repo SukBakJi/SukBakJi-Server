@@ -2,7 +2,6 @@ package umc.SukBakJi.domain.service;
 
 import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
-import org.hibernate.validator.internal.constraintvalidators.hv.UUIDValidator;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -162,6 +161,44 @@ public class MemberService {
                 .degreeLevel(member.getDegreeLevel())
                 .researchTopics(memberResearchTopics)
                 .build();
+    }
+
+    public String findEmail(MemberRequestDto.searchEmailDto requestDto) {
+        Optional<Member> member = memberRepository.findByNameAndPhoneNumber(
+                requestDto.getName(), requestDto.getPhoneNumber()
+        );
+        return member.map(m -> maskEmail(m.getEmail()))
+                .orElse(ErrorStatus.EMAIL_NOT_FOUND.getCode());
+    }
+
+    private String maskEmail(String email) {
+        if (email == null || !email.contains("@")) {
+            return ErrorStatus.INVALID_EMAIL.getCode();
+        }
+
+        String[] parts = email.split("@");
+        String localPart = parts[0];
+        String domainPart = parts[1];
+
+        int length = localPart.length();
+        String visiblePart;
+        String maskedPart;
+
+        if (length == 1) {
+            visiblePart = "*";
+            maskedPart = "";
+        } else if (length == 2) {
+            visiblePart = localPart.substring(0, 1);
+            maskedPart = "*";
+        } else if (length == 3) {
+            visiblePart = localPart.substring(0, 2);
+            maskedPart = "*";
+        } else {
+            visiblePart = localPart.substring(0, 3);
+            maskedPart = "*".repeat(length - 3);
+        }
+
+        return visiblePart + maskedPart + "@" + domainPart;
     }
 
     // 비밀번호 찾기
