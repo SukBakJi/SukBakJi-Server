@@ -2,6 +2,7 @@ package umc.SukBakJi.domain.controller;
 
 import umc.SukBakJi.domain.model.dto.CommentResponseDTO;
 import umc.SukBakJi.domain.model.dto.CreateCommentRequestDTO;
+import umc.SukBakJi.domain.model.dto.UpdateCommentRequestDTO;
 import umc.SukBakJi.domain.service.CommentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -38,4 +39,22 @@ public class CommentController {
                     .body(ApiResponse.onFailure("COMMON500", "Internal server error", null));
         }
     }
+
+    @PutMapping("/update")
+    public ResponseEntity<ApiResponse<?>> updateComment(@RequestBody UpdateCommentRequestDTO request, @RequestHeader("Authorization") String token) {
+        try {
+            token = token.replace("Bearer ", ""); // Remove "Bearer " prefix if present
+            Long memberId = jwtTokenProvider.getMemberIdFromToken(token);
+            CommentResponseDTO updatedComment = commentService.updateComment(request, memberId);
+            return ResponseEntity.ok(ApiResponse.onSuccess("댓글 수정에 성공했습니다.", updatedComment));
+        } catch (GeneralException e) {
+            return ResponseEntity.status(e.getErrorReasonHttpStatus().getHttpStatus())
+                    .body(ApiResponse.onFailure(e.getErrorReasonHttpStatus().getCode(), e.getErrorReasonHttpStatus().getMessage(), null));
+        } catch (Exception e) {
+            return ResponseEntity.status(500)
+                    .body(ApiResponse.onFailure("COMMON500", "Internal server error", null));
+        }
+    }
 }
+
+

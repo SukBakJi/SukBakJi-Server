@@ -17,7 +17,6 @@ import umc.SukBakJi.domain.model.dto.member.MemberRequestDto;
 import umc.SukBakJi.domain.model.dto.member.MemberResponseDto;
 import umc.SukBakJi.domain.service.AuthService;
 import umc.SukBakJi.global.apiPayload.ApiResponse;
-import umc.SukBakJi.global.security.jwt.JwtTokenProvider;
 
 @RestController
 @RequiredArgsConstructor
@@ -25,7 +24,6 @@ import umc.SukBakJi.global.security.jwt.JwtTokenProvider;
 @RequestMapping("/api/auth")
 public class AuthController {
     private final AuthService authService;
-    private final JwtTokenProvider jwtTokenProvider;
 
     @PostMapping("/signup")
     @Operation(summary = "일반 회원가입", description = "이메일과 비밀번호를 입력하여 회원가입을 진행합니다.")

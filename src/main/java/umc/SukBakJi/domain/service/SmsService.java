@@ -4,13 +4,14 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Service;
-import umc.SukBakJi.domain.model.dto.CertificationDTO;
+import umc.SukBakJi.domain.model.dto.auth.CertificationDTO;
 import umc.SukBakJi.domain.model.entity.Member;
 import umc.SukBakJi.domain.repository.MemberRepository;
+import umc.SukBakJi.global.apiPayload.code.status.ErrorStatus;
+import umc.SukBakJi.global.apiPayload.exception.handler.MemberHandler;
 import umc.SukBakJi.global.util.CertificationUtil;
 
 import java.time.Duration;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -33,21 +34,28 @@ public class SmsService {
     private void saveVerificationCode(String userPhone, String code, int expirationMinutes) {
         ValueOperations<String, String> valueOperations = redisTemplate.opsForValue();
         valueOperations.set(userPhone, code);
-        redisTemplate.expire(userPhone, Duration.ofSeconds(expirationMinutes * 60L));
+        redisTemplate.expire(userPhone, Duration.ofMinutes(expirationMinutes));
     }
 
-    public String verifyAndFindEmail(CertificationDTO.smsVerifyDto requestDto) {
+    public void verifyCode(Long memberId, CertificationDTO.smsVerifyDto requestDto) {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new MemberHandler(ErrorStatus.MEMBER_NOT_FOUND));
+
         ValueOperations<String, String> valueOperations = redisTemplate.opsForValue();
         String storedCode = valueOperations.get(requestDto.getPhoneNumber());
 
         // 인증번호 불일치
         if (storedCode == null || !storedCode.equals(requestDto.getVerificationCode())) {
-            return "INVALID_CODE";  // 인증 실패
+            throw new MemberHandler(ErrorStatus.INVALID_CODE);
         }
 
-        // 인증 성공 후 이메일 조회
-        Optional<Member> member = memberRepository.findByPhoneNumber(requestDto.getPhoneNumber());
-        return member.map(Member::getEmail).orElse("EMAIL_NOT_FOUND");  // 이메일이 존재하지 않음
+        // 휴대폰 번호 중복 체크
+        if (memberRepository.existsByPhoneNumber(requestDto.getPhoneNumber())) {
+            throw new MemberHandler(ErrorStatus.PHONE_ALREADY_EXISTS);
+        }
+
+        member.setPhoneNumber(requestDto.getPhoneNumber());
+        memberRepository.save(member);
     }
 
     private String generateVerificationCode() {

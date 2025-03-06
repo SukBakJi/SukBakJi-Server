@@ -76,8 +76,33 @@ public class MemberRequestDto {
     @Getter
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class PasswordDto {
-        private String currentPassword;
+    public static class searchEmailDto {
+        private String name;
+        private String phoneNumber;
+    }
+
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class SearchPasswordDto {
+        private String email;
+    }
+
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class EmailCodeDto {
+        private String email;
+        private String code;
+    }
+
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class ModifyPasswordDto {
         @Pattern(regexp = "^.{6,}$", message = "비밀번호는 여섯 자리 이상 입력해주세요.")
         private String newPassword;
         private String confirmPassword;

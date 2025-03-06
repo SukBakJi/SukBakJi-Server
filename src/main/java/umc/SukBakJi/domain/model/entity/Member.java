@@ -53,6 +53,8 @@ public class Member extends BaseEntity {
 
     private Long labId;
 
+
+    @Column(nullable = false, columnDefinition = "BOOLEAN DEFAULT FALSE")  // ✅ 기본값 추가
     private boolean isEducationVerified;
 
     // Define relationships if necessary
