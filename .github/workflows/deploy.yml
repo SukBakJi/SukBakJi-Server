@@ -60,5 +60,6 @@ jobs:
           username: ubuntu
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
+            export DOCKER_HUB_USERNAME=${{ secrets.DOCKER_HUB_USERNAME }}
             cd ~/SukBakJi-Server
             ./deploy.sh $DEPLOY_ENV
