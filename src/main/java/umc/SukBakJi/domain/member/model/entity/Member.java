@@ -1,15 +1,17 @@
-package umc.SukBakJi.domain.model.entity;
+package umc.SukBakJi.domain.member.model.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
 import umc.SukBakJi.domain.board.model.entity.Comment;
 import umc.SukBakJi.domain.board.model.entity.Post;
 import umc.SukBakJi.domain.board.model.entity.Reply;
-import umc.SukBakJi.domain.model.entity.enums.DegreeLevel;
-import umc.SukBakJi.domain.model.entity.enums.Provider;
-import umc.SukBakJi.domain.model.entity.mapping.*;
-import umc.SukBakJi.domain.model.entity.mapping.MemberResearchTopic;
-import umc.SukBakJi.global.entity.BaseEntity;
+import umc.SukBakJi.domain.common.entity.enums.DegreeLevel;
+import umc.SukBakJi.domain.common.entity.enums.Provider;
+import umc.SukBakJi.domain.common.entity.mapping.BoardLike;
+import umc.SukBakJi.domain.common.entity.mapping.FavoriteLab;
+import umc.SukBakJi.domain.common.entity.mapping.MemberResearchTopic;
+import umc.SukBakJi.domain.common.entity.BaseEntity;
+import umc.SukBakJi.domain.common.entity.mapping.Scrap;
 
 import java.util.List;
 

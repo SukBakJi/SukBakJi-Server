@@ -1,4 +1,4 @@
-package umc.SukBakJi.domain.model.dto.auth;
+package umc.SukBakJi.domain.auth.model.dto;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;

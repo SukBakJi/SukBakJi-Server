@@ -1,14 +1,14 @@
-package umc.SukBakJi.domain.service;
+package umc.SukBakJi.domain.board.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.stereotype.Service;
 import umc.SukBakJi.domain.board.model.dto.CreateBoardRequestDTO;
-import umc.SukBakJi.domain.model.entity.Board;
-import umc.SukBakJi.domain.model.entity.Member;
-import umc.SukBakJi.domain.model.entity.enums.Menu;
-import umc.SukBakJi.domain.model.entity.mapping.BoardLike;
-import umc.SukBakJi.domain.model.entity.mapping.BoardLikeId;
+import umc.SukBakJi.domain.board.model.entity.Board;
+import umc.SukBakJi.domain.member.model.entity.Member;
+import umc.SukBakJi.domain.common.entity.enums.Menu;
+import umc.SukBakJi.domain.common.entity.mapping.BoardLike;
+import umc.SukBakJi.domain.common.entity.mapping.BoardLikeId;
 import umc.SukBakJi.domain.board.repository.BoardLikeRepository;
 import umc.SukBakJi.domain.board.repository.BoardRepository;
 import umc.SukBakJi.domain.member.repository.MemberRepository;

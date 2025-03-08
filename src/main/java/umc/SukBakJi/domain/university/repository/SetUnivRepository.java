@@ -1,9 +1,9 @@
-package umc.SukBakJi.domain.repository;
+package umc.SukBakJi.domain.university.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import umc.SukBakJi.domain.model.entity.Member;
-import umc.SukBakJi.domain.model.entity.University;
-import umc.SukBakJi.domain.model.entity.mapping.SetUniv;
+import umc.SukBakJi.domain.member.model.entity.Member;
+import umc.SukBakJi.domain.university.model.entity.University;
+import umc.SukBakJi.domain.common.entity.mapping.SetUniv;
 
 import java.util.List;
 import java.util.Optional;

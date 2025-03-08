@@ -1,12 +1,10 @@
-package umc.SukBakJi.domain.model.dto;
+package umc.SukBakJi.domain.university.model.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import umc.SukBakJi.domain.model.entity.University;
 
-import java.time.LocalDate;
 import java.util.List;
 
 public class UnivResponseDTO {

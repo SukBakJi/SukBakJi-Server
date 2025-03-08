@@ -1,4 +1,4 @@
-package umc.SukBakJi.domain.controller;
+package umc.SukBakJi.domain.mentoring.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -7,10 +7,10 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import umc.SukBakJi.domain.converter.MentoringConverter;
+import umc.SukBakJi.domain.mentoring.converter.MentoringConverter;
 import umc.SukBakJi.domain.mentoring.model.dto.MentoringRequestDTO;
 import umc.SukBakJi.domain.mentoring.model.dto.MentoringResponseDTO;
-import umc.SukBakJi.domain.service.MentoringService;
+import umc.SukBakJi.domain.mentoring.service.MentoringService;
 import umc.SukBakJi.global.apiPayload.ApiResponse;
 import umc.SukBakJi.global.apiPayload.code.ErrorReasonDTO;
 import umc.SukBakJi.global.security.jwt.JwtTokenProvider;

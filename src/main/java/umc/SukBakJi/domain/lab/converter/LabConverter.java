@@ -1,11 +1,11 @@
-package umc.SukBakJi.domain.converter;
+package umc.SukBakJi.domain.lab.converter;
 
 import umc.SukBakJi.domain.lab.model.dto.LabResponseDTO;
-import umc.SukBakJi.domain.model.entity.Lab;
-import umc.SukBakJi.domain.model.entity.Member;
-import umc.SukBakJi.domain.model.entity.ResearchTopic;
-import umc.SukBakJi.domain.model.entity.mapping.FavoriteLab;
-import umc.SukBakJi.domain.model.entity.mapping.LabResearchTopic;
+import umc.SukBakJi.domain.lab.model.entity.Lab;
+import umc.SukBakJi.domain.member.model.entity.Member;
+import umc.SukBakJi.domain.lab.model.entity.ResearchTopic;
+import umc.SukBakJi.domain.common.entity.mapping.FavoriteLab;
+import umc.SukBakJi.domain.common.entity.mapping.LabResearchTopic;
 
 import java.util.List;
 import java.util.stream.Collectors;

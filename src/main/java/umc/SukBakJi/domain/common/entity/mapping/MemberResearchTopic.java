@@ -1,4 +1,4 @@
-package umc.SukBakJi.global.entity.mapping;
+package umc.SukBakJi.domain.common.entity.mapping;
 
 import jakarta.persistence.*;
 import lombok.*;

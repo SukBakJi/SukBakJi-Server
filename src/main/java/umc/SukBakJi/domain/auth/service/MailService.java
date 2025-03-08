@@ -1,4 +1,4 @@
-package umc.SukBakJi.domain.service;
+package umc.SukBakJi.domain.auth.service;
 
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;

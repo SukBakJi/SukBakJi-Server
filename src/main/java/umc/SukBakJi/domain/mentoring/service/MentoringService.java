@@ -1,10 +1,12 @@
-package umc.SukBakJi.domain.service;
+package umc.SukBakJi.domain.mentoring.service;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import umc.SukBakJi.domain.converter.MentoringConverter;
+import umc.SukBakJi.domain.lab.repository.ResearchTopicRepository;
+import umc.SukBakJi.domain.member.repository.MemberResearchTopicRepository;
+import umc.SukBakJi.domain.mentoring.converter.MentoringConverter;
 import umc.SukBakJi.domain.lab.repository.LabRepository;
 import umc.SukBakJi.domain.lab.repository.LabResearchTopicRepository;
 import umc.SukBakJi.domain.member.repository.MemberRepository;
@@ -12,13 +14,12 @@ import umc.SukBakJi.domain.mentoring.repository.MentorRepository;
 import umc.SukBakJi.domain.mentoring.repository.MentoringRepository;
 import umc.SukBakJi.domain.mentoring.model.dto.MentoringRequestDTO;
 import umc.SukBakJi.domain.mentoring.model.dto.MentoringResponseDTO;
-import umc.SukBakJi.domain.model.entity.Lab;
-import umc.SukBakJi.domain.model.entity.Member;
-import umc.SukBakJi.domain.model.entity.Mentor;
-import umc.SukBakJi.domain.model.entity.ResearchTopic;
-import umc.SukBakJi.domain.model.entity.mapping.LabResearchTopic;
-import umc.SukBakJi.domain.model.entity.mapping.Mentoring;
-import umc.SukBakJi.domain.repository.*;
+import umc.SukBakJi.domain.lab.model.entity.Lab;
+import umc.SukBakJi.domain.member.model.entity.Member;
+import umc.SukBakJi.domain.mentoring.model.entity.Mentor;
+import umc.SukBakJi.domain.lab.model.entity.ResearchTopic;
+import umc.SukBakJi.domain.common.entity.mapping.LabResearchTopic;
+import umc.SukBakJi.domain.common.entity.mapping.Mentoring;
 import umc.SukBakJi.global.apiPayload.code.status.ErrorStatus;
 import umc.SukBakJi.global.apiPayload.exception.GeneralException;
 

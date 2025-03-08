@@ -1,15 +1,15 @@
-package umc.SukBakJi.domain.service;
+package umc.SukBakJi.domain.board.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import umc.SukBakJi.domain.model.entity.Member;
-import umc.SukBakJi.domain.model.entity.Post;
-import umc.SukBakJi.domain.model.entity.mapping.Scrap;
-import umc.SukBakJi.domain.model.entity.mapping.ScrapId;
+import umc.SukBakJi.domain.member.model.entity.Member;
+import umc.SukBakJi.domain.board.model.entity.Post;
+import umc.SukBakJi.domain.common.entity.mapping.Scrap;
+import umc.SukBakJi.domain.common.entity.mapping.ScrapId;
 import umc.SukBakJi.domain.member.repository.MemberRepository;
-import umc.SukBakJi.domain.repository.PostRepository;
-import umc.SukBakJi.domain.repository.ScrapRepository;
+import umc.SukBakJi.domain.board.repository.PostRepository;
+import umc.SukBakJi.domain.board.repository.ScrapRepository;
 import umc.SukBakJi.global.apiPayload.code.status.ErrorStatus;
 import umc.SukBakJi.global.apiPayload.exception.GeneralException;
 

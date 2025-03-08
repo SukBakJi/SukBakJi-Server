@@ -1,10 +1,10 @@
-package umc.SukBakJi.global.entity.mapping;
+package umc.SukBakJi.domain.common.entity.mapping;
 
 import jakarta.persistence.*;
 import lombok.*;
+import umc.SukBakJi.domain.common.entity.BaseEntity;
 import umc.SukBakJi.domain.member.model.entity.Member;
 import umc.SukBakJi.domain.board.model.entity.Post;
-import umc.SukBakJi.global.entity.BaseEntity;
 
 @Entity
 @Data

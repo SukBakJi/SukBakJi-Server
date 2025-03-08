@@ -1,4 +1,4 @@
-package umc.SukBakJi.domain.controller;
+package umc.SukBakJi.domain.lab.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;

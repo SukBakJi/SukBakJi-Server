@@ -1,18 +1,18 @@
-package umc.SukBakJi.domain.service;
+package umc.SukBakJi.domain.board.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import umc.SukBakJi.domain.board.converter.PostConverter;
 import umc.SukBakJi.domain.board.model.dto.HotBoardPostDTO;
-import umc.SukBakJi.domain.model.dto.LatestQuestionDTO;
-import umc.SukBakJi.domain.model.dto.PostListDTO;
-import umc.SukBakJi.domain.model.dto.PostSearchDTO;
-import umc.SukBakJi.domain.model.entity.mapping.BoardLike;
-import umc.SukBakJi.domain.model.entity.Post;
-import umc.SukBakJi.domain.model.entity.enums.Menu;
+import umc.SukBakJi.domain.board.model.dto.LatestQuestionDTO;
+import umc.SukBakJi.domain.board.model.dto.PostListDTO;
+import umc.SukBakJi.domain.board.model.dto.PostSearchDTO;
+import umc.SukBakJi.domain.common.entity.mapping.BoardLike;
+import umc.SukBakJi.domain.board.model.entity.Post;
+import umc.SukBakJi.domain.common.entity.enums.Menu;
 import umc.SukBakJi.domain.board.repository.BoardLikeRepository;
-import umc.SukBakJi.domain.repository.PostRepository;
+import umc.SukBakJi.domain.board.repository.PostRepository;
 import umc.SukBakJi.global.apiPayload.code.status.ErrorStatus;
 import umc.SukBakJi.global.apiPayload.exception.GeneralException;
 

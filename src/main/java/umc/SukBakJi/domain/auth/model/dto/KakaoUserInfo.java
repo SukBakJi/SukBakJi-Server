@@ -1,7 +1,7 @@
-package umc.SukBakJi.domain.model.dto.auth.userInfo;
+package umc.SukBakJi.domain.auth.model.dto;
 
 import lombok.RequiredArgsConstructor;
-import umc.SukBakJi.domain.model.entity.enums.Provider;
+import umc.SukBakJi.domain.common.entity.enums.Provider;
 
 import java.util.Map;
 

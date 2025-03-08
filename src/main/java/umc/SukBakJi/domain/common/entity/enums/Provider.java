@@ -1,4 +1,4 @@
-package umc.SukBakJi.global.entity.enums;
+package umc.SukBakJi.domain.common.entity.enums;
 
 public enum Provider {
     BASIC("일반"),  // 일반 로그인

@@ -1,4 +1,4 @@
-package umc.SukBakJi.domain.service;
+package umc.SukBakJi.domain.auth.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -11,8 +11,8 @@ import umc.SukBakJi.global.apiPayload.exception.GeneralException;
 import umc.SukBakJi.global.security.jwt.JwtToken;
 import umc.SukBakJi.domain.member.model.dto.MemberRequestDto;
 import umc.SukBakJi.domain.member.model.dto.MemberResponseDto;
-import umc.SukBakJi.domain.model.entity.Member;
-import umc.SukBakJi.domain.model.entity.enums.Provider;
+import umc.SukBakJi.domain.member.model.entity.Member;
+import umc.SukBakJi.domain.common.entity.enums.Provider;
 import umc.SukBakJi.domain.member.repository.MemberRepository;
 import umc.SukBakJi.global.apiPayload.code.status.ErrorStatus;
 import umc.SukBakJi.global.apiPayload.exception.handler.MemberHandler;

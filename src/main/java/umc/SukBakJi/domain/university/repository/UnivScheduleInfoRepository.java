@@ -1,8 +1,8 @@
-package umc.SukBakJi.domain.repository;
+package umc.SukBakJi.domain.university.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
-import umc.SukBakJi.domain.model.entity.UnivScheduleInfo;
+import umc.SukBakJi.domain.university.model.entity.UnivScheduleInfo;
 
 import java.util.List;
 

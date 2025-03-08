@@ -1,13 +1,10 @@
-package umc.SukBakJi.domain.model.dto;
+package umc.SukBakJi.domain.lab.model.dto;
 
 import lombok.Builder;
 import lombok.Getter;
-import umc.SukBakJi.domain.model.entity.ResearchTopic;
-import umc.SukBakJi.domain.model.entity.enums.Autonomy;
-import umc.SukBakJi.domain.model.entity.enums.LeadershipStyle;
-import umc.SukBakJi.domain.model.entity.enums.SalaryLevel;
-
-import java.util.List;
+import umc.SukBakJi.domain.common.entity.enums.Autonomy;
+import umc.SukBakJi.domain.common.entity.enums.LeadershipStyle;
+import umc.SukBakJi.domain.common.entity.enums.SalaryLevel;
 
 @Getter
 @Builder

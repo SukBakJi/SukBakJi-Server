@@ -1,10 +1,9 @@
-package umc.SukBakJi.domain.repository;
+package umc.SukBakJi.domain.board.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
-import umc.SukBakJi.domain.model.entity.mapping.BoardLike;
-import umc.SukBakJi.domain.model.entity.mapping.BoardLikeId;
+import umc.SukBakJi.domain.common.entity.mapping.BoardLike;
+import umc.SukBakJi.domain.common.entity.mapping.BoardLikeId;
 
 import java.util.List;
 

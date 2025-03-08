@@ -1,4 +1,4 @@
-package umc.SukBakJi.global.entity.enums;
+package umc.SukBakJi.domain.common.entity.enums;
 
 public enum DegreeLevel {
     BACHELORS_STUDYING,      // 학사 재학

@@ -1,10 +1,10 @@
-package umc.SukBakJi.domain.model.dto;
+package umc.SukBakJi.domain.lab.model.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import umc.SukBakJi.domain.model.entity.enums.RequestCategory;
+import umc.SukBakJi.domain.common.entity.enums.RequestCategory;
 
 import java.util.List;
 

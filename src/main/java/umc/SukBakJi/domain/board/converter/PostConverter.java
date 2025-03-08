@@ -1,11 +1,11 @@
-package umc.SukBakJi.domain.converter;
+package umc.SukBakJi.domain.board.converter;
 
 import org.springframework.stereotype.Component;
 import umc.SukBakJi.domain.board.model.dto.HotBoardPostDTO;
-import umc.SukBakJi.domain.model.dto.LatestQuestionDTO;
-import umc.SukBakJi.domain.model.dto.PostListDTO;
-import umc.SukBakJi.domain.model.dto.PostSearchDTO;
-import umc.SukBakJi.domain.model.entity.Post;
+import umc.SukBakJi.domain.board.model.dto.LatestQuestionDTO;
+import umc.SukBakJi.domain.board.model.dto.PostListDTO;
+import umc.SukBakJi.domain.board.model.dto.PostSearchDTO;
+import umc.SukBakJi.domain.board.model.entity.Post;
 
 @Component
 public class PostConverter {

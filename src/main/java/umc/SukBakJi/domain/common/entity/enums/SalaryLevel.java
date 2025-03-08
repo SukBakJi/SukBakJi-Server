@@ -1,4 +1,4 @@
-package umc.SukBakJi.global.entity.enums;
+package umc.SukBakJi.domain.common.entity.enums;
 
 public enum SalaryLevel {
     높아요(10),

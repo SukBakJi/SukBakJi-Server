@@ -1,9 +1,8 @@
-package umc.SukBakJi.domain.model.entity;
+package umc.SukBakJi.domain.university.model.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.annotations.ColumnDefault;
-import umc.SukBakJi.global.entity.BaseEntity;
+import umc.SukBakJi.domain.common.entity.BaseEntity;
 
 @Entity
 @Getter

@@ -1,11 +1,11 @@
-package umc.SukBakJi.domain.service;
+package umc.SukBakJi.domain.auth.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Service;
-import umc.SukBakJi.domain.model.dto.auth.CertificationDTO;
-import umc.SukBakJi.domain.model.entity.Member;
+import umc.SukBakJi.domain.auth.model.dto.CertificationDTO;
+import umc.SukBakJi.domain.member.model.entity.Member;
 import umc.SukBakJi.domain.member.repository.MemberRepository;
 import umc.SukBakJi.global.apiPayload.code.status.ErrorStatus;
 import umc.SukBakJi.global.apiPayload.exception.handler.MemberHandler;

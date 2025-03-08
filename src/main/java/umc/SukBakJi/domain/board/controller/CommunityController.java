@@ -1,15 +1,15 @@
-package umc.SukBakJi.domain.controller;
+package umc.SukBakJi.domain.board.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import umc.SukBakJi.domain.board.model.dto.HotBoardPostDTO;
-import umc.SukBakJi.domain.model.dto.LatestQuestionDTO;
-import umc.SukBakJi.domain.model.dto.PostListDTO;
-import umc.SukBakJi.domain.model.dto.PostSearchDTO;
-import umc.SukBakJi.domain.model.entity.enums.Menu;
-import umc.SukBakJi.domain.service.CommunityService;
+import umc.SukBakJi.domain.board.model.dto.LatestQuestionDTO;
+import umc.SukBakJi.domain.board.model.dto.PostListDTO;
+import umc.SukBakJi.domain.board.model.dto.PostSearchDTO;
+import umc.SukBakJi.domain.common.entity.enums.Menu;
+import umc.SukBakJi.domain.board.service.CommunityService;
 import umc.SukBakJi.global.apiPayload.ApiResponse;
 import umc.SukBakJi.global.security.jwt.JwtTokenProvider;
 

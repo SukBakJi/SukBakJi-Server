@@ -1,8 +1,10 @@
-package umc.SukBakJi.domain.model.entity;
+package umc.SukBakJi.domain.board.model.entity;
 
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import umc.SukBakJi.domain.member.model.entity.Member;
+
 import java.time.LocalDateTime;
 
 @Entity

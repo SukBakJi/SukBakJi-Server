@@ -1,12 +1,12 @@
-package umc.SukBakJi.domain.converter;
+package umc.SukBakJi.domain.lab.converter;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import umc.SukBakJi.domain.lab.model.dto.LabReviewCreateDTO;
 import umc.SukBakJi.domain.lab.model.dto.LabReviewDetailsDTO;
-import umc.SukBakJi.domain.model.entity.Lab;
-import umc.SukBakJi.domain.model.entity.Member;
-import umc.SukBakJi.domain.model.entity.mapping.LabReview;
+import umc.SukBakJi.domain.lab.model.entity.Lab;
+import umc.SukBakJi.domain.member.model.entity.Member;
+import umc.SukBakJi.domain.common.entity.mapping.LabReview;
 import umc.SukBakJi.domain.lab.repository.LabRepository;
 import umc.SukBakJi.domain.member.repository.MemberRepository;
 import umc.SukBakJi.global.apiPayload.code.status.ErrorStatus;

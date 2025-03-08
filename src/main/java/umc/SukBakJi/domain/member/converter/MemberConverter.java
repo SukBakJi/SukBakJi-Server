@@ -1,13 +1,8 @@
-package umc.SukBakJi.domain.converter;
+package umc.SukBakJi.domain.member.converter;
 
-import umc.SukBakJi.domain.model.dto.member.MemberRequestDto;
-import umc.SukBakJi.domain.model.dto.member.MemberResponseDto;
-import umc.SukBakJi.domain.model.entity.Member;
-import umc.SukBakJi.domain.model.entity.ResearchTopic;
-import umc.SukBakJi.domain.model.entity.enums.DegreeLevel;
-import umc.SukBakJi.domain.model.entity.enums.Provider;
-import umc.SukBakJi.domain.model.entity.mapping.MemberResearchTopic;
-import umc.SukBakJi.global.security.jwt.JwtToken;
+import umc.SukBakJi.domain.member.model.dto.MemberResponseDto;
+import umc.SukBakJi.domain.member.model.entity.Member;
+import umc.SukBakJi.domain.common.entity.enums.Provider;
 
 import java.util.List;
 

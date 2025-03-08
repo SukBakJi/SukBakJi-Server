@@ -1,12 +1,12 @@
-package umc.SukBakJi.domain.converter;
+package umc.SukBakJi.domain.mentoring.converter;
 
 import umc.SukBakJi.domain.mentoring.model.dto.MentoringRequestDTO;
 import umc.SukBakJi.domain.mentoring.model.dto.MentoringResponseDTO;
-import umc.SukBakJi.domain.model.entity.Member;
-import umc.SukBakJi.domain.model.entity.Mentor;
-import umc.SukBakJi.domain.model.entity.mapping.Mentoring;
+import umc.SukBakJi.domain.member.model.entity.Member;
+import umc.SukBakJi.domain.mentoring.model.entity.Mentor;
+import umc.SukBakJi.domain.common.entity.mapping.Mentoring;
 import umc.SukBakJi.domain.member.repository.MemberRepository;
-import umc.SukBakJi.domain.repository.ResearchTopicRepository;
+import umc.SukBakJi.domain.lab.repository.ResearchTopicRepository;
 
 import java.util.List;
 

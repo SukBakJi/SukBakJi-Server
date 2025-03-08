@@ -1,4 +1,4 @@
-package umc.SukBakJi.domain.controller;
+package umc.SukBakJi.domain.lab.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -6,11 +6,11 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import umc.SukBakJi.domain.lab.model.dto.InterestTopicsDTO;
 import umc.SukBakJi.domain.lab.model.dto.LabDetailResponseDTO;
 import umc.SukBakJi.domain.lab.model.dto.LabRequestDTO;
 import umc.SukBakJi.domain.lab.model.dto.LabResponseDTO;
-import umc.SukBakJi.domain.model.dto.*;
-import umc.SukBakJi.domain.model.entity.Member;
+import umc.SukBakJi.domain.member.model.entity.Member;
 import umc.SukBakJi.domain.member.repository.MemberRepository;
 import umc.SukBakJi.domain.lab.service.LabService;
 import umc.SukBakJi.global.apiPayload.ApiResponse;

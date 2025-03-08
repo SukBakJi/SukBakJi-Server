@@ -1,9 +1,10 @@
-package umc.SukBakJi.domain.controller;
+package umc.SukBakJi.domain.auth.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import okhttp3.Response;
 import org.springframework.http.*;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -11,11 +12,11 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
-import umc.SukBakJi.domain.model.dto.RefreshTokenRequest;
-import umc.SukBakJi.domain.model.dto.auth.OAuth2RequestDTO;
+import umc.SukBakJi.domain.auth.model.dto.RefreshTokenRequest;
+import umc.SukBakJi.domain.auth.model.dto.OAuth2RequestDTO;
 import umc.SukBakJi.domain.member.model.dto.MemberRequestDto;
 import umc.SukBakJi.domain.member.model.dto.MemberResponseDto;
-import umc.SukBakJi.domain.service.AuthService;
+import umc.SukBakJi.domain.auth.service.AuthService;
 import umc.SukBakJi.global.apiPayload.ApiResponse;
 
 @RestController
@@ -27,19 +28,19 @@ public class AuthController {
 
     @PostMapping("/signup")
     @Operation(summary = "일반 회원가입", description = "이메일과 비밀번호를 입력하여 회원가입을 진행합니다.")
-    public ApiResponse<?> signUp(@RequestBody @Valid MemberRequestDto.SignUpDto requestDto) {
+    public ResponseEntity<ApiResponse<String>> signUp(@RequestBody @Valid MemberRequestDto.SignUpDto requestDto) {
         authService.signUp(requestDto);
-        return ApiResponse.onSuccess("회원가입에 성공하였습니다.");
+        return ResponseEntity.ok(ApiResponse.onSuccess("회원가입에 성공하였습니다."));
     }
 
     @PostMapping("/login")
     @Operation(summary = "일반 로그인", description = "일반 회원가입 시 입력했던 이메일과 비밀번호로 로그인합니다.")
-    public ApiResponse<MemberResponseDto.LoginResponseDto> login(@RequestBody MemberRequestDto.LoginDto requestDto) {
+    public ResponseEntity<ApiResponse<MemberResponseDto.LoginResponseDto>> login(@RequestBody MemberRequestDto.LoginDto requestDto) {
         MemberResponseDto.LoginResponseDto responseDto = authService.login(requestDto);
-        return ApiResponse.onSuccess(responseDto);
+        return ResponseEntity.ok(ApiResponse.onSuccess(responseDto));
     }
 
-//    테스트용
+    // 테스트용
     @GetMapping("/kakao-token")
     public ResponseEntity<String> getKakaoToken(@RequestParam String code) {
         String tokenUri = "https://kauth.kakao.com/oauth/token";
@@ -89,20 +90,20 @@ public class AuthController {
 
     @PostMapping("/refresh-token")
     @Operation(summary = "토큰 재발급", description = "Refresh Token을 입력하여 토큰 재발급을 진행합니다.")
-    public ApiResponse<?> refreshToken(@RequestBody RefreshTokenRequest refreshTokenRequest) {
+    public ResponseEntity<ApiResponse<?>> refreshToken(@RequestBody RefreshTokenRequest refreshTokenRequest) {
         log.info("Received refresh token request: " + refreshTokenRequest.getRefreshToken());
         try {
             MemberResponseDto.LoginResponseDto responseDto = authService.refreshAccessToken(refreshTokenRequest.getRefreshToken());
-            return ApiResponse.onSuccess(responseDto);
+            return ResponseEntity.ok(ApiResponse.onSuccess(responseDto));
         } catch (Exception e) {
             log.error("Error processing refresh token request", e);
-            return ApiResponse.onSuccess(e.getMessage());
+            return ResponseEntity.ok(ApiResponse.onSuccess(e.getMessage()));
         }
     }
 
     @PostMapping("/logout")
     @Operation(summary = "로그아웃", description = "로그인한 사용자가 로그아웃 처리됩니다.")
-    public ApiResponse<?> logout() {
+    public ResponseEntity<ApiResponse<?>> logout() {
         // 현재 사용자 인증 정보 가져오기
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
@@ -111,6 +112,6 @@ public class AuthController {
             SecurityContextHolder.getContext().setAuthentication(null);
         }
         authService.logOut(authentication.getName());
-        return ApiResponse.onSuccess("로그아웃되었습니다.", authentication.getName());
+        return ResponseEntity.ok(ApiResponse.onSuccess("로그아웃되었습니다.", authentication.getName()));
     }
 }

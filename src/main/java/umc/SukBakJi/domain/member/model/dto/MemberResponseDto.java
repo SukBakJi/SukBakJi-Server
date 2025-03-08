@@ -1,9 +1,8 @@
-package umc.SukBakJi.domain.model.dto.member;
+package umc.SukBakJi.domain.member.model.dto;
 
 import lombok.*;
-import umc.SukBakJi.domain.model.entity.enums.DegreeLevel;
-import umc.SukBakJi.domain.model.entity.enums.Provider;
-import umc.SukBakJi.domain.model.entity.mapping.MemberResearchTopic;
+import umc.SukBakJi.domain.common.entity.enums.DegreeLevel;
+import umc.SukBakJi.domain.common.entity.enums.Provider;
 
 import java.util.List;
 

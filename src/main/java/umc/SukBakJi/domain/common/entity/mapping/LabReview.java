@@ -1,17 +1,16 @@
-package umc.SukBakJi.global.entity.mapping;
+package umc.SukBakJi.domain.common.entity.mapping;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
-import umc.SukBakJi.global.entity.BaseEntity;
+import umc.SukBakJi.domain.common.entity.BaseEntity;
+import umc.SukBakJi.domain.common.entity.enums.Autonomy;
+import umc.SukBakJi.domain.common.entity.enums.LeadershipStyle;
+import umc.SukBakJi.domain.common.entity.enums.SalaryLevel;
 import umc.SukBakJi.domain.lab.model.entity.Lab;
 import umc.SukBakJi.domain.member.model.entity.Member;
-import umc.SukBakJi.domain.model.entity.enums.*;
-import umc.SukBakJi.global.entity.enums.Autonomy;
-import umc.SukBakJi.global.entity.enums.LeadershipStyle;
-import umc.SukBakJi.global.entity.enums.SalaryLevel;
 
 @Entity
 @Getter

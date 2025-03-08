@@ -1,10 +1,9 @@
-package umc.SukBakJi.domain.repository;
+package umc.SukBakJi.domain.lab.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import umc.SukBakJi.domain.model.entity.Lab;
-import umc.SukBakJi.domain.model.entity.Member;
-import umc.SukBakJi.domain.model.entity.ResearchTopic;
-import umc.SukBakJi.domain.model.entity.mapping.FavoriteLab;
+import umc.SukBakJi.domain.lab.model.entity.Lab;
+import umc.SukBakJi.domain.member.model.entity.Member;
+import umc.SukBakJi.domain.common.entity.mapping.FavoriteLab;
 
 import java.util.List;
 

@@ -1,4 +1,4 @@
-package umc.SukBakJi.global.entity.enums;
+package umc.SukBakJi.domain.common.entity.enums;
 
 import java.util.Arrays;
 

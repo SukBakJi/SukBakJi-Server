@@ -1,7 +1,7 @@
-package umc.SukBakJi.domain.controller;
+package umc.SukBakJi.domain.board.controller;
 
-import umc.SukBakJi.domain.model.dto.*;
-import umc.SukBakJi.domain.service.PostService;
+import umc.SukBakJi.domain.board.model.dto.*;
+import umc.SukBakJi.domain.board.service.PostService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

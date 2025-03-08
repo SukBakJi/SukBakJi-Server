@@ -1,6 +1,5 @@
-package umc.SukBakJi.domain.controller;
+package umc.SukBakJi.domain.member.controller;
 
-import com.google.protobuf.Api;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.mail.MessagingException;
 import jakarta.validation.Valid;
@@ -8,16 +7,13 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import umc.SukBakJi.domain.model.dto.member.MemberRequestDto;
-import umc.SukBakJi.domain.model.dto.member.MemberResponseDto;
-import umc.SukBakJi.domain.model.entity.enums.EducationCertificateType;
-import umc.SukBakJi.domain.service.MemberService;
+import umc.SukBakJi.domain.member.model.dto.MemberRequestDto;
+import umc.SukBakJi.domain.member.model.dto.MemberResponseDto;
+import umc.SukBakJi.domain.member.service.MemberService;
 import umc.SukBakJi.global.apiPayload.ApiResponse;
-import umc.SukBakJi.global.apiPayload.code.status.ErrorStatus;
 
 @RestController
 @RequiredArgsConstructor

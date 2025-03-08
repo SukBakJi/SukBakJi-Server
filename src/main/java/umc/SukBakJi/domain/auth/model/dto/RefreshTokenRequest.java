@@ -1,4 +1,4 @@
-package umc.SukBakJi.domain.model.dto;
+package umc.SukBakJi.domain.auth.model.dto;
 
 import lombok.Getter;
 import lombok.Setter;

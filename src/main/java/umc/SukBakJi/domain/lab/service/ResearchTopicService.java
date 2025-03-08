@@ -1,11 +1,11 @@
-package umc.SukBakJi.domain.service;
+package umc.SukBakJi.domain.lab.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import umc.SukBakJi.domain.model.dto.ResearchTopicResultDTO;
-import umc.SukBakJi.domain.model.entity.ResearchTopic;
-import umc.SukBakJi.domain.repository.ResearchTopicRepository;
+import umc.SukBakJi.domain.lab.model.dto.ResearchTopicResultDTO;
+import umc.SukBakJi.domain.lab.model.entity.ResearchTopic;
+import umc.SukBakJi.domain.lab.repository.ResearchTopicRepository;
 
 import java.util.List;
 import java.util.stream.Collectors;

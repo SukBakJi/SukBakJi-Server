@@ -1,4 +1,4 @@
-package umc.SukBakJi.domain.controller;
+package umc.SukBakJi.domain.university.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -17,8 +17,8 @@ import umc.SukBakJi.domain.university.model.dto.UnivRequestDTO;
 import umc.SukBakJi.domain.university.model.dto.UnivResponseDTO;
 import umc.SukBakJi.domain.alarm.model.entity.Alarm;
 import umc.SukBakJi.domain.university.model.entity.UnivScheduleInfo;
-import umc.SukBakJi.domain.model.entity.mapping.SetUniv;
-import umc.SukBakJi.domain.service.CalenderService;
+import umc.SukBakJi.domain.common.entity.mapping.SetUniv;
+import umc.SukBakJi.domain.university.service.CalenderService;
 import umc.SukBakJi.global.apiPayload.ApiResponse;
 import umc.SukBakJi.global.apiPayload.code.ErrorReasonDTO;
 import umc.SukBakJi.global.security.jwt.JwtTokenProvider;

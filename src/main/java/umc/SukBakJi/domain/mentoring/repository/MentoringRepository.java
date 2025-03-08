@@ -1,7 +1,7 @@
-package umc.SukBakJi.domain.repository;
+package umc.SukBakJi.domain.mentoring.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import umc.SukBakJi.domain.model.entity.mapping.Mentoring;
+import umc.SukBakJi.domain.common.entity.mapping.Mentoring;
 
 import java.util.List;
 

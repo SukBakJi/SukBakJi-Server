@@ -1,4 +1,4 @@
-package umc.SukBakJi.global.entity;
+package umc.SukBakJi.domain.common.entity;
 
 import jakarta.persistence.EntityListeners;
 import jakarta.persistence.MappedSuperclass;

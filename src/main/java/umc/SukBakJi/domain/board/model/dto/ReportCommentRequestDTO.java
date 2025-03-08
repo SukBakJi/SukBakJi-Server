@@ -1,4 +1,4 @@
-package umc.SukBakJi.domain.model.dto;
+package umc.SukBakJi.domain.board.model.dto;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;

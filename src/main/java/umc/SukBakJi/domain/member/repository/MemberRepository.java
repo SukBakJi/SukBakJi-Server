@@ -1,8 +1,8 @@
-package umc.SukBakJi.domain.repository;
+package umc.SukBakJi.domain.member.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import umc.SukBakJi.domain.model.entity.Member;
-import umc.SukBakJi.domain.model.entity.enums.Provider;
+import umc.SukBakJi.domain.member.model.entity.Member;
+import umc.SukBakJi.domain.common.entity.enums.Provider;
 
 import java.util.Optional;
 

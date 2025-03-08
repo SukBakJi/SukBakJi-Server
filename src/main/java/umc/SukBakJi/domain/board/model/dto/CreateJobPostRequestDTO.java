@@ -1,10 +1,10 @@
-package umc.SukBakJi.domain.model.dto;
+package umc.SukBakJi.domain.board.model.dto;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
-import umc.SukBakJi.domain.model.entity.enums.Menu;
+import umc.SukBakJi.domain.common.entity.enums.Menu;
 
 @Getter
 @Setter

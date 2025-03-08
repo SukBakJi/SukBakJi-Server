@@ -1,10 +1,10 @@
-package umc.SukBakJi.domain.model.entity;
+package umc.SukBakJi.domain.alarm.model.entity;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
-import umc.SukBakJi.global.entity.BaseEntity;
+import umc.SukBakJi.domain.member.model.entity.Member;
+import umc.SukBakJi.domain.common.entity.BaseEntity;
 
 @Entity
 @Builder

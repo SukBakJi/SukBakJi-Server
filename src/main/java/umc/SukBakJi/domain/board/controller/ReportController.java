@@ -1,11 +1,11 @@
-package umc.SukBakJi.domain.controller;
+package umc.SukBakJi.domain.board.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import umc.SukBakJi.domain.model.dto.ReportCommentRequestDTO;
-import umc.SukBakJi.domain.model.dto.ReportPostRequestDTO;
-import umc.SukBakJi.domain.service.ReportService;
+import umc.SukBakJi.domain.board.model.dto.ReportCommentRequestDTO;
+import umc.SukBakJi.domain.board.model.dto.ReportPostRequestDTO;
+import umc.SukBakJi.domain.board.service.ReportService;
 import umc.SukBakJi.global.apiPayload.ApiResponse;
 import umc.SukBakJi.global.security.jwt.JwtTokenProvider;
 

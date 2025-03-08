@@ -1,4 +1,4 @@
-package umc.SukBakJi.domain.model.dto;
+package umc.SukBakJi.domain.mentoring.model.dto;
 
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;

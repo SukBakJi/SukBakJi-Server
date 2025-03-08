@@ -1,9 +1,9 @@
-package umc.SukBakJi.domain.controller;
+package umc.SukBakJi.domain.lab.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
-import umc.SukBakJi.domain.model.dto.ResearchTopicResultDTO;
-import umc.SukBakJi.domain.service.ResearchTopicService;
+import umc.SukBakJi.domain.lab.model.dto.ResearchTopicResultDTO;
+import umc.SukBakJi.domain.lab.service.ResearchTopicService;
 import umc.SukBakJi.global.apiPayload.ApiResponse;
 
 @RestController

@@ -1,7 +1,7 @@
-package umc.SukBakJi.domain.repository;
+package umc.SukBakJi.domain.board.repository;
 
-import umc.SukBakJi.domain.model.entity.Board;
-import umc.SukBakJi.domain.model.entity.enums.Menu;
+import umc.SukBakJi.domain.board.model.entity.Board;
+import umc.SukBakJi.domain.common.entity.enums.Menu;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

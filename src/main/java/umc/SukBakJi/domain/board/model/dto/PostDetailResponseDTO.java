@@ -1,8 +1,7 @@
-package umc.SukBakJi.domain.model.dto;
+package umc.SukBakJi.domain.board.model.dto;
 
 import lombok.Getter;
 import lombok.Setter;
-import umc.SukBakJi.domain.model.entity.enums.Menu;
 
 import java.time.LocalDateTime;
 import java.util.List;

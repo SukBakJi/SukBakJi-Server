@@ -1,12 +1,19 @@
-package umc.SukBakJi.domain.service;
+package umc.SukBakJi.domain.board.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import umc.SukBakJi.domain.board.model.entity.Comment;
+import umc.SukBakJi.domain.board.model.entity.CommentReport;
+import umc.SukBakJi.domain.board.model.entity.Post;
+import umc.SukBakJi.domain.board.model.entity.PostReport;
+import umc.SukBakJi.domain.board.repository.CommentReportRepository;
+import umc.SukBakJi.domain.board.repository.CommentRepository;
+import umc.SukBakJi.domain.board.repository.PostReportRepository;
+import umc.SukBakJi.domain.board.repository.PostRepository;
+import umc.SukBakJi.domain.member.model.entity.Member;
 import umc.SukBakJi.domain.member.repository.MemberRepository;
-import umc.SukBakJi.domain.model.dto.ReportCommentRequestDTO;
-import umc.SukBakJi.domain.model.dto.ReportPostRequestDTO;
-import umc.SukBakJi.domain.model.entity.*;
-import umc.SukBakJi.domain.repository.*;
+import umc.SukBakJi.domain.board.model.dto.ReportCommentRequestDTO;
+import umc.SukBakJi.domain.board.model.dto.ReportPostRequestDTO;
 import umc.SukBakJi.global.apiPayload.code.status.ErrorStatus;
 import umc.SukBakJi.global.apiPayload.exception.GeneralException;
 

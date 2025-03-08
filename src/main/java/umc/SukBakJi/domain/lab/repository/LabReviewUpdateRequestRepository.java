@@ -1,7 +1,7 @@
-package umc.SukBakJi.domain.repository;
+package umc.SukBakJi.domain.lab.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import umc.SukBakJi.domain.model.entity.mapping.LabReviewUpdateRequest;
+import umc.SukBakJi.domain.common.entity.mapping.LabReviewUpdateRequest;
 
 public interface LabReviewUpdateRequestRepository extends JpaRepository<LabReviewUpdateRequest, Long> {
 }

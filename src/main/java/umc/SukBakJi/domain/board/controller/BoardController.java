@@ -1,11 +1,11 @@
-package umc.SukBakJi.domain.controller;
+package umc.SukBakJi.domain.board.controller;
 
 import jakarta.validation.Valid;
 import org.springframework.validation.BindingResult;
 import umc.SukBakJi.domain.board.model.dto.CreateBoardRequestDTO;
-import umc.SukBakJi.domain.model.entity.Board;
-import umc.SukBakJi.domain.model.entity.enums.Menu;
-import umc.SukBakJi.domain.service.BoardService;
+import umc.SukBakJi.domain.board.model.entity.Board;
+import umc.SukBakJi.domain.common.entity.enums.Menu;
+import umc.SukBakJi.domain.board.service.BoardService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

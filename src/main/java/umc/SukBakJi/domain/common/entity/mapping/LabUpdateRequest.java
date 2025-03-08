@@ -1,11 +1,11 @@
-package umc.SukBakJi.global.entity.mapping;
+package umc.SukBakJi.domain.common.entity.mapping;
 
 import jakarta.persistence.*;
 import lombok.*;
 import umc.SukBakJi.domain.lab.model.entity.Lab;
 import umc.SukBakJi.domain.member.model.entity.Member;
-import umc.SukBakJi.global.entity.enums.LabUpdateStatus;
-import umc.SukBakJi.global.entity.enums.RequestCategory;
+import umc.SukBakJi.domain.common.entity.enums.LabUpdateStatus;
+import umc.SukBakJi.domain.common.entity.enums.RequestCategory;
 
 @Entity
 @Getter

@@ -1,4 +1,4 @@
-package umc.SukBakJi.domain.model.dto;
+package umc.SukBakJi.domain.mentoring.model.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

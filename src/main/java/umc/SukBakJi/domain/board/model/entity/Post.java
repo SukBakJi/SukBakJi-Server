@@ -1,10 +1,11 @@
-package umc.SukBakJi.domain.model.entity;
+package umc.SukBakJi.domain.board.model.entity;
 
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
-import umc.SukBakJi.domain.model.entity.mapping.Scrap;
-import umc.SukBakJi.global.entity.BaseEntity;
+import umc.SukBakJi.domain.member.model.entity.Member;
+import umc.SukBakJi.domain.common.entity.mapping.Scrap;
+import umc.SukBakJi.domain.common.entity.BaseEntity;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;

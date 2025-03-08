@@ -1,9 +1,9 @@
-package umc.SukBakJi.domain.controller;
+package umc.SukBakJi.domain.board.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import umc.SukBakJi.domain.service.ScrapService;
+import umc.SukBakJi.domain.board.service.ScrapService;
 import umc.SukBakJi.global.apiPayload.ApiResponse;
 import umc.SukBakJi.global.security.jwt.JwtTokenProvider;
 

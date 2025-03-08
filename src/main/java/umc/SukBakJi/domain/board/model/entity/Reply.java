@@ -1,9 +1,10 @@
-package umc.SukBakJi.domain.model.entity;
+package umc.SukBakJi.domain.board.model.entity;
 
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
-import umc.SukBakJi.global.entity.BaseEntity;
+import umc.SukBakJi.domain.member.model.entity.Member;
+import umc.SukBakJi.domain.common.entity.BaseEntity;
 
 @Entity
 @Getter

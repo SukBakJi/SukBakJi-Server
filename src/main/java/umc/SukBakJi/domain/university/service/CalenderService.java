@@ -1,4 +1,4 @@
-package umc.SukBakJi.domain.service;
+package umc.SukBakJi.domain.university.service;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -13,10 +13,10 @@ import umc.SukBakJi.domain.alarm.model.dto.AlarmResponseDTO;
 import umc.SukBakJi.domain.university.model.dto.UnivRequestDTO;
 import umc.SukBakJi.domain.university.model.dto.UnivResponseDTO;
 import umc.SukBakJi.domain.alarm.model.entity.Alarm;
-import umc.SukBakJi.domain.model.entity.Member;
+import umc.SukBakJi.domain.member.model.entity.Member;
 import umc.SukBakJi.domain.university.model.entity.UnivScheduleInfo;
 import umc.SukBakJi.domain.university.model.entity.University;
-import umc.SukBakJi.domain.model.entity.mapping.SetUniv;
+import umc.SukBakJi.domain.common.entity.mapping.SetUniv;
 import umc.SukBakJi.domain.university.repository.SetUnivRepository;
 import umc.SukBakJi.domain.university.repository.UnivRepository;
 import umc.SukBakJi.domain.university.repository.UnivScheduleInfoRepository;

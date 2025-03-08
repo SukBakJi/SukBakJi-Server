@@ -1,9 +1,9 @@
-package umc.SukBakJi.domain.converter;
+package umc.SukBakJi.domain.alarm.converter;
 
 import umc.SukBakJi.domain.alarm.model.dto.AlarmRequestDTO;
 import umc.SukBakJi.domain.alarm.model.dto.AlarmResponseDTO;
 import umc.SukBakJi.domain.alarm.model.entity.Alarm;
-import umc.SukBakJi.domain.model.entity.Member;
+import umc.SukBakJi.domain.member.model.entity.Member;
 
 import java.util.List;
 import java.util.stream.Collectors;

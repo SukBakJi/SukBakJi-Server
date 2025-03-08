@@ -1,12 +1,12 @@
-package umc.SukBakJi.domain.model.entity;
+package umc.SukBakJi.domain.lab.model.entity;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
-import umc.SukBakJi.domain.model.entity.mapping.LabResearchTopic;
-import umc.SukBakJi.global.entity.BaseEntity;
+import umc.SukBakJi.domain.common.entity.mapping.LabResearchTopic;
+import umc.SukBakJi.domain.common.entity.BaseEntity;
 
 import java.util.List;
 

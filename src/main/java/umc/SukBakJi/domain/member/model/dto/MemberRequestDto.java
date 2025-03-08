@@ -1,11 +1,11 @@
-package umc.SukBakJi.domain.model.dto.member;
+package umc.SukBakJi.domain.member.model.dto;
 
 import jakarta.validation.constraints.*;
 import lombok.*;
 import org.springframework.web.multipart.MultipartFile;
-import umc.SukBakJi.domain.model.entity.enums.DegreeLevel;
-import umc.SukBakJi.domain.model.entity.enums.EducationCertificateType;
-import umc.SukBakJi.domain.model.entity.enums.Provider;
+import umc.SukBakJi.domain.common.entity.enums.DegreeLevel;
+import umc.SukBakJi.domain.common.entity.enums.EducationCertificateType;
+import umc.SukBakJi.domain.common.entity.enums.Provider;
 
 import java.util.List;
 

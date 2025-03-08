@@ -1,11 +1,10 @@
-package umc.SukBakJi.domain.repository;
+package umc.SukBakJi.domain.lab.repository;
 
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.repository.PagingAndSortingRepository;
-import umc.SukBakJi.domain.model.entity.Lab;
-import umc.SukBakJi.domain.model.entity.Member;
-import umc.SukBakJi.domain.model.entity.mapping.LabReview;
+import umc.SukBakJi.domain.lab.model.entity.Lab;
+import umc.SukBakJi.domain.member.model.entity.Member;
+import umc.SukBakJi.domain.common.entity.mapping.LabReview;
 
 import java.util.List;
 import java.util.Optional;

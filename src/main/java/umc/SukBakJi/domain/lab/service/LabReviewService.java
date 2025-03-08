@@ -1,22 +1,22 @@
-package umc.SukBakJi.domain.service;
+package umc.SukBakJi.domain.lab.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-import umc.SukBakJi.domain.converter.LabReviewConverter;
-import umc.SukBakJi.domain.model.dto.*;
-import umc.SukBakJi.domain.model.entity.Member;
-import umc.SukBakJi.domain.model.entity.enums.LabUpdateStatus;
-import umc.SukBakJi.domain.model.entity.mapping.LabReviewUpdateRequest;
-import umc.SukBakJi.domain.repository.LabReviewUpdateRequestRepository;
+import umc.SukBakJi.domain.lab.converter.LabReviewConverter;
+import umc.SukBakJi.domain.lab.model.dto.*;
+import umc.SukBakJi.domain.member.model.entity.Member;
+import umc.SukBakJi.domain.common.entity.enums.LabUpdateStatus;
+import umc.SukBakJi.domain.common.entity.mapping.LabReviewUpdateRequest;
+import umc.SukBakJi.domain.lab.repository.LabReviewUpdateRequestRepository;
 import umc.SukBakJi.domain.member.repository.MemberRepository;
 import umc.SukBakJi.global.apiPayload.code.status.ErrorStatus;
 import umc.SukBakJi.global.apiPayload.exception.GeneralException;
-import umc.SukBakJi.domain.model.entity.Lab;
-import umc.SukBakJi.domain.model.entity.mapping.LabReview;
-import umc.SukBakJi.domain.repository.LabRepository;
-import umc.SukBakJi.domain.repository.LabReviewRepository;
+import umc.SukBakJi.domain.lab.model.entity.Lab;
+import umc.SukBakJi.domain.common.entity.mapping.LabReview;
+import umc.SukBakJi.domain.lab.repository.LabRepository;
+import umc.SukBakJi.domain.lab.repository.LabReviewRepository;
 import umc.SukBakJi.global.apiPayload.exception.handler.LabHandler;
 import umc.SukBakJi.global.apiPayload.exception.handler.MemberHandler;
 

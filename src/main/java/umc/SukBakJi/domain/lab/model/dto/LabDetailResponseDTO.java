@@ -1,11 +1,12 @@
-package umc.SukBakJi.domain.model.dto;
+package umc.SukBakJi.domain.lab.model.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.*;
 
 import java.util.List;
 
-@Data
+@Builder
+@Getter
+@NoArgsConstructor
 @AllArgsConstructor
 public class LabDetailResponseDTO {
     private String professorName;

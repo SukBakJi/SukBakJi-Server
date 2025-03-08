@@ -1,8 +1,8 @@
-package umc.SukBakJi.domain.model.dto;
+package umc.SukBakJi.domain.board.model.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import umc.SukBakJi.global.entity.enums.Menu;
+import umc.SukBakJi.domain.common.entity.enums.Menu;
 
 @Getter
 @AllArgsConstructor
