@@ -9,6 +9,8 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    outputs:
+      DEPLOY_ENV: ${{ steps.set_env.outputs.DEPLOY_ENV }}
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v3
@@ -40,8 +42,10 @@ jobs:
         run: |
           if [[ $GITHUB_REF == "refs/heads/develop" ]]; then
             echo "DEPLOY_ENV=staging" >> $GITHUB_ENV
+            echo "DEPLOY_ENV=staging" >> $GITHUB_OUTPUT
           elif [[ $GITHUB_REF == "refs/heads/main" ]]; then
             echo "DEPLOY_ENV=latest" >> $GITHUB_ENV
+            echo "DEPLOY_ENV=latest" >> $GITHUB_OUTPUT
           fi
 
       - name: Build and Push Docker Image
@@ -52,6 +56,8 @@ jobs:
   deploy:
     needs: build
     runs-on: ubuntu-latest
+    env:
+      DEPLOY_ENV: ${{ needs.build.outputs.DEPLOY_ENV }}
     steps:
       - name: Deploy to Server
         uses: appleboy/ssh-action@master
@@ -61,5 +67,6 @@ jobs:
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
             export DOCKER_HUB_USERNAME=${{ secrets.DOCKER_HUB_USERNAME }}
+            export DEPLOY_ENV=${{ env.DEPLOY_ENV }}
             cd ~/SukBakJi-Server
             ./deploy.sh $DEPLOY_ENV
