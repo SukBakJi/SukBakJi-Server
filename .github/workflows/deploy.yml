@@ -9,6 +9,8 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    outputs:
+      DEPLOY_ENV: ${{ steps.set_env.outputs.DEPLOY_ENV }}
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v3
