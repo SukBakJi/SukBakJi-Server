@@ -1,16 +1,15 @@
 package umc.SukBakJi.global.security.oauth2.service;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import umc.SukBakJi.domain.converter.AuthConverter;
-import umc.SukBakJi.domain.model.dto.auth.userInfo.AppleUserInfo;
-import umc.SukBakJi.domain.model.dto.member.MemberResponseDto;
-import umc.SukBakJi.domain.model.entity.Member;
-import umc.SukBakJi.domain.model.entity.enums.Provider;
-import umc.SukBakJi.domain.repository.MemberRepository;
+import umc.SukBakJi.domain.auth.converter.AuthConverter;
+import umc.SukBakJi.domain.auth.model.dto.AppleUserInfo;
+import umc.SukBakJi.domain.member.model.dto.MemberResponseDto;
+import umc.SukBakJi.domain.member.model.entity.Member;
+import umc.SukBakJi.domain.common.entity.enums.Provider;
+import umc.SukBakJi.domain.member.repository.MemberRepository;
 import umc.SukBakJi.global.security.jwt.JwtToken;
 import umc.SukBakJi.global.security.jwt.JwtTokenProvider;
 

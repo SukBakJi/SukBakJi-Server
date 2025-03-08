@@ -5,7 +5,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.oauth2.core.user.OAuth2User;
-import umc.SukBakJi.domain.model.entity.Member;
+import umc.SukBakJi.domain.member.model.entity.Member;
 
 import java.util.*;
 
