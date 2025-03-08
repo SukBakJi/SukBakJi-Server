@@ -1,6 +1,7 @@
 package umc.SukBakJi.domain.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -17,7 +18,7 @@ public class SmsController {
 
     @PostMapping()
     @Operation(summary = "SMS 인증번호 요청", description = "입력한 전화번호로 SMS 인증번호를 전송합니다.")
-    public ResponseEntity<ApiResponse<String>> sendVerificationCode(@RequestBody CertificationDTO.smsRequestDto requestDto) {
+    public ResponseEntity<ApiResponse<String>> sendVerificationCode(@Valid @RequestBody CertificationDTO.smsRequestDto requestDto) {
         smsService.sendVerificationCode(requestDto.getPhoneNumber());
         return ResponseEntity.ok(ApiResponse.onSuccess("인증번호가 전송되었습니다."));
     }

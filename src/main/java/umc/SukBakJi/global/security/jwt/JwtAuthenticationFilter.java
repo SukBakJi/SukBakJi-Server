@@ -32,6 +32,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         // 로그인 및 회원가입 관련 요청은 JWT 검증 안함
         if (request.getRequestURI().startsWith("/api/auth/") ||
+                request.getRequestURI().startsWith("/api/sms/") ||
                 request.getRequestURI().startsWith("/v3/api-docs") ||
                 request.getRequestURI().startsWith("/v3/api-docs/") ||
                 request.getRequestURI().startsWith("/swagger-ui/") ||
