@@ -64,22 +64,6 @@ public class AuthService {
         return AuthConverter.toLoginDto(Provider.BASIC, member, jwtToken);
     }
 
-    // 소셜 회원가입 및 로그인
-    public Member findOrCreateMember(Provider provider, String email) {
-        // 회원이 존재하는지 찾음
-        Member member = memberRepository.findByEmailAndProvider(email, provider)
-                .orElseGet(() -> {
-                    // 회원가입 처리
-                    Member newMember = Member.builder()
-                            .email(email)
-                            .provider(provider)
-                            .build();
-                    return memberRepository.save(newMember);
-                });
-
-        return member;
-    }
-
     // 이메일 중복 확인
     public Boolean verifyEmail(String email) {
         return !memberRepository.findByEmail(email).isPresent();
