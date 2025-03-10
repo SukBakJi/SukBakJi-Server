@@ -15,7 +15,7 @@ public class CertificationDTO {
     public static class smsRequestDto {
         @NotBlank(message = "전화번호는 필수 입력값입니다.")
         @Pattern(
-                regexp = "^01[0-9]\\d{7}$",
+                regexp = "^01[0-9]\\d{8}$",
                 message = "전화번호는 숫자 11자리여야 합니다."
         )
         private String phoneNumber;

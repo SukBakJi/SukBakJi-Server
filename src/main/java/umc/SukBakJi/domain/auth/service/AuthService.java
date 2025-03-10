@@ -1,5 +1,6 @@
 package umc.SukBakJi.domain.auth.service;
 
+import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -20,6 +21,8 @@ import umc.SukBakJi.global.security.jwt.JwtTokenProvider;
 import umc.SukBakJi.global.security.oauth2.service.AppleService;
 import umc.SukBakJi.global.security.oauth2.service.KakaoService;
 
+import java.util.Optional;
+
 @Service
 @RequiredArgsConstructor
 @Transactional
@@ -29,6 +32,7 @@ public class AuthService {
     private final JwtTokenProvider jwtTokenProvider;
     private final MemberRepository memberRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
+    private final MailService mailService;
     private final KakaoService kakaoService;
     private final AppleService appleService;
 
@@ -104,6 +108,60 @@ public class AuthService {
         memberRepository.save(member);
 
         return AuthConverter.toLoginDto(Provider.BASIC, member, newJwtToken);
+    }
+
+    public String findEmail(MemberRequestDto.searchEmailDto requestDto) {
+        Optional<Member> member = memberRepository.findByNameAndPhoneNumber(
+                requestDto.getName(), requestDto.getPhoneNumber()
+        );
+        return member.map(m -> maskEmail(m.getEmail()))
+                .orElse(ErrorStatus.EMAIL_NOT_FOUND.getCode());
+    }
+
+    private String maskEmail(String email) {
+        if (email == null || !email.contains("@")) {
+            return ErrorStatus.INVALID_EMAIL.getCode();
+        }
+
+        String[] parts = email.split("@");
+        String localPart = parts[0];
+        String domainPart = parts[1];
+
+        int length = localPart.length();
+        String visiblePart;
+        String maskedPart;
+
+        if (length == 1) {
+            visiblePart = "*";
+            maskedPart = "";
+        } else if (length == 2) {
+            visiblePart = localPart.substring(0, 1);
+            maskedPart = "*";
+        } else if (length == 3) {
+            visiblePart = localPart.substring(0, 2);
+            maskedPart = "*";
+        } else {
+            visiblePart = localPart.substring(0, 3);
+            maskedPart = "*".repeat(length - 3);
+        }
+
+        return visiblePart + maskedPart + "@" + domainPart;
+    }
+
+    // 비밀번호 찾기
+    public void searchPassword(MemberRequestDto.SearchPasswordDto request) throws MessagingException {
+        mailService.sendMail(request.getEmail());
+    }
+
+    // 이메일 인증
+    public String verifyEmailCode(MemberRequestDto.EmailCodeDto request) throws MessagingException {
+        boolean isValid = mailService.verifyCode(request.getEmail(), request.getCode());
+        if (isValid) {
+            mailService.deleteVerificationCode(request.getEmail());
+            return "이메일 인증에 성공하였습니다.";
+        } else {
+            return "인증번호가 일치하지 않거나 만료되었습니다.";
+        }
     }
 
     public void logOut(String email) {
