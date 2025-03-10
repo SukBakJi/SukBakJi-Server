@@ -42,7 +42,6 @@ public class MemberService {
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final ImageRepository imageRepository;
     private final AmazonS3Manager amazonS3Manager;
-    private final MailService mailService;
 
     // 프로필 설정
     public MemberResponseDto.ProfileResultDto setMemberProfile(@RequestHeader("Authorization") String token, MemberRequestDto.ProfileDto profileDto) {
@@ -162,64 +161,6 @@ public class MemberService {
                 .degreeLevel(member.getDegreeLevel())
                 .researchTopics(memberResearchTopics)
                 .build();
-    }
-
-    public String findEmail(MemberRequestDto.searchEmailDto requestDto) {
-        Optional<Member> member = memberRepository.findByNameAndPhoneNumber(
-                requestDto.getName(), requestDto.getPhoneNumber()
-        );
-        return member.map(m -> maskEmail(m.getEmail()))
-                .orElse(ErrorStatus.EMAIL_NOT_FOUND.getCode());
-    }
-
-    private String maskEmail(String email) {
-        if (email == null || !email.contains("@")) {
-            return ErrorStatus.INVALID_EMAIL.getCode();
-        }
-
-        String[] parts = email.split("@");
-        String localPart = parts[0];
-        String domainPart = parts[1];
-
-        int length = localPart.length();
-        String visiblePart;
-        String maskedPart;
-
-        if (length == 1) {
-            visiblePart = "*";
-            maskedPart = "";
-        } else if (length == 2) {
-            visiblePart = localPart.substring(0, 1);
-            maskedPart = "*";
-        } else if (length == 3) {
-            visiblePart = localPart.substring(0, 2);
-            maskedPart = "*";
-        } else {
-            visiblePart = localPart.substring(0, 3);
-            maskedPart = "*".repeat(length - 3);
-        }
-
-        return visiblePart + maskedPart + "@" + domainPart;
-    }
-
-    // 비밀번호 찾기
-    public void searchPassword(Long memberId, MemberRequestDto.SearchPasswordDto request) throws MessagingException {
-        Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new MemberHandler(ErrorStatus.MEMBER_NOT_FOUND));
-        mailService.sendMail(request.getEmail());
-    }
-
-    // 이메일 인증
-    public String verifyEmailCode(Long memberId, MemberRequestDto.EmailCodeDto request) throws MessagingException {
-        Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new MemberHandler(ErrorStatus.MEMBER_NOT_FOUND));
-        boolean isValid = mailService.verifyCode(request.getEmail(), request.getCode());
-        if (isValid) {
-            mailService.deleteVerificationCode(request.getEmail());
-            return "이메일 인증에 성공하였습니다.";
-        } else {
-            return "인증번호가 일치하지 않거나 만료되었습니다.";
-        }
     }
 
     // 비밀번호 재설정

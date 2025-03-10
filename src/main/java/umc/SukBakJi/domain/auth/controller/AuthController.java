@@ -1,10 +1,10 @@
 package umc.SukBakJi.domain.auth.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
+import jakarta.mail.MessagingException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import okhttp3.Response;
 import org.springframework.http.*;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -86,6 +86,27 @@ public class AuthController {
         } else {
             return new ResponseEntity<>(ApiResponse.onSuccess("이미 가입된 이메일입니다."), HttpStatus.CONFLICT);
         }
+    }
+
+    @PostMapping("/member-email")
+    @Operation(summary = "이름과 전화번호로 이메일 찾기", description = "이름과 전화번호로 등록된 이메일을 일부 반환합니다.")
+    public ResponseEntity<ApiResponse<String>> findEmail(@RequestBody MemberRequestDto.searchEmailDto requestDto) {
+        String response = authService.findEmail(requestDto);
+        return ResponseEntity.ok(ApiResponse.onSuccess(response));
+    }
+
+    @PostMapping("/password")
+    @Operation(summary = "비밀번호 찾기", description = "이메일을 입력하여 해당 이메일로 인증번호를 전송합니다.")
+    public ApiResponse<String> findPassword(@Valid @RequestBody MemberRequestDto.SearchPasswordDto searchPasswordDto) throws MessagingException {
+        authService.searchPassword(searchPasswordDto);
+        return ApiResponse.onSuccess("비밀번호 재설정에 필요한 인증번호가 이메일로 전송되었습니다.");
+    }
+
+    @PostMapping("/email-code")
+    @Operation(summary = "이메일 인증번호 인증", description = "이메일로 전달된 인증번호를 검사합니다.")
+    public ResponseEntity<ApiResponse<String>> verifyEmailCode(@Valid @RequestBody MemberRequestDto.EmailCodeDto emailCodeDto) throws MessagingException {
+        String response = authService.verifyEmailCode(emailCodeDto);
+        return ResponseEntity.ok(ApiResponse.onSuccess(response));
     }
 
     @PostMapping("/refresh-token")

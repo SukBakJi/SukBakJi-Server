@@ -7,11 +7,13 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Duration;
 import java.util.Random;
 
 @Service
+@Transactional
 @RequiredArgsConstructor
 public class MailService {
     private final StringRedisTemplate redisTemplate;
