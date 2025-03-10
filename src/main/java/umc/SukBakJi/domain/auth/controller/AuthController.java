@@ -8,10 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.*;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.client.RestTemplate;
 import umc.SukBakJi.domain.auth.model.dto.RefreshTokenRequest;
 import umc.SukBakJi.domain.auth.model.dto.OAuth2RequestDTO;
 import umc.SukBakJi.domain.member.model.dto.MemberRequestDto;
@@ -38,35 +35,6 @@ public class AuthController {
     public ResponseEntity<ApiResponse<MemberResponseDto.LoginResponseDto>> login(@RequestBody MemberRequestDto.LoginDto requestDto) {
         MemberResponseDto.LoginResponseDto responseDto = authService.login(requestDto);
         return ResponseEntity.ok(ApiResponse.onSuccess(responseDto));
-    }
-
-    // 테스트용
-    @GetMapping("/kakao-token")
-    public ResponseEntity<String> getKakaoToken(@RequestParam String code) {
-        String tokenUri = "https://kauth.kakao.com/oauth/token";
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
-
-        MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
-        params.add("grant_type", "authorization_code");
-        params.add("client_id", "56f99bce8ffde665f895fa0169d0c751");
-        params.add("client_secret", "G9KBpEbRYQzCYjt6Yc0Ic0ztvpmPGL1s");
-        params.add("redirect_uri", "http://localhost:8080/login/oauth2/code/kakao");
-        params.add("code", code);
-
-        // HTTP 요청 생성
-        HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(params, headers);
-
-        // RestTemplate을 사용하여 POST 요청 보내기
-        RestTemplate restTemplate = new RestTemplate();
-        ResponseEntity<String> response;
-        try {
-            response = restTemplate.postForEntity(tokenUri, request, String.class);
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("401 Unauthorized: " + e.getMessage());
-        }
-
-        return ResponseEntity.ok(response.getBody());
     }
 
     // OAuth2 로그인 (카카오, 애플)
