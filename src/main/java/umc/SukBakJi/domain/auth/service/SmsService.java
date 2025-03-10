@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import umc.SukBakJi.domain.auth.model.dto.CertificationDTO;
 import umc.SukBakJi.domain.member.model.entity.Member;
 import umc.SukBakJi.domain.member.repository.MemberRepository;
@@ -14,6 +15,7 @@ import umc.SukBakJi.global.util.CertificationUtil;
 import java.time.Duration;
 
 @Service
+@Transactional
 @RequiredArgsConstructor
 public class SmsService {
     private final StringRedisTemplate redisTemplate;
