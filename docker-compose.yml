@@ -7,6 +7,9 @@ services:
     networks:
       - backend
     restart: always
+    environment:
+      - REDIS_PASSWORD=${REDIS_PASSWORD}
+    command: redis-server --requirepass ${REDIS_PASSWORD}
 
   spring-app:
     image: "${DOCKER_HUB_USERNAME}/sukbakji-server:${DEPLOY_ENV}"
