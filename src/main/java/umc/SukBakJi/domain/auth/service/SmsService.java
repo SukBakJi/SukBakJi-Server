@@ -39,10 +39,7 @@ public class SmsService {
         redisTemplate.expire(userPhone, Duration.ofMinutes(expirationMinutes));
     }
 
-    public void verifyCode(Long memberId, CertificationDTO.smsVerifyDto requestDto) {
-        Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new MemberHandler(ErrorStatus.MEMBER_NOT_FOUND));
-
+    public void verifyCode(CertificationDTO.smsVerifyDto requestDto) {
         ValueOperations<String, String> valueOperations = redisTemplate.opsForValue();
         String storedCode = valueOperations.get(requestDto.getPhoneNumber());
 
@@ -55,9 +52,6 @@ public class SmsService {
         if (memberRepository.existsByPhoneNumber(requestDto.getPhoneNumber())) {
             throw new MemberHandler(ErrorStatus.PHONE_ALREADY_EXISTS);
         }
-
-        member.setPhoneNumber(requestDto.getPhoneNumber());
-        memberRepository.save(member);
     }
 
     private String generateVerificationCode() {

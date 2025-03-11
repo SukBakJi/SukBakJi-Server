@@ -7,11 +7,12 @@ import umc.SukBakJi.domain.common.entity.enums.Provider;
 import java.util.List;
 
 public class MemberConverter {
-    public static Member toMember(String email, String encodedPassword, Provider provider) {
+    public static Member toMember(String email, String encodedPassword, Provider provider, String phoneNumber) {
         return Member.builder()
                 .provider(provider)
                 .email(email)
                 .password(encodedPassword)
+                .phoneNumber(phoneNumber)
                 .build();
     }
 

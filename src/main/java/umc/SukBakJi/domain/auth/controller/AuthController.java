@@ -9,6 +9,7 @@ import org.springframework.http.*;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
+import umc.SukBakJi.domain.auth.model.dto.AuthRequestDTO;
 import umc.SukBakJi.domain.auth.model.dto.RefreshTokenRequest;
 import umc.SukBakJi.domain.auth.model.dto.OAuth2RequestDTO;
 import umc.SukBakJi.domain.member.model.dto.MemberRequestDto;
@@ -24,15 +25,15 @@ public class AuthController {
     private final AuthService authService;
 
     @PostMapping("/signup")
-    @Operation(summary = "일반 회원가입", description = "이메일과 비밀번호를 입력하여 회원가입을 진행합니다.")
-    public ResponseEntity<ApiResponse<String>> signUp(@RequestBody @Valid MemberRequestDto.SignUpDto requestDto) {
+    @Operation(summary = "일반 회원가입", description = "전화번호, 이메일, 비밀번호를 입력하여 회원가입을 진행합니다.")
+    public ResponseEntity<ApiResponse<String>> signUp(@RequestBody @Valid AuthRequestDTO.SignUpDto requestDto) {
         authService.signUp(requestDto);
         return ResponseEntity.ok(ApiResponse.onSuccess("회원가입에 성공하였습니다."));
     }
 
     @PostMapping("/login")
     @Operation(summary = "일반 로그인", description = "일반 회원가입 시 입력했던 이메일과 비밀번호로 로그인합니다.")
-    public ResponseEntity<ApiResponse<MemberResponseDto.LoginResponseDto>> login(@RequestBody MemberRequestDto.LoginDto requestDto) {
+    public ResponseEntity<ApiResponse<MemberResponseDto.LoginResponseDto>> login(@RequestBody AuthRequestDTO.LoginDto requestDto) {
         MemberResponseDto.LoginResponseDto responseDto = authService.login(requestDto);
         return ResponseEntity.ok(ApiResponse.onSuccess(responseDto));
     }
@@ -47,7 +48,7 @@ public class AuthController {
 
     @PostMapping("/email")
     @Operation(summary = "이메일 중복 확인", description = "이메일 중복 검사를 통해 이메일을 사용할 수 있는지 확인합니다.")
-    public ResponseEntity<ApiResponse<?>> verifyEmail(@RequestBody @Valid MemberRequestDto.EmailDto request) {
+    public ResponseEntity<ApiResponse<?>> verifyEmail(@RequestBody @Valid AuthRequestDTO.EmailDto request) {
         Boolean isAvailable = authService.verifyEmail(request.getEmail());
         if (isAvailable) {
             return new ResponseEntity<>(ApiResponse.onSuccess("사용 가능한 이메일입니다."), HttpStatus.OK);
