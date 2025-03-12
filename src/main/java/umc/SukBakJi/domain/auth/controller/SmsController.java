@@ -25,10 +25,8 @@ public class SmsController {
 
     @PostMapping("/verify")
     @Operation(summary = "인증번호 검증", description = "입력한 인증번호가 맞으면 회원가입을 계속 진행합니다.")
-    public ResponseEntity<ApiResponse<String>> verifyCode(
-            @AuthenticationPrincipal Long memberId,
-            @RequestBody CertificationDTO.smsVerifyDto requestDto) {
-        smsService.verifyCode(memberId, requestDto);
+    public ResponseEntity<ApiResponse<String>> verifyCode(@Valid @RequestBody CertificationDTO.smsVerifyDto requestDto) {
+        smsService.verifyCode(requestDto);
         return ResponseEntity.ok(ApiResponse.onSuccess("인증번호 인증이 완료되었습니다."));
     }
 }
