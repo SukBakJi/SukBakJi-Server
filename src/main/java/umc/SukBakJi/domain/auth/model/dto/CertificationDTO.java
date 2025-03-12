@@ -26,6 +26,10 @@ public class CertificationDTO {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class smsVerifyDto {
+        @Pattern(
+                regexp = "^01[0-9]\\d{8}$",
+                message = "전화번호는 숫자 11자리여야 합니다."
+        )
         private String phoneNumber;
         private String verificationCode;
     }

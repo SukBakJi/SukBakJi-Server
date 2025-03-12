@@ -12,38 +12,6 @@ import java.util.List;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class MemberRequestDto {
-    @Getter
-    @NoArgsConstructor
-    @AllArgsConstructor
-    @Builder
-    public static class EmailDto {
-        @Email(message = "유효하지 않은 이메일 형식입니다.")
-        private String email;
-    }
-
-    @Getter
-    @NoArgsConstructor
-    @AllArgsConstructor
-    @Builder
-    public static class SignUpDto {
-        private Provider provider;
-        @Email(message = "유효하지 않은 이메일 형식입니다.")
-        private String email;
-        @Pattern(regexp = "^.{6,}$", message = "비밀번호는 여섯 자리 이상 입력해주세요.")
-        private String password;
-    }
-
-    @Builder
-    @Getter
-    @NoArgsConstructor
-    @AllArgsConstructor
-    public static class LoginDto {
-        @Email(message = "유효하지 않은 이메일 형식입니다.")
-        private String email;
-        @Pattern(regexp = "^.{6,}$", message = "비밀번호는 여섯 자리 이상 입력해주세요.")
-        private String password;
-    }
-
     @Builder
     @Getter
     @NoArgsConstructor

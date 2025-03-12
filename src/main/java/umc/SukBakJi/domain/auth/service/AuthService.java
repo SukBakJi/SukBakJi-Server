@@ -7,6 +7,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import umc.SukBakJi.domain.auth.converter.AuthConverter;
+import umc.SukBakJi.domain.auth.model.dto.AuthRequestDTO;
 import umc.SukBakJi.domain.member.converter.MemberConverter;
 import umc.SukBakJi.global.apiPayload.exception.GeneralException;
 import umc.SukBakJi.global.security.jwt.JwtToken;
@@ -37,7 +38,7 @@ public class AuthService {
     private final AppleService appleService;
 
     // 회원가입
-    public void signUp(MemberRequestDto.SignUpDto requestDto) {
+    public void signUp(AuthRequestDTO.SignUpDto requestDto) {
         // 이메일로 회원 조회
         if (memberRepository.findByEmail(requestDto.getEmail()).isPresent()) {
             throw new MemberHandler(ErrorStatus.MEMBER_ALREADY_EXISTS);
@@ -46,12 +47,12 @@ public class AuthService {
         String encodedPassword = bCryptPasswordEncoder.encode(requestDto.getPassword());
 
         Member member = memberRepository.save(
-                MemberConverter.toMember(requestDto.getEmail(), encodedPassword, Provider.BASIC)
+                MemberConverter.toMember(requestDto.getEmail(), encodedPassword, Provider.BASIC, requestDto.getPhoneNumber())
         );
     }
 
     // 로그인
-    public MemberResponseDto.LoginResponseDto login(MemberRequestDto.LoginDto loginDto) {
+    public MemberResponseDto.LoginResponseDto login(AuthRequestDTO.LoginDto loginDto) {
         Member member = memberRepository.findByEmail(loginDto.getEmail())
                 .orElseThrow(() -> new MemberHandler(ErrorStatus.MEMBER_NOT_FOUND));
 
