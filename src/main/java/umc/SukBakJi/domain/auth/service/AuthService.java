@@ -158,7 +158,13 @@ public class AuthService {
     public MemberResponseDto.LoginResponseDto oauthLogin(Provider provider, String accessToken) {
         return switch (provider) {
             case KAKAO -> kakaoService.kakaoLogin(accessToken);
-//            case APPLE -> appleService.appleLogin(accessToken);
+            case APPLE -> {
+                try {
+                    yield appleService.appleLogin(accessToken);
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
+            }
             default -> throw new IllegalArgumentException("지원하지 않는 로그인 방식: " + provider);
         };
     }
