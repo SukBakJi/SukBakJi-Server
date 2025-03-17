@@ -149,6 +149,13 @@ public class AuthService {
         }
     }
 
+    public void resetPassword(AuthRequestDTO.LoginDto request) {
+        Member member = memberRepository.findByEmail(request.getEmail())
+                .orElseThrow(() -> new MemberHandler(ErrorStatus.MEMBER_NOT_FOUND));
+        member.setPassword(bCryptPasswordEncoder.encode(request.getPassword()));
+        memberRepository.save(member);
+    }
+
     public void logOut(String email) {
         Member member = memberRepository.findByEmail(email)
                 .orElseThrow(() -> new MemberHandler(ErrorStatus.MEMBER_NOT_FOUND));

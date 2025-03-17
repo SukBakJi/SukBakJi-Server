@@ -91,6 +91,13 @@ public class AuthController {
         }
     }
 
+    @PostMapping("/password-reset")
+    @Operation(summary = "이메일 인증에서 비밀번호 재설정", description = "이메일 인증 후, 비밀번호를 재설정합니다.")
+    public ApiResponse<String> resetPassword(@Valid @RequestBody AuthRequestDTO.LoginDto modifyPasswordDto) {
+        authService.resetPassword(modifyPasswordDto);
+        return ApiResponse.onSuccess("비밀번호를 재설정하였습니다.");
+    }
+
     @PostMapping("/logout")
     @Operation(summary = "로그아웃", description = "로그인한 사용자가 로그아웃 처리됩니다.")
     public ResponseEntity<ApiResponse<?>> logout() {
