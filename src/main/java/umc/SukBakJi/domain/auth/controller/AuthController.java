@@ -38,7 +38,7 @@ public class AuthController {
         return ResponseEntity.ok(ApiResponse.onSuccess(responseDto));
     }
 
-    // OAuth2 로그인 (카카오, 애플)
+    // OAuth2 로그인
     @PostMapping("/oauth2/login")
     @Operation(summary = "OAuth2 로그인", description = "OAuth2 로그인 후 액세스 토큰을 전달해 JWT를 발급받습니다. 존재하지 않는 회원이라면 회원가입을 진행하고 이미 존재하는 회원이라면 로그인을 진행합니다.")
     public ResponseEntity<ApiResponse<MemberResponseDto.LoginResponseDto>> oauthLogin(@RequestBody OAuth2RequestDTO request) {
@@ -66,9 +66,9 @@ public class AuthController {
 
     @PostMapping("/password")
     @Operation(summary = "비밀번호 찾기", description = "이메일을 입력하여 해당 이메일로 인증번호를 전송합니다.")
-    public ApiResponse<String> findPassword(@Valid @RequestBody MemberRequestDto.SearchPasswordDto searchPasswordDto) throws MessagingException {
+    public ResponseEntity<ApiResponse<String>> findPassword(@Valid @RequestBody MemberRequestDto.SearchPasswordDto searchPasswordDto) throws MessagingException {
         authService.searchPassword(searchPasswordDto);
-        return ApiResponse.onSuccess("비밀번호 재설정에 필요한 인증번호가 이메일로 전송되었습니다.");
+        return ResponseEntity.ok(ApiResponse.onSuccess("비밀번호 재설정에 필요한 인증번호가 이메일로 전송되었습니다."));
     }
 
     @PostMapping("/email-code")

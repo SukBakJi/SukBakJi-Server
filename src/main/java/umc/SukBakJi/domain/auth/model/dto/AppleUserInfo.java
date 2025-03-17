@@ -19,5 +19,9 @@ public class AppleUserInfo implements OAuth2UserInfo {
     public String getEmail() {
         return (String) attributes.get("email");
     }
+
+    public AppleUserInfo(String email) {
+        this.attributes = Map.of("email", email);
+    }
 }
 
