@@ -149,6 +149,13 @@ public class AuthService {
         }
     }
 
+    public void resetPassword(AuthRequestDTO.LoginDto request) {
+        Member member = memberRepository.findByEmail(request.getEmail())
+                .orElseThrow(() -> new MemberHandler(ErrorStatus.MEMBER_NOT_FOUND));
+        member.setPassword(bCryptPasswordEncoder.encode(request.getPassword()));
+        memberRepository.save(member);
+    }
+
     public void logOut(String email) {
         Member member = memberRepository.findByEmail(email)
                 .orElseThrow(() -> new MemberHandler(ErrorStatus.MEMBER_NOT_FOUND));
@@ -158,7 +165,13 @@ public class AuthService {
     public MemberResponseDto.LoginResponseDto oauthLogin(Provider provider, String accessToken) {
         return switch (provider) {
             case KAKAO -> kakaoService.kakaoLogin(accessToken);
-//            case APPLE -> appleService.appleLogin(accessToken);
+            case APPLE -> {
+                try {
+                    yield appleService.appleLogin(accessToken);
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
+            }
             default -> throw new IllegalArgumentException("지원하지 않는 로그인 방식: " + provider);
         };
     }

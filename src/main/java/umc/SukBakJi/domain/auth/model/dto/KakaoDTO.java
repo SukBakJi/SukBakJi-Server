@@ -2,8 +2,6 @@ package umc.SukBakJi.domain.auth.model.dto;
 
 import lombok.*;
 
-@Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class KakaoDTO {
     @Builder
     @Getter
