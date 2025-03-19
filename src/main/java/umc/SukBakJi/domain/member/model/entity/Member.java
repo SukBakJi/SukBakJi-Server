@@ -31,7 +31,7 @@ public class Member extends BaseEntity {
 
     private String password;
 
-    //    @Column(unique = true, nullable = false)
+    @Column(nullable = false)
     private String email;
 
     private String phoneNumber;
@@ -45,6 +45,8 @@ public class Member extends BaseEntity {
 
     private String providerId;
 
+    private String sub;
+
     @Builder
     public Member(Provider provider, String providerId) {
         this.provider = provider;
@@ -56,7 +58,7 @@ public class Member extends BaseEntity {
     private Long labId;
 
 
-    @Column(nullable = false, columnDefinition = "BOOLEAN DEFAULT FALSE")  // ✅ 기본값 추가
+    @Column(nullable = false, columnDefinition = "BOOLEAN DEFAULT FALSE")
     private boolean isEducationVerified;
 
     // Define relationships if necessary

@@ -16,6 +16,8 @@ import umc.SukBakJi.global.security.jwt.JwtToken;
 import umc.SukBakJi.global.security.jwt.JwtTokenProvider;
 import umc.SukBakJi.global.util.AppleJwtUtil;
 
+import java.util.Optional;
+
 @Service
 @Slf4j
 @RequiredArgsConstructor
@@ -84,16 +86,49 @@ public class AppleService {
                 APPLE_GRANT_TYPE,
                 authorizationCode
         );
+        log.info("애플 토큰 응답: {}", response);
 
-        return appleJwtUtil.decodeJwt(response.getIdToken());
+        AppleIdTokenPayload payload = appleJwtUtil.decodeJwt(response.getIdToken());
+        log.info("Apple ID Token Payload: {}", payload);
+
+        Optional<Member> existingMember = memberRepository.findBySubAndProvider(payload.getSub(), Provider.APPLE);
+        String email = payload.getEmail();
+        if (email == null && existingMember.isPresent()) {
+            email = existingMember.get().getEmail();
+        }
+
+        return AppleIdTokenPayload.builder()
+                .sub(payload.getSub())
+                .email(email)
+                .build();
     }
 
     // 사용자 정보 저장 및 업데이트
     private Member saveOrUpdate(AppleUserInfo appleUserInfo) {
-        return memberRepository.findByEmailAndProvider(appleUserInfo.getEmail(), Provider.APPLE)
-                .orElseGet(() -> memberRepository.save(Member.builder()
-                        .email(appleUserInfo.getEmail())
-                        .provider(Provider.APPLE)
-                        .build()));
+        // sub으로 회원 조회
+        Optional<Member> existingMember = memberRepository.findBySubAndProvider(appleUserInfo.getSub(), Provider.APPLE);
+
+        if (existingMember.isPresent()) {
+            return existingMember.get();
+        }
+
+        // sub이 없으면 email로 조회
+        Optional<Member> memberByEmail = memberRepository.findByEmailAndProvider(appleUserInfo.getEmail(), Provider.APPLE);
+
+        if (memberByEmail.isPresent()) {
+            // 회원이 존재하지만 sub이 없을 경우, sub 업데이트
+            Member member = memberByEmail.get();
+            if (member.getSub() == null) {
+                member.setSub(appleUserInfo.getSub());
+                memberRepository.save(member);
+            }
+            return member;
+        }
+
+        return memberRepository.save(Member.builder()
+                .sub(appleUserInfo.getSub())
+                .email(appleUserInfo.getEmail())
+                .provider(Provider.APPLE)
+                .build());
     }
 }

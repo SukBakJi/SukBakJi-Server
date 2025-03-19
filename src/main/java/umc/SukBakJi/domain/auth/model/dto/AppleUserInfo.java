@@ -20,6 +20,10 @@ public class AppleUserInfo implements OAuth2UserInfo {
         return (String) attributes.get("email");
     }
 
+    public String getSub() {
+        return (String) attributes.get("sub");
+    }
+
     public AppleUserInfo(String email) {
         this.attributes = Map.of("email", email);
     }
