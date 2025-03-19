@@ -2,6 +2,7 @@ package umc.SukBakJi.domain.board.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import umc.SukBakJi.domain.board.converter.PostConverter;
 import umc.SukBakJi.domain.board.model.dto.HotBoardPostDTO;
@@ -34,17 +35,15 @@ public class CommunityService {
         List<LatestQuestionDTO> latestQuestions = new ArrayList<>();
 
         for (Menu menu : Menu.values()) {
-            List<Post> posts = postRepository.findTopByBoardMenuOrderByCreatedAtDesc(menu);
+            if (menu == Menu.자유) {
+                continue;
+            }
+
+            List<Post> posts = postRepository.findTopByBoardMenuOrderByCreatedAtDesc(menu, PageRequest.of(0, 1));
             if (!posts.isEmpty()) {
-                Post latestPost = posts.get(0);
-                latestQuestions.add(PostConverter.toLatestQuestionDTO(latestPost));
+                latestQuestions.add(PostConverter.toLatestQuestionDTO(posts.get(0)));
             }
         }
-
-        if (latestQuestions.isEmpty()) {
-            throw new GeneralException(ErrorStatus.POST_NOT_FOUND);
-        }
-
         return latestQuestions;
     }
 
