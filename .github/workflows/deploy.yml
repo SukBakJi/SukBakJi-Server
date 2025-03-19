@@ -29,8 +29,11 @@ jobs:
           echo "${{ secrets.APPLICATION_YML }}" > ./src/main/resources/application.yml
 
       - name: Create Apple Auth Key from GitHub Secrets
+        env:
+          APPLE_AUTH_KEY_P8: ${{ secrets.APPLE_AUTH_KEY_P8 }}
+          APPLE_AUTH_KEY_NAME: ${{ secrets.APPLE_AUTH_KEY_NAME }}
         run: |
-          echo "${{ secrets.APPLE_AUTH_KEY_P8 }}" | base64 --decode > ./src/main/resources/${{ secrets.APPLE_AUTH_KEY_NAME }}
+          echo "$APPLE_AUTH_KEY_P8" | base64 --decode | tr -d '\r' > ./src/main/resources/$APPLE_AUTH_KEY_NAME
 
       - name: Build with Gradle
         run: |
@@ -80,5 +83,6 @@ jobs:
             export DOCKER_HUB_USERNAME=${{ secrets.DOCKER_HUB_USERNAME }}
             export DEPLOY_ENV=${{ env.DEPLOY_ENV }}
             export REDIS_PASSWORD=${{ secrets.REDIS_PASSWORD }}
+            export APPLE_AUTH_KEY_NAME=${{ secrets.APPLE_AUTH_KEY_NAME }}
             cd ~/SukBakJi-Server
             ./deploy.sh $DEPLOY_ENV
