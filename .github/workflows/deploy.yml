@@ -28,6 +28,10 @@ jobs:
           mkdir -p ./src/main/resources
           echo "${{ secrets.APPLICATION_YML }}" > ./src/main/resources/application.yml
 
+      - name: Create Apple Auth Key from GitHub Secrets
+        run: |
+          echo "${{ secrets.APPLE_AUTH_KEY_P8 }}" | base64 --decode > ./src/main/resources/${{ secrets.APPLE_AUTH_KEY_NAME }}
+
       - name: Build with Gradle
         run: |
           chmod +x gradlew
