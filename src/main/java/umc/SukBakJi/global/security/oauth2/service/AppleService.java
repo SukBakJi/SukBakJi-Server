@@ -1,6 +1,7 @@
 package umc.SukBakJi.global.security.oauth2.service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import umc.SukBakJi.domain.auth.converter.AuthConverter;
@@ -16,6 +17,7 @@ import umc.SukBakJi.global.security.jwt.JwtTokenProvider;
 import umc.SukBakJi.global.util.AppleJwtUtil;
 
 @Service
+@Slf4j
 @RequiredArgsConstructor
 public class AppleService {
     @Value("${apple.team-id}")
@@ -41,14 +43,30 @@ public class AppleService {
     private final AppleAuthClient appleAuthClient;
     private final AppleJwtUtil appleJwtUtil;
 
-    public MemberResponseDto.LoginResponseDto appleLogin(String authorizationCode) throws Exception {
-        AppleIdTokenPayload appleUser = getAppleUser(authorizationCode);
+    public MemberResponseDto.LoginResponseDto appleLogin(String authorizationCode) {
+        AppleIdTokenPayload appleUser;
+        try {
+            appleUser = getAppleUser(authorizationCode);
+            if (appleUser == null) {
+                throw new RuntimeException("Apple ID Token 디코딩 실패");
+            }
+            log.info("애플 로그인 성공: {}", appleUser.getEmail());
+        } catch (Exception e) {
+            throw new RuntimeException("Apple ID Token 디코딩 실패", e);
+        }
 
-        // 회원 가입 또는 로그인 처리
-        Member member = saveOrUpdate(new AppleUserInfo(appleUser.getEmail()));
-        JwtToken jwtToken = jwtTokenProvider.generateJwtToken(member);
+        try {
+            // 회원 가입 또는 로그인 처리
+            Member member = saveOrUpdate(new AppleUserInfo(appleUser.getEmail()));
 
-        return AuthConverter.toLoginDto(Provider.APPLE, member, jwtToken);
+            // JWT 토큰 생성
+            JwtToken jwtToken = jwtTokenProvider.generateJwtToken(member);
+
+            return AuthConverter.toLoginDto(Provider.APPLE, member, jwtToken);
+        } catch (Exception e) {
+            log.error("애플 로그인 실패: {}", e.getMessage(), e);
+            throw new RuntimeException("애플 로그인 실패", e);
+        }
     }
 
     // 애플 사용자 정보 가져오기
