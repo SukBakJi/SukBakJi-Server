@@ -9,6 +9,10 @@ import org.springframework.stereotype.Component;
 import umc.SukBakJi.domain.auth.model.dto.AppleIdTokenPayload;
 import umc.SukBakJi.global.security.oauth2.service.AppleTokenValidator;
 
+import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.security.KeyFactory;
 import java.security.PrivateKey;
 import java.security.PublicKey;
@@ -26,6 +30,17 @@ public class AppleJwtUtil {
     // 애플 ID 토큰 검증
     public AppleIdTokenPayload decodeJwt(String identityToken) {
         try {
+            // identityToken이 올바른 형식인지 확인
+            String[] jwtParts = identityToken.split("\\.");
+            if (jwtParts.length != 3) {
+                throw new IllegalArgumentException("Invalid JWT format");
+            }
+
+            // Base64 URL Safe 방식으로 JWT Payload 디코딩
+            String payloadJson = new String(Base64.getUrlDecoder().decode(jwtParts[1]));
+            log.info("Decoded JWT Payload: {}", payloadJson);
+
+            // 애플 공개 키를 가져와서 검증
             PublicKey applePublicKey = appleTokenValidator.getApplePublicKey(identityToken);
             Claims claims = Jwts.parserBuilder()
                     .setSigningKey(applePublicKey)
@@ -47,8 +62,8 @@ public class AppleJwtUtil {
     }
 
     // 애플 OAuth2 client_secret 생성
-    public static String generateClientSecret(String teamId, String keyId, String clientId, String privateKey) throws Exception {
-        PrivateKey key = getPrivateKey(privateKey);
+    public static String generateClientSecret(String teamId, String keyId, String clientId, String privateKeyPath) throws Exception {
+        PrivateKey key = getPrivateKey(privateKeyPath);
 
         return Jwts.builder()
                 .setHeaderParam("alg", "ES256")
@@ -62,10 +77,22 @@ public class AppleJwtUtil {
                 .compact();
     }
 
-    private static PrivateKey getPrivateKey(String privateKey) throws Exception {
-        byte[] decodedKey = Base64.getDecoder().decode(privateKey);
-        PKCS8EncodedKeySpec keySpec = new PKCS8EncodedKeySpec(decodedKey);
-        KeyFactory keyFactory = KeyFactory.getInstance("EC");
-        return keyFactory.generatePrivate(keySpec);
+    private static PrivateKey getPrivateKey(String privateKeyPath) throws Exception {
+        try (InputStream inputStream = new FileInputStream(privateKeyPath);
+             BufferedReader br = new BufferedReader(new InputStreamReader(inputStream))) {
+
+            StringBuilder privateKeyContent = new StringBuilder();
+            String line;
+            while ((line = br.readLine()) != null) {
+                if (!line.startsWith("-----")) {
+                    privateKeyContent.append(line);
+                }
+            }
+
+            byte[] keyBytes = Base64.getDecoder().decode(privateKeyContent.toString());
+            PKCS8EncodedKeySpec keySpec = new PKCS8EncodedKeySpec(keyBytes);
+            KeyFactory keyFactory = KeyFactory.getInstance("EC");
+            return keyFactory.generatePrivate(keySpec);
+        }
     }
 }

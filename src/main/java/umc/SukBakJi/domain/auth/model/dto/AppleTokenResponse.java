@@ -1,17 +1,27 @@
 package umc.SukBakJi.domain.auth.model.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 
-@Builder
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.Setter;
+
 @Getter
-@NoArgsConstructor
-@AllArgsConstructor
+@Setter
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class AppleTokenResponse {
-    private String idToken;
+    @JsonProperty("access_token")
     private String accessToken;
+
+    @JsonProperty("refresh_token")
     private String refreshToken;
-    private String email;
+
+    @JsonProperty("id_token")
+    private String idToken;
+
+    @JsonProperty("token_type")
+    private String tokenType;
+
+    @JsonProperty("expires_in")
+    private Long expiresIn;
 }
