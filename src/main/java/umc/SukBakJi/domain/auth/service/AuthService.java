@@ -152,6 +152,11 @@ public class AuthService {
     public void resetPassword(AuthRequestDTO.LoginDto request) {
         Member member = memberRepository.findByEmail(request.getEmail())
                 .orElseThrow(() -> new MemberHandler(ErrorStatus.MEMBER_NOT_FOUND));
+
+        // 소셜 로그인 계정은 비밀번호 변경 불가
+        if (member.getProvider() != Provider.BASIC) {
+            throw new MemberHandler(ErrorStatus.INVALID_EMAIL);
+        }
         member.setPassword(bCryptPasswordEncoder.encode(request.getPassword()));
         memberRepository.save(member);
     }
