@@ -127,7 +127,7 @@ public class AppleService {
 
         return memberRepository.save(Member.builder()
                 .sub(appleUserInfo.getSub())
-                .email(appleUserInfo.getEmail())
+                .email(appleUserInfo.getEmail() == null ? appleUserInfo.getSub() : appleUserInfo.getEmail())
                 .provider(Provider.APPLE)
                 .build());
     }
