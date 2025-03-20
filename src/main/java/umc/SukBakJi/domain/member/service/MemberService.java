@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.multipart.MultipartFile;
+import umc.SukBakJi.domain.auth.model.dto.AuthRequestDTO;
 import umc.SukBakJi.domain.member.converter.MemberConverter;
 import umc.SukBakJi.domain.member.model.dto.MemberRequestDto;
 import umc.SukBakJi.domain.member.model.dto.MemberResponseDto;
@@ -174,5 +175,11 @@ public class MemberService {
 
         member.setPassword(bCryptPasswordEncoder.encode(request.getNewPassword()));
         memberRepository.save(member);
+    }
+
+    public void setAppleEmail(Long memberId, MemberRequestDto.AppleDto appleEmail) {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new MemberHandler(ErrorStatus.MEMBER_NOT_FOUND));
+        member.setEmail(appleEmail.getEmail());
     }
 }

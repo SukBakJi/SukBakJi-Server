@@ -10,6 +10,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import umc.SukBakJi.domain.auth.model.dto.AuthRequestDTO;
 import umc.SukBakJi.domain.member.model.dto.MemberRequestDto;
 import umc.SukBakJi.domain.member.model.dto.MemberResponseDto;
 import umc.SukBakJi.domain.member.service.MemberService;
@@ -65,5 +66,14 @@ public class MemberController {
                                         @Valid @RequestBody MemberRequestDto.ModifyPasswordDto modifyPasswordDto) {
         memberService.resetPassword(memberId, modifyPasswordDto);
         return ApiResponse.onSuccess("비밀번호를 재설정하였습니다.");
+    }
+
+    @PostMapping("/apple-email")
+    @Operation(summary = "애플 이메일 설정", description = "애플 이메일을 설정합니다.")
+    public ApiResponse<String> resetPassword(
+            @AuthenticationPrincipal Long memberId,
+            @Valid @RequestBody MemberRequestDto.AppleDto request) {
+        memberService.setAppleEmail(memberId, request);
+        return ApiResponse.onSuccess("이메일을 설정하였습니다.");
     }
 }

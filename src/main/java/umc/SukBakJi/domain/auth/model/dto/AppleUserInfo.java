@@ -17,6 +17,9 @@ public class AppleUserInfo implements OAuth2UserInfo {
 
     @Override
     public String getEmail() {
+        if (attributes == null || !attributes.containsKey("email")) {
+            return null;
+        }
         return (String) attributes.get("email");
     }
 
@@ -25,7 +28,11 @@ public class AppleUserInfo implements OAuth2UserInfo {
     }
 
     public AppleUserInfo(String email) {
-        this.attributes = Map.of("email", email);
+        if (email == null) {
+            this.attributes = Map.of();
+        } else {
+            this.attributes = Map.of("email", email);
+        }
     }
 }
 
