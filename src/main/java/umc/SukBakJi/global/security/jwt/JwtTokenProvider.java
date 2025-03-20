@@ -12,6 +12,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.oauth2.jwt.JwtDecoders;
 import org.springframework.stereotype.Component;
 import umc.SukBakJi.domain.model.entity.Member;
 import umc.SukBakJi.domain.repository.MemberRepository;

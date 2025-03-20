@@ -16,7 +16,7 @@ public interface PostRepository extends JpaRepository<Post, Long> {
     List<Post> findByBoard(Board board);
 
     // 최신 질문글 조회
-    @Query("SELECT p FROM Post p WHERE p.board.menu = :menu AND p.board.boardName = '질문게시판' ORDER BY p.createdAt DESC")
+    @Query("SELECT p FROM Post p WHERE p.board.menu = :menu AND p.board.boardName = '질문 게시판' ORDER BY p.createdAt DESC")
     List<Post> findTopByBoardMenuOrderByCreatedAtDesc(@Param("menu") Menu menu);
     // HOT 게시글 조회
     @Query("SELECT p FROM Post p WHERE p.hotTimestamp IS NOT NULL ORDER BY p.hotTimestamp DESC")
