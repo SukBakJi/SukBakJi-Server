@@ -1,23 +1,23 @@
-package umc.SukBakJi.domain.board.repository;
+package umc.SukBakJi.domain.repository;
 
-import org.springframework.data.domain.Pageable;
-import umc.SukBakJi.domain.board.model.entity.Board;
-import umc.SukBakJi.domain.board.model.entity.Post;
+import umc.SukBakJi.domain.model.entity.Board;
+import umc.SukBakJi.domain.model.entity.Post;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
-import umc.SukBakJi.domain.common.entity.enums.Menu;
+import umc.SukBakJi.domain.model.entity.enums.Menu;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface PostRepository extends JpaRepository<Post, Long> {
     List<Post> findByBoard(Board board);
 
     // 최신 질문글 조회
-    @Query("SELECT p FROM Post p JOIN p.board b WHERE p.board.menu = :menu AND p.board.boardName = '질문 게시판' ORDER BY p.createdAt DESC")
-    List<Post> findTopByBoardMenuOrderByCreatedAtDesc(@Param("menu") Menu menu, Pageable pageable);
+    @Query("SELECT p FROM Post p WHERE p.board.menu = :menu AND p.board.boardName = '질문 게시판' ORDER BY p.createdAt DESC")
+    List<Post> findTopByBoardMenuOrderByCreatedAtDesc(@Param("menu") Menu menu);
     // HOT 게시글 조회
     @Query("SELECT p FROM Post p WHERE p.hotTimestamp IS NOT NULL ORDER BY p.hotTimestamp DESC")
     List<Post> findHotPosts();

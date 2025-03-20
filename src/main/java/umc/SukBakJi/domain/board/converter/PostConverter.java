@@ -11,6 +11,7 @@ import umc.SukBakJi.domain.board.model.entity.Post;
 public class PostConverter {
     public static LatestQuestionDTO toLatestQuestionDTO(Post post) {
         return new LatestQuestionDTO(
+                post.getPostId(),
                 post.getBoard().getMenu(),
                 post.getTitle()
         );
