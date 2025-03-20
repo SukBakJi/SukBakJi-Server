@@ -18,10 +18,6 @@ bin/
 !**/src/test/**/bin/
 
 ### IntelliJ IDEA ###
-<<<<<<< HEAD
-=======
-application.properties
->>>>>>> origin/develop
 .idea
 *.iws
 *.iml
@@ -40,4 +36,11 @@ out/
 ### VS Code ###
 .vscode/
 
-/src/main/resources/application.yml
+/src/main/resources/**
+
+deploy.sh
+
+.DS_Store
+._.DS_Store
+**/.DS_Store
+**/._.DS_Store

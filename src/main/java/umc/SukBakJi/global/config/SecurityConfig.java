@@ -26,8 +26,6 @@ public class SecurityConfig {
         return configuration.getAuthenticationManager();
     }
 
-
-
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
@@ -39,8 +37,8 @@ public class SecurityConfig {
             // 요청 인증 및 인가 설정
             .authorizeHttpRequests(request ->
                     request.requestMatchers(
-                            "/v3/api-docs/**", "/v3/api-docs", "/swagger-ui/**", "/swagger-resources/**",
-                            "/api/auth/**").permitAll()
+                            "/v3/api-docs/**", "/v3/api-docs/**", "/swagger-ui/**", "/swagger-resources/**",
+                            "/api/auth/**", "/api/sms/**", "login/oauth2/code/apple").permitAll()
                             .anyRequest().authenticated()
             )
 

@@ -7,9 +7,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
-import umc.SukBakJi.domain.model.entity.Image;
-import umc.SukBakJi.domain.model.entity.enums.EducationCertificateType;
-import umc.SukBakJi.domain.repository.ImageRepository;
+import umc.SukBakJi.domain.common.entity.enums.EducationCertificateType;
+import umc.SukBakJi.domain.member.repository.ImageRepository;
 import umc.SukBakJi.global.config.S3Config;
 
 import java.io.IOException;
