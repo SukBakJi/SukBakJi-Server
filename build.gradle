@@ -73,6 +73,8 @@ dependencies {
 
 	testImplementation('org.projectlombok:lombok')
 	testAnnotationProcessor('org.projectlombok:lombok')
+
+	implementation 'com.sun.mail:jakarta.mail:2.0.1'
 }
 tasks.named('test') {
 	useJUnitPlatform()
