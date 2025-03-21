@@ -3,9 +3,9 @@ package umc.SukBakJi.domain.board.model.entity;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
-import umc.SukBakJi.domain.member.model.entity.Member;
-import umc.SukBakJi.domain.common.entity.mapping.Scrap;
 import umc.SukBakJi.domain.common.entity.BaseEntity;
+import umc.SukBakJi.domain.common.entity.mapping.Scrap;
+import umc.SukBakJi.domain.member.model.entity.Member;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -15,6 +15,7 @@ import java.util.List;
 @Getter
 @Setter
 public class Post extends BaseEntity {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long postId;
@@ -48,6 +49,6 @@ public class Post extends BaseEntity {
     private List<Comment> comments = new ArrayList<>();
 
     @OneToMany(mappedBy = "post")
-    private List<Scrap> scraps  = new ArrayList<>();
+    private List<Scrap> scraps = new ArrayList<>();
 
 }

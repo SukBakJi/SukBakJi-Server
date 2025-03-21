@@ -7,6 +7,7 @@ import umc.SukBakJi.domain.common.entity.enums.Menu;
 @Getter
 @AllArgsConstructor
 public class LatestQuestionDTO {
+    private Long postId;
     private Menu menu;
     private String title;
 }
