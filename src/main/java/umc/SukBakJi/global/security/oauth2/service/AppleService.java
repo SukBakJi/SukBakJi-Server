@@ -116,8 +116,9 @@ public class AppleService {
         Optional<Member> memberByEmail = memberRepository.findByEmailAndProvider(appleUserInfo.getEmail(), Provider.APPLE);
 
         if (memberByEmail.isPresent()) {
-            // 회원이 존재하지만 sub이 없을 경우, sub 업데이트
             Member member = memberByEmail.get();
+
+            // 회원이 존재하지만 sub이 없을 경우, sub 업데이트
             if (member.getSub() == null) {
                 member.setSub(appleUserInfo.getSub());
                 memberRepository.save(member);
