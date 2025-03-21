@@ -1,12 +1,12 @@
 package umc.SukBakJi.domain.repository;
 
-import umc.SukBakJi.domain.model.entity.Board;
-import umc.SukBakJi.domain.model.entity.Post;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
-import umc.SukBakJi.domain.model.entity.enums.Menu;
+import umc.SukBakJi.domain.board.model.entity.Board;
+import umc.SukBakJi.domain.board.model.entity.Post;
+import umc.SukBakJi.domain.common.entity.enums.Menu;
 
 import java.util.List;
 import java.util.Optional;
