@@ -1,5 +1,6 @@
 package umc.SukBakJi.domain.board.repository;
 
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 import org.springframework.data.jpa.repository.Query;
@@ -45,4 +46,8 @@ public interface PostRepository extends JpaRepository<Post, Long> {
     // 전체 게시판에서 검색
     @Query("SELECT p FROM Post p WHERE p.title LIKE %:keyword% OR p.content LIKE %:keyword%")
     List<Post> searchAllPosts(@Param("keyword") String keyword);
+
+    @Query("SELECT p FROM Post p WHERE p.board.menu = :menu AND p.board.boardName = '질문 게시판' ORDER BY p.createdAt DESC")
+    List<Post> findByBoardMenuAndBoardNameOrderByCreatedAtDesc(@Param("menu") Menu menu, Pageable pageable);
+
 }

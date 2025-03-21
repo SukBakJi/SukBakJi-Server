@@ -39,7 +39,7 @@ public class CommunityService {
                 continue;
             }
 
-            List<Post> posts = postRepository.findTopByBoardMenuOrderByCreatedAtDesc(menu, PageRequest.of(0, 1));
+            List<Post> posts = postRepository.findByBoardMenuAndBoardNameOrderByCreatedAtDesc(menu, PageRequest.of(0, 1));
             if (!posts.isEmpty()) {
                 latestQuestions.add(PostConverter.toLatestQuestionDTO(posts.get(0)));
             }
