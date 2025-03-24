@@ -11,8 +11,8 @@ import umc.SukBakJi.domain.auth.model.dto.AuthRequestDTO;
 import umc.SukBakJi.domain.member.converter.MemberConverter;
 import umc.SukBakJi.global.apiPayload.exception.GeneralException;
 import umc.SukBakJi.global.security.jwt.JwtToken;
-import umc.SukBakJi.domain.member.model.dto.MemberRequestDto;
-import umc.SukBakJi.domain.member.model.dto.MemberResponseDto;
+import umc.SukBakJi.domain.member.model.dto.MemberRequestDTO;
+import umc.SukBakJi.domain.member.model.dto.MemberResponseDTO;
 import umc.SukBakJi.domain.member.model.entity.Member;
 import umc.SukBakJi.domain.common.entity.enums.Provider;
 import umc.SukBakJi.domain.member.repository.MemberRepository;
@@ -52,7 +52,7 @@ public class AuthService {
     }
 
     // 로그인
-    public MemberResponseDto.LoginResponseDto login(AuthRequestDTO.LoginDto loginDto) {
+    public MemberResponseDTO.LoginResponseDto login(AuthRequestDTO.LoginDto loginDto) {
         Member member = memberRepository.findByEmail(loginDto.getEmail())
                 .orElseThrow(() -> new MemberHandler(ErrorStatus.MEMBER_NOT_FOUND));
 
@@ -70,7 +70,7 @@ public class AuthService {
         return !memberRepository.findByEmail(email).isPresent();
     }
 
-    public MemberResponseDto.LoginResponseDto refreshAccessToken(String refreshToken) {
+    public MemberResponseDTO.LoginResponseDto refreshAccessToken(String refreshToken) {
         String token = refreshToken.startsWith("Bearer ") ? refreshToken.substring(7) : refreshToken;
 
         // refresh token 검증
@@ -95,7 +95,7 @@ public class AuthService {
         return AuthConverter.toLoginDto(Provider.BASIC, member, newJwtToken);
     }
 
-    public String findEmail(MemberRequestDto.SearchEmailDto requestDto) {
+    public String findEmail(MemberRequestDTO.SearchEmailDto requestDto) {
         Optional<Member> member = memberRepository.findByNameAndPhoneNumber(
                 requestDto.getName(), requestDto.getPhoneNumber()
         );
@@ -134,12 +134,12 @@ public class AuthService {
     }
 
     // 비밀번호 찾기
-    public void searchPassword(MemberRequestDto.SearchPasswordDto request) throws MessagingException {
+    public void searchPassword(MemberRequestDTO.SearchPasswordDto request) throws MessagingException {
         mailService.sendMail(request.getEmail());
     }
 
     // 이메일 인증
-    public String verifyEmailCode(MemberRequestDto.EmailCodeDto request) throws MessagingException {
+    public String verifyEmailCode(MemberRequestDTO.EmailCodeDto request) throws MessagingException {
         boolean isValid = mailService.verifyCode(request.getEmail(), request.getCode());
         if (isValid) {
             mailService.deleteVerificationCode(request.getEmail());
@@ -167,7 +167,7 @@ public class AuthService {
         member.resetRefreshToken();
     }
 
-    public MemberResponseDto.LoginResponseDto oauthLogin(Provider provider, String accessToken) {
+    public MemberResponseDTO.LoginResponseDto oauthLogin(Provider provider, String accessToken) {
         return switch (provider) {
             case KAKAO -> kakaoService.kakaoLogin(accessToken);
             case APPLE -> appleService.appleLogin(accessToken);

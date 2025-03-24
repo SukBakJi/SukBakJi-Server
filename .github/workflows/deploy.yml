@@ -33,7 +33,8 @@ jobs:
           APPLE_AUTH_KEY_P8: ${{ secrets.APPLE_AUTH_KEY_P8 }}
           APPLE_AUTH_KEY_NAME: ${{ secrets.APPLE_AUTH_KEY_NAME }}
         run: |
-          echo "$APPLE_AUTH_KEY_P8" | base64 --decode | tr -d '\r' > ./src/main/resources/$APPLE_AUTH_KEY_NAME
+          echo "$APPLE_AUTH_KEY_P8" | base64 --decode | tr -5
+          d '\r' > ./src/main/resources/$APPLE_AUTH_KEY_NAME
 
       - name: Create Firebase Admin SDK JSON from GitHub Secrets
         env:

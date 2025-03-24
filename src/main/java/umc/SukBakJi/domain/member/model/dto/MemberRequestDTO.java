@@ -5,13 +5,12 @@ import lombok.*;
 import org.springframework.web.multipart.MultipartFile;
 import umc.SukBakJi.domain.common.entity.enums.DegreeLevel;
 import umc.SukBakJi.domain.common.entity.enums.EducationCertificateType;
-import umc.SukBakJi.domain.common.entity.enums.Provider;
 
 import java.util.List;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class MemberRequestDto {
+public class MemberRequestDTO {
     @Builder
     @Getter
     @NoArgsConstructor

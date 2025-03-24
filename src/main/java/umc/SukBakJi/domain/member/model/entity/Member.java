@@ -89,6 +89,10 @@ public class Member extends BaseEntity {
     @OneToMany(mappedBy = "member")
     private List<Scrap> scraps;
 
+    @OneToOne
+    @JoinColumn(name = "image_id")
+    private Image educationCertificateImage;
+
     public Member(String name, String password, String email, String phoneNumber, DegreeLevel degreeLevel, Provider provider) {
         this.name = name;
         this.password = password;

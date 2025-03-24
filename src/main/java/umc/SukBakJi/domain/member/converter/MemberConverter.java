@@ -1,6 +1,6 @@
 package umc.SukBakJi.domain.member.converter;
 
-import umc.SukBakJi.domain.member.model.dto.MemberResponseDto;
+import umc.SukBakJi.domain.member.model.dto.MemberResponseDTO;
 import umc.SukBakJi.domain.member.model.entity.Member;
 import umc.SukBakJi.domain.common.entity.enums.Provider;
 
@@ -16,16 +16,16 @@ public class MemberConverter {
                 .build();
     }
 
-    public static MemberResponseDto.ProfileResultDto toSetMemberProfile(Member member, List<String> resarchTopics) {
-        return MemberResponseDto.ProfileResultDto.builder()
+    public static MemberResponseDTO.ProfileResultDto toSetMemberProfile(Member member, List<String> resarchTopics) {
+        return MemberResponseDTO.ProfileResultDto.builder()
                 .name(member.getName())
                 .degreeLevel(member.getDegreeLevel())
                 .researchTopics(resarchTopics)
                 .build();
     }
 
-    public static MemberResponseDto.ProfileResultDto toModifyMemberProfile(Member member, List<String> resarchTopics) {
-        return MemberResponseDto.ProfileResultDto.builder()
+    public static MemberResponseDTO.ProfileResultDto toModifyMemberProfile(Member member, List<String> resarchTopics) {
+        return MemberResponseDTO.ProfileResultDto.builder()
                 .name(member.getName())
                 .degreeLevel(member.getDegreeLevel())
                 .researchTopics(resarchTopics)

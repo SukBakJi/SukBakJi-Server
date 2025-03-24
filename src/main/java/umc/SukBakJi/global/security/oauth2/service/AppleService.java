@@ -8,7 +8,7 @@ import umc.SukBakJi.domain.auth.converter.AuthConverter;
 import umc.SukBakJi.domain.auth.model.dto.AppleIdTokenPayload;
 import umc.SukBakJi.domain.auth.model.dto.AppleTokenResponse;
 import umc.SukBakJi.domain.auth.model.dto.AppleUserInfo;
-import umc.SukBakJi.domain.member.model.dto.MemberResponseDto;
+import umc.SukBakJi.domain.member.model.dto.MemberResponseDTO;
 import umc.SukBakJi.domain.member.model.entity.Member;
 import umc.SukBakJi.domain.common.entity.enums.Provider;
 import umc.SukBakJi.domain.member.repository.MemberRepository;
@@ -45,7 +45,7 @@ public class AppleService {
     private final AppleAuthClient appleAuthClient;
     private final AppleJwtUtil appleJwtUtil;
 
-    public MemberResponseDto.LoginResponseDto appleLogin(String authorizationCode) {
+    public MemberResponseDTO.LoginResponseDto appleLogin(String authorizationCode) {
         AppleIdTokenPayload appleUser;
         try {
             appleUser = getAppleUser(authorizationCode);

@@ -8,8 +8,8 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.multipart.MultipartFile;
 import umc.SukBakJi.domain.common.entity.enums.UpdateStatus;
 import umc.SukBakJi.domain.member.converter.MemberConverter;
-import umc.SukBakJi.domain.member.model.dto.MemberRequestDto;
-import umc.SukBakJi.domain.member.model.dto.MemberResponseDto;
+import umc.SukBakJi.domain.member.model.dto.MemberRequestDTO;
+import umc.SukBakJi.domain.member.model.dto.MemberResponseDTO;
 import umc.SukBakJi.domain.member.model.entity.Image;
 import umc.SukBakJi.domain.member.model.entity.Member;
 import umc.SukBakJi.domain.lab.model.entity.ResearchTopic;
@@ -43,7 +43,7 @@ public class MemberService {
     private final AmazonS3Manager amazonS3Manager;
 
     // 프로필 설정
-    public MemberResponseDto.ProfileResultDto setMemberProfile(@RequestHeader("Authorization") String token, MemberRequestDto.ProfileDto profileDto) {
+    public MemberResponseDTO.ProfileResultDto setMemberProfile(@RequestHeader("Authorization") String token, MemberRequestDTO.ProfileDto profileDto) {
         String email = jwtTokenProvider.getEmailFromToken(token);
         Member member = memberRepository.findByEmail(email)
                 .orElseThrow(() -> new MemberHandler(ErrorStatus.MEMBER_NOT_FOUND));
@@ -74,7 +74,7 @@ public class MemberService {
     }
 
     // 프로필 수정
-    public MemberResponseDto.ProfileResultDto modifyMemberProfile(@RequestHeader("Authorization") String token, MemberRequestDto.ModifyProfileDto profileDto) {
+    public MemberResponseDTO.ProfileResultDto modifyMemberProfile(@RequestHeader("Authorization") String token, MemberRequestDTO.ModifyProfileDto profileDto) {
         String email = jwtTokenProvider.getEmailFromToken(token);
         Member member = memberRepository.findByEmail(email)
                 .orElseThrow(() -> new MemberHandler(ErrorStatus.MEMBER_NOT_FOUND));
@@ -121,6 +121,7 @@ public class MemberService {
         Image savedImage = imageRepository.save(
                 Image.builder()
                         .uuid(uuid)
+                        .type(EducationCertificateType.fromString(educationCertificateType))
                         .build()
         );
 
@@ -154,7 +155,7 @@ public class MemberService {
     }
 
     // 프로필 보기
-    public MemberResponseDto.ProfileResultDto getMemberProfile(@RequestHeader("Authorization") String token) {
+    public MemberResponseDTO.ProfileResultDto getMemberProfile(@RequestHeader("Authorization") String token) {
         String email = jwtTokenProvider.getEmailFromToken(token);
         Member member = memberRepository.findByEmail(email)
                 .orElseThrow(() -> new MemberHandler(ErrorStatus.MEMBER_NOT_FOUND));
@@ -168,7 +169,7 @@ public class MemberService {
         List<String> memberResearchTopics = memberResearchTopicService.getResearchTopicNamesByMember(member);
         System.out.println(memberResearchTopics);
 
-        return MemberResponseDto.ProfileResultDto.builder()
+        return MemberResponseDTO.ProfileResultDto.builder()
                 .name(member.getName())
                 .provider(member.getProvider())
                 .degreeLevel(member.getDegreeLevel())
@@ -177,7 +178,7 @@ public class MemberService {
     }
 
     // 비밀번호 재설정
-    public void resetPassword(Long memberId, MemberRequestDto.ModifyPasswordDto request) {
+    public void resetPassword(Long memberId, MemberRequestDTO.ModifyPasswordDto request) {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new MemberHandler(ErrorStatus.MEMBER_NOT_FOUND));
 
@@ -189,13 +190,13 @@ public class MemberService {
         memberRepository.save(member);
     }
 
-    public void setAppleEmail(Long memberId, MemberRequestDto.AppleDto request) {
+    public void setAppleEmail(Long memberId, MemberRequestDTO.AppleDto request) {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new MemberHandler(ErrorStatus.MEMBER_NOT_FOUND));
         member.setEmail(request.getEmail());
     }
 
-    public void setDeviceToken(Long memberId, MemberRequestDto.DeviceTokenDto request) {
+    public void setDeviceToken(Long memberId, MemberRequestDTO.DeviceTokenDto request) {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new MemberHandler(ErrorStatus.MEMBER_NOT_FOUND));
         member.setEmail(request.getDeviceToken());
