@@ -44,7 +44,7 @@ public class NotificationAspect {
     /**
      * 학력 인증 완료 후 알림 전송
      */
-    @AfterReturning(value = "execution(* umc.SukBakJi.domain.member.service.MemberService.verifyEducation(..))", returning = "member")
+    @AfterReturning(value = "execution(* umc.SukBakJi.domain.member.service.ManagerService.approveEducation(..))", returning = "member")
     public void sendNotificationAfterVerification(JoinPoint joinPoint, Member member) {
         if (member == null || member.getFcmToken() == null) {
             log.warn("FCM 토큰이 없거나 회원 정보가 없습니다.");

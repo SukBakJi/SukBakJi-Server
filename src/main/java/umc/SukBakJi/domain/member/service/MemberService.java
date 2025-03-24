@@ -141,19 +141,6 @@ public class MemberService {
         }
     }
 
-    // 학력 인증 확인
-    public Member verifyEducation(Long memberId, boolean isApproved) {
-        Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new MemberHandler(ErrorStatus.MEMBER_NOT_FOUND));
-
-        if (isApproved) {
-            member.setEducationVerificationStatus(UpdateStatus.APPROVED);
-        } else {
-            member.setEducationVerificationStatus(UpdateStatus.REJECTED);
-        }
-        return memberRepository.save(member);
-    }
-
     // 프로필 보기
     public MemberResponseDTO.ProfileResultDto getMemberProfile(@RequestHeader("Authorization") String token) {
         String email = jwtTokenProvider.getEmailFromToken(token);
