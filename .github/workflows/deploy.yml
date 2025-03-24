@@ -87,4 +87,10 @@ jobs:
           host: ${{ secrets.EC2_HOST }}
           username: ubuntu
           key: ${{ secrets.EC2_SSH_KEY }}
-          s
+          script: |
+            export DOCKER_HUB_USERNAME=${{ secrets.DOCKER_HUB_USERNAME }}
+            export DEPLOY_ENV=${{ env.DEPLOY_ENV }}
+            export REDIS_PASSWORD=${{ secrets.REDIS_PASSWORD }}
+            export APPLE_AUTH_KEY_NAME=${{ secrets.APPLE_AUTH_KEY_NAME }}
+            cd ~/SukBakJi-Server
+            ./deploy.sh $DEPLOY_ENV
