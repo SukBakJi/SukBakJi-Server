@@ -16,7 +16,7 @@ public class FcmConfig {
     @Bean
     public FirebaseMessaging firebaseMessaging() throws IOException {
         if (FirebaseApp.getApps().isEmpty()) {
-            try (InputStream serviceAccount = new ClassPathResource("firebase/firebase-adminsdk.json").getInputStream()) {
+            try (InputStream serviceAccount = new ClassPathResource("key/firebase-adminsdk.json").getInputStream()) {
                 FirebaseOptions options = FirebaseOptions.builder()
                         .setCredentials(GoogleCredentials.fromStream(serviceAccount))
                         .build();

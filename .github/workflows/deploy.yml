@@ -33,14 +33,14 @@ jobs:
           APPLE_AUTH_KEY_P8: ${{ secrets.APPLE_AUTH_KEY_P8 }}
           APPLE_AUTH_KEY_NAME: ${{ secrets.APPLE_AUTH_KEY_NAME }}
         run: |
-          echo "$APPLE_AUTH_KEY_P8" | base64 --decode | tr -d '\r' > ./src/main/resources/$APPLE_AUTH_KEY_NAME
+          mkdir -p ./src/main/resources/key
+          echo "$APPLE_AUTH_KEY_P8" | base64 --decode | tr -d '\r' > ./src/main/resources/key/$APPLE_AUTH_KEY_NAME
 
       - name: Create Firebase Admin SDK JSON from GitHub Secrets
         env:
           FIREBASE_ADMINSDK_JSON: ${{ secrets.FIREBASE_ADMINSDK_JSON }}
         run: |
-          mkdir -p ./src/main/resources/firebase
-          echo "$FIREBASE_ADMINSDK_JSON" | base64 --decode | tr -d '\r' > ./src/main/resources/firebase/firebase-adminsdk.json
+          echo "$FIREBASE_ADMINSDK_JSON" | base64 --decode | tr -d '\r' > ./src/main/resources/key/firebase-adminsdk.json
 
       - name: Build with Gradle
         run: |
