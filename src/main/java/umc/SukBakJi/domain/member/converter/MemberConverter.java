@@ -1,5 +1,6 @@
 package umc.SukBakJi.domain.member.converter;
 
+import umc.SukBakJi.domain.common.entity.enums.Role;
 import umc.SukBakJi.domain.member.model.dto.MemberResponseDTO;
 import umc.SukBakJi.domain.member.model.entity.Member;
 import umc.SukBakJi.domain.common.entity.enums.Provider;
@@ -13,6 +14,7 @@ public class MemberConverter {
                 .email(email)
                 .password(encodedPassword)
                 .phoneNumber(phoneNumber)
+                .role(Role.ROLE_USER)
                 .build();
     }
 
