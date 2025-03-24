@@ -35,11 +35,16 @@ public class SecurityConfig {
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // 세션 사용 안 함
 
             // 요청 인증 및 인가 설정
-            .authorizeHttpRequests(request ->
-                    request.requestMatchers(
-                            "/v3/api-docs/**", "/v3/api-docs/**", "/swagger-ui/**", "/swagger-resources/**",
-                            "/api/auth/**", "/api/sms/**", "login/oauth2/code/apple").permitAll()
-                            .anyRequest().authenticated()
+            .authorizeHttpRequests(request -> request
+                    .requestMatchers("/api/auth/logout").authenticated()
+                    .requestMatchers("/api/auth/**").permitAll()
+                    // Swagger 문서 접근 허용
+                    .requestMatchers(
+                            "/v3/api-docs/**", "/swagger-ui/**", "/swagger-resources/**"
+                    ).permitAll()
+                    // 기타 엔드포인트
+                    .requestMatchers("/api/sms/**").permitAll()
+                    .anyRequest().authenticated()
             )
 
             .logout(logout -> logout

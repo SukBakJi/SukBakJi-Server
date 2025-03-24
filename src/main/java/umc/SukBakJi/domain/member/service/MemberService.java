@@ -133,6 +133,7 @@ public class MemberService {
             amazonS3Manager.uploadFile(s3Key, certificationPicture);
 
             member.setEducationVerified(true);
+            member.setEducationCertificateImage(savedImage);
             member.setEducationVerificationStatus(UpdateStatus.PENDING);
             memberRepository.save(member);
         } catch (Exception e) {
