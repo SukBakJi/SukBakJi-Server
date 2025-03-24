@@ -37,7 +37,8 @@ public class SecurityConfig {
                         .anyRequest().hasRole("ADMIN")
                 )
                 .formLogin(form -> form
-                        .loginPage("/admin/login") // 로그인 페이지 경로
+                        .loginPage("/admin/login")
+                        .loginProcessingUrl("/admin/login")
                         .defaultSuccessUrl("/admin/education-certifications", true)
                         .permitAll()
                 )

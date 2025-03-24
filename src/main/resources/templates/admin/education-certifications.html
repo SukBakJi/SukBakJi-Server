@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>학력 인증 요청 목록</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            padding: 2rem;
+        }
+        table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+        th, td {
+            border: 1px solid #ccc;
+            padding: 0.5rem;
+            text-align: center;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        img {
+            max-width: 100px;
+            height: auto;
+        }
+        .btn {
+            padding: 0.4rem 0.8rem;
+            margin: 0 0.2rem;
+            cursor: pointer;
+            border: none;
+            border-radius: 5px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: background-color 0.2s ease;
+        }
+        .approve {
+            background-color: #4CAF50;
+            color: white;
+        }
+        .reject {
+            background-color: #f44336;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+<h2>학력 인증 요청 목록</h2>
+
+<table>
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>이메일</th>
+        <th>이름</th>
+        <th>인증 이미지</th>
+        <th>상태</th>
+        <th>관리</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="item : ${certifications}">
+        <td th:text="${item.memberId}"></td>
+        <td th:text="${item.email}"></td>
+        <td th:text="${item.name}"></td>
+        <td>
+            <a th:href="${item.educationCertificateImageUrl}" target="_blank">
+                <img th:src="${item.educationCertificateImageUrl}" alt="인증 이미지" style="max-width: 200px;">
+            </a>
+        </td>
+        <td>대기 중</td>
+        <td>
+            <form th:action="@{/admin/education-certifications/{id}/approve(id=${item.memberId})}" method="post" style="display:inline;" onsubmit="return confirmApprove(event)">
+                <button class="btn approve" type="submit">승인</button>
+            </form>
+            <form th:action="@{/admin/education-certifications/{id}/reject(id=${item.memberId})}" method="post" style="display:inline;" onsubmit="return confirmReject(event)">
+                <button class="btn reject" type="submit">거절</button>
+            </form>
+        </td>
+    </tr>
+    </tbody>
+</table>
+<div id="confirmModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background-color: rgba(0, 0, 0, 0.5); z-index: 9999; justify-content: center; align-items: center;">
+    <div style="background: white; padding: 1.5rem; border-radius: 8px; text-align: center; min-width: 300px;">
+        <p id="confirmMessage" style="margin-bottom: 1rem;"></p>
+        <button id="confirmYes" class="btn approve">확인</button>
+        <button id="confirmNo" class="btn reject">취소</button>
+    </div>
+</div>
+</body>
+<script>
+    let currentForm = null;
+
+    function showModal(message, form) {
+        document.getElementById('confirmMessage').innerText = message;
+        document.getElementById('confirmModal').style.display = 'flex';
+        currentForm = form;
+    }
+
+    document.getElementById('confirmYes').addEventListener('click', () => {
+        document.getElementById('confirmModal').style.display = 'none';
+        if (currentForm) currentForm.submit();
+    });
+
+    document.getElementById('confirmNo').addEventListener('click', () => {
+        document.getElementById('confirmModal').style.display = 'none';
+        currentForm = null;
+    });
+
+    function confirmApprove(event) {
+        event.preventDefault();
+        showModal("정말 승인하시겠습니까?", event.target);
+        return false;
+    }
+
+    function confirmReject(event) {
+        event.preventDefault();
+        showModal("정말 거절하시겠습니까?", event.target);
+        return false;
+    }
+</script>
+</html>
