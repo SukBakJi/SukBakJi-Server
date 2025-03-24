@@ -52,6 +52,16 @@ public class MemberController {
         return ApiResponse.onSuccess("학력 인증을 위한 이미지 전송에 성공하였습니다.");
     }
 
+    @PostMapping(value = "/education-certification", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE})
+    @Operation(summary = "학력 인증 이미지 첨부", description = "재학증명서, 학생증 또는 졸업증명서에 해당하는 사진을 첨부하여 학력 인증을 진행합니다. 첨부한 사진은 클라우드 저장소에 저장됩니다.")
+    public ApiResponse<String> up(@RequestHeader("Authorization") String token,
+                                                               @RequestPart("certificationPicture") MultipartFile certificationPicture,
+                                                               @RequestPart(value = "educationCertificateType") String educationCertificateType) {
+        String jwtToken = token.substring(7);
+        memberService.uploadEducationCertificate(jwtToken, certificationPicture, educationCertificateType);
+        return ApiResponse.onSuccess("학력 인증을 위한 이미지 전송에 성공하였습니다.");
+    }
+
     @GetMapping("/mypage")
     @Operation(summary = "마이페이지", description = "사용자가 설정한 프로필 정보를 확인합니다.")
     public ApiResponse<MemberResponseDto.ProfileResultDto> getMyPage(@RequestHeader("Authorization") String token) {
@@ -70,10 +80,19 @@ public class MemberController {
 
     @PostMapping("/apple-email")
     @Operation(summary = "애플 이메일 설정", description = "애플 이메일을 설정합니다.")
-    public ApiResponse<String> resetPassword(
+    public ApiResponse<String> setAppleEmail(
             @AuthenticationPrincipal Long memberId,
             @Valid @RequestBody MemberRequestDto.AppleDto request) {
         memberService.setAppleEmail(memberId, request);
         return ApiResponse.onSuccess("이메일을 설정하였습니다.");
+    }
+
+    @PostMapping("/fcm-token")
+    @Operation(summary = "FCM 기기 토큰 설정", description = "FCM 기기 토큰을 설정하였습니다.")
+    public ApiResponse<String> setDeviceToken(
+            @AuthenticationPrincipal Long memberId,
+            @Valid @RequestBody MemberRequestDto.DeviceTokenDto request) {
+        memberService.setDeviceToken(memberId, request);
+        return ApiResponse.onSuccess("FCM 기기 토큰을 설정하였습니다.");
     }
 }

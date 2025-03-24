@@ -1,13 +1,12 @@
 package umc.SukBakJi.domain.member.service;
 
-import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.multipart.MultipartFile;
-import umc.SukBakJi.domain.auth.model.dto.AuthRequestDTO;
+import umc.SukBakJi.domain.common.entity.enums.UpdateStatus;
 import umc.SukBakJi.domain.member.converter.MemberConverter;
 import umc.SukBakJi.domain.member.model.dto.MemberRequestDto;
 import umc.SukBakJi.domain.member.model.dto.MemberResponseDto;
@@ -20,7 +19,6 @@ import umc.SukBakJi.domain.member.repository.ImageRepository;
 import umc.SukBakJi.domain.member.repository.MemberRepository;
 import umc.SukBakJi.domain.member.repository.MemberResearchTopicRepository;
 import umc.SukBakJi.domain.lab.repository.ResearchTopicRepository;
-import umc.SukBakJi.domain.auth.service.MailService;
 import umc.SukBakJi.global.apiPayload.code.status.ErrorStatus;
 import umc.SukBakJi.global.apiPayload.exception.GeneralException;
 import umc.SukBakJi.global.apiPayload.exception.handler.MemberHandler;
@@ -134,11 +132,25 @@ public class MemberService {
             amazonS3Manager.uploadFile(s3Key, certificationPicture);
 
             member.setEducationVerified(true);
+            member.setEducationVerificationStatus(UpdateStatus.PENDING);
             memberRepository.save(member);
         } catch (Exception e) {
             imageRepository.delete(savedImage); // 업로드 실패 시 롤백
             throw new RuntimeException("학력 인증서 업로드 실패", e);
         }
+    }
+
+    // 학력 인증 확인
+    public Member verifyEducation(Long memberId, boolean isApproved) {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new MemberHandler(ErrorStatus.MEMBER_NOT_FOUND));
+
+        if (isApproved) {
+            member.setEducationVerificationStatus(UpdateStatus.APPROVED);
+        } else {
+            member.setEducationVerificationStatus(UpdateStatus.REJECTED);
+        }
+        return memberRepository.save(member);
     }
 
     // 프로필 보기
@@ -177,9 +189,15 @@ public class MemberService {
         memberRepository.save(member);
     }
 
-    public void setAppleEmail(Long memberId, MemberRequestDto.AppleDto appleEmail) {
+    public void setAppleEmail(Long memberId, MemberRequestDto.AppleDto request) {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new MemberHandler(ErrorStatus.MEMBER_NOT_FOUND));
-        member.setEmail(appleEmail.getEmail());
+        member.setEmail(request.getEmail());
+    }
+
+    public void setDeviceToken(Long memberId, MemberRequestDto.DeviceTokenDto request) {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new MemberHandler(ErrorStatus.MEMBER_NOT_FOUND));
+        member.setEmail(request.getDeviceToken());
     }
 }
