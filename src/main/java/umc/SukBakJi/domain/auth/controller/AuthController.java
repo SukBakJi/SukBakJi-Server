@@ -59,7 +59,7 @@ public class AuthController {
 
     @PostMapping("/member-email")
     @Operation(summary = "이름과 전화번호로 이메일 찾기", description = "이름과 전화번호로 등록된 이메일을 일부 반환합니다.")
-    public ResponseEntity<ApiResponse<String>> findEmail(@RequestBody MemberRequestDto.searchEmailDto requestDto) {
+    public ResponseEntity<ApiResponse<String>> findEmail(@RequestBody MemberRequestDto.SearchEmailDto requestDto) {
         String response = authService.findEmail(requestDto);
         return ResponseEntity.ok(ApiResponse.onSuccess(response));
     }

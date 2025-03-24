@@ -95,7 +95,7 @@ public class AuthService {
         return AuthConverter.toLoginDto(Provider.BASIC, member, newJwtToken);
     }
 
-    public String findEmail(MemberRequestDto.searchEmailDto requestDto) {
+    public String findEmail(MemberRequestDto.SearchEmailDto requestDto) {
         Optional<Member> member = memberRepository.findByNameAndPhoneNumber(
                 requestDto.getName(), requestDto.getPhoneNumber()
         );
