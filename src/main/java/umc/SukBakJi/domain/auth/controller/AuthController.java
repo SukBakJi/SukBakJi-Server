@@ -105,8 +105,7 @@ public class AuthController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         if (authentication != null && authentication.isAuthenticated()) {
-            // 현재 사용자의 인증 정보 무효화
-            SecurityContextHolder.getContext().setAuthentication(null);
+            SecurityContextHolder.clearContext();
         }
         authService.logOut(authentication.getName());
         return ResponseEntity.ok(ApiResponse.onSuccess("로그아웃되었습니다.", authentication.getName()));
