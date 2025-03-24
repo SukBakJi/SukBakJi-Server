@@ -1,16 +1,15 @@
 package umc.SukBakJi.domain.member.service;
 
-import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.multipart.MultipartFile;
-import umc.SukBakJi.domain.auth.model.dto.AuthRequestDTO;
+import umc.SukBakJi.domain.common.entity.enums.UpdateStatus;
 import umc.SukBakJi.domain.member.converter.MemberConverter;
-import umc.SukBakJi.domain.member.model.dto.MemberRequestDto;
-import umc.SukBakJi.domain.member.model.dto.MemberResponseDto;
+import umc.SukBakJi.domain.member.model.dto.MemberRequestDTO;
+import umc.SukBakJi.domain.member.model.dto.MemberResponseDTO;
 import umc.SukBakJi.domain.member.model.entity.Image;
 import umc.SukBakJi.domain.member.model.entity.Member;
 import umc.SukBakJi.domain.lab.model.entity.ResearchTopic;
@@ -20,7 +19,6 @@ import umc.SukBakJi.domain.member.repository.ImageRepository;
 import umc.SukBakJi.domain.member.repository.MemberRepository;
 import umc.SukBakJi.domain.member.repository.MemberResearchTopicRepository;
 import umc.SukBakJi.domain.lab.repository.ResearchTopicRepository;
-import umc.SukBakJi.domain.auth.service.MailService;
 import umc.SukBakJi.global.apiPayload.code.status.ErrorStatus;
 import umc.SukBakJi.global.apiPayload.exception.GeneralException;
 import umc.SukBakJi.global.apiPayload.exception.handler.MemberHandler;
@@ -45,7 +43,7 @@ public class MemberService {
     private final AmazonS3Manager amazonS3Manager;
 
     // 프로필 설정
-    public MemberResponseDto.ProfileResultDto setMemberProfile(@RequestHeader("Authorization") String token, MemberRequestDto.ProfileDto profileDto) {
+    public MemberResponseDTO.ProfileResultDto setMemberProfile(@RequestHeader("Authorization") String token, MemberRequestDTO.ProfileDto profileDto) {
         String email = jwtTokenProvider.getEmailFromToken(token);
         Member member = memberRepository.findByEmail(email)
                 .orElseThrow(() -> new MemberHandler(ErrorStatus.MEMBER_NOT_FOUND));
@@ -76,7 +74,7 @@ public class MemberService {
     }
 
     // 프로필 수정
-    public MemberResponseDto.ProfileResultDto modifyMemberProfile(@RequestHeader("Authorization") String token, MemberRequestDto.ModifyProfileDto profileDto) {
+    public MemberResponseDTO.ProfileResultDto modifyMemberProfile(@RequestHeader("Authorization") String token, MemberRequestDTO.ModifyProfileDto profileDto) {
         String email = jwtTokenProvider.getEmailFromToken(token);
         Member member = memberRepository.findByEmail(email)
                 .orElseThrow(() -> new MemberHandler(ErrorStatus.MEMBER_NOT_FOUND));
@@ -123,6 +121,7 @@ public class MemberService {
         Image savedImage = imageRepository.save(
                 Image.builder()
                         .uuid(uuid)
+                        .type(EducationCertificateType.fromString(educationCertificateType))
                         .build()
         );
 
@@ -134,6 +133,7 @@ public class MemberService {
             amazonS3Manager.uploadFile(s3Key, certificationPicture);
 
             member.setEducationVerified(true);
+            member.setEducationVerificationStatus(UpdateStatus.PENDING);
             memberRepository.save(member);
         } catch (Exception e) {
             imageRepository.delete(savedImage); // 업로드 실패 시 롤백
@@ -142,7 +142,7 @@ public class MemberService {
     }
 
     // 프로필 보기
-    public MemberResponseDto.ProfileResultDto getMemberProfile(@RequestHeader("Authorization") String token) {
+    public MemberResponseDTO.ProfileResultDto getMemberProfile(@RequestHeader("Authorization") String token) {
         String email = jwtTokenProvider.getEmailFromToken(token);
         Member member = memberRepository.findByEmail(email)
                 .orElseThrow(() -> new MemberHandler(ErrorStatus.MEMBER_NOT_FOUND));
@@ -156,7 +156,7 @@ public class MemberService {
         List<String> memberResearchTopics = memberResearchTopicService.getResearchTopicNamesByMember(member);
         System.out.println(memberResearchTopics);
 
-        return MemberResponseDto.ProfileResultDto.builder()
+        return MemberResponseDTO.ProfileResultDto.builder()
                 .name(member.getName())
                 .provider(member.getProvider())
                 .degreeLevel(member.getDegreeLevel())
@@ -165,7 +165,7 @@ public class MemberService {
     }
 
     // 비밀번호 재설정
-    public void resetPassword(Long memberId, MemberRequestDto.ModifyPasswordDto request) {
+    public void resetPassword(Long memberId, MemberRequestDTO.ModifyPasswordDto request) {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new MemberHandler(ErrorStatus.MEMBER_NOT_FOUND));
 
@@ -177,9 +177,15 @@ public class MemberService {
         memberRepository.save(member);
     }
 
-    public void setAppleEmail(Long memberId, MemberRequestDto.AppleDto appleEmail) {
+    public void setAppleEmail(Long memberId, MemberRequestDTO.AppleDto request) {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new MemberHandler(ErrorStatus.MEMBER_NOT_FOUND));
-        member.setEmail(appleEmail.getEmail());
+        member.setEmail(request.getEmail());
+    }
+
+    public void setDeviceToken(Long memberId, MemberRequestDTO.DeviceTokenDto request) {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new MemberHandler(ErrorStatus.MEMBER_NOT_FOUND));
+        member.setEmail(request.getDeviceToken());
     }
 }

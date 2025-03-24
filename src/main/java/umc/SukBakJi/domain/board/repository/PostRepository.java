@@ -10,7 +10,6 @@ import umc.SukBakJi.domain.board.model.entity.Post;
 import umc.SukBakJi.domain.common.entity.enums.Menu;
 
 import java.util.List;
-import java.util.Optional;
 
 @Repository
 public interface PostRepository extends JpaRepository<Post, Long> {
@@ -18,7 +17,7 @@ public interface PostRepository extends JpaRepository<Post, Long> {
 
     // 최신 질문글 조회
     @Query("SELECT p FROM Post p WHERE p.board.menu = :menu AND p.board.boardName = '질문 게시판' ORDER BY p.createdAt DESC")
-    List<Post> findTopByBoardMenuOrderByCreatedAtDesc(@Param("menu") Menu menu);
+    List<Post> findTopByBoardMenuOrderByCreatedAtDesc(@Param("menu") Menu menu, Pageable pageable);
     // HOT 게시글 조회
     @Query("SELECT p FROM Post p WHERE p.hotTimestamp IS NOT NULL ORDER BY p.hotTimestamp DESC")
     List<Post> findHotPosts();

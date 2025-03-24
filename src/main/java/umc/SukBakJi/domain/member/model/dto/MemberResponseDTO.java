@@ -6,7 +6,7 @@ import umc.SukBakJi.domain.common.entity.enums.Provider;
 
 import java.util.List;
 
-public class MemberResponseDto {
+public class MemberResponseDTO {
     @Builder
     @Getter
     @NoArgsConstructor

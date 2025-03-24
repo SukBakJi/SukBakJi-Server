@@ -8,7 +8,8 @@ import umc.SukBakJi.domain.auth.converter.AuthConverter;
 import umc.SukBakJi.domain.auth.model.dto.AppleIdTokenPayload;
 import umc.SukBakJi.domain.auth.model.dto.AppleTokenResponse;
 import umc.SukBakJi.domain.auth.model.dto.AppleUserInfo;
-import umc.SukBakJi.domain.member.model.dto.MemberResponseDto;
+import umc.SukBakJi.domain.common.entity.enums.Role;
+import umc.SukBakJi.domain.member.model.dto.MemberResponseDTO;
 import umc.SukBakJi.domain.member.model.entity.Member;
 import umc.SukBakJi.domain.common.entity.enums.Provider;
 import umc.SukBakJi.domain.member.repository.MemberRepository;
@@ -45,7 +46,7 @@ public class AppleService {
     private final AppleAuthClient appleAuthClient;
     private final AppleJwtUtil appleJwtUtil;
 
-    public MemberResponseDto.LoginResponseDto appleLogin(String authorizationCode) {
+    public MemberResponseDTO.LoginResponseDto appleLogin(String authorizationCode) {
         AppleIdTokenPayload appleUser;
         try {
             appleUser = getAppleUser(authorizationCode);
@@ -116,8 +117,9 @@ public class AppleService {
         Optional<Member> memberByEmail = memberRepository.findByEmailAndProvider(appleUserInfo.getEmail(), Provider.APPLE);
 
         if (memberByEmail.isPresent()) {
-            // 회원이 존재하지만 sub이 없을 경우, sub 업데이트
             Member member = memberByEmail.get();
+
+            // 회원이 존재하지만 sub이 없을 경우, sub 업데이트
             if (member.getSub() == null) {
                 member.setSub(appleUserInfo.getSub());
                 memberRepository.save(member);
@@ -129,6 +131,7 @@ public class AppleService {
                 .sub(appleUserInfo.getSub())
                 .email(appleUserInfo.getEmail() == null ? appleUserInfo.getSub() : appleUserInfo.getEmail())
                 .provider(Provider.APPLE)
+                .role(Role.ROLE_USER)
                 .build());
     }
 }

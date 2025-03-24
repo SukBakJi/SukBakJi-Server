@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 import umc.SukBakJi.domain.lab.converter.LabReviewConverter;
 import umc.SukBakJi.domain.lab.model.dto.*;
 import umc.SukBakJi.domain.member.model.entity.Member;
-import umc.SukBakJi.domain.common.entity.enums.LabUpdateStatus;
+import umc.SukBakJi.domain.common.entity.enums.UpdateStatus;
 import umc.SukBakJi.domain.common.entity.mapping.LabReviewUpdateRequest;
 import umc.SukBakJi.domain.lab.repository.LabReviewUpdateRequestRepository;
 import umc.SukBakJi.domain.member.repository.MemberRepository;
@@ -127,7 +127,7 @@ public class LabReviewService {
                         .member(member)
                         .labReview(labReview)
                         .content(request.getContent())
-                        .labUpdateStatus(LabUpdateStatus.PENDING)
+                        .labUpdateStatus(UpdateStatus.PENDING)
                         .build()
         );
     }

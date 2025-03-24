@@ -3,7 +3,7 @@ package umc.SukBakJi.domain.common.entity.mapping;
 import jakarta.persistence.*;
 import lombok.*;
 import umc.SukBakJi.domain.member.model.entity.Member;
-import umc.SukBakJi.domain.common.entity.enums.LabUpdateStatus;
+import umc.SukBakJi.domain.common.entity.enums.UpdateStatus;
 
 @Entity
 @Getter
@@ -20,7 +20,7 @@ public class LabReviewUpdateRequest {
     private String content;
 
     @Enumerated(EnumType.STRING)
-    private LabUpdateStatus labUpdateStatus;
+    private UpdateStatus labUpdateStatus;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")

@@ -9,7 +9,8 @@ import org.springframework.web.client.RestTemplate;
 import umc.SukBakJi.domain.auth.converter.AuthConverter;
 import umc.SukBakJi.domain.auth.model.dto.KakaoUserInfo;
 import umc.SukBakJi.domain.auth.model.dto.OAuth2UserInfo;
-import umc.SukBakJi.domain.member.model.dto.MemberResponseDto;
+import umc.SukBakJi.domain.common.entity.enums.Role;
+import umc.SukBakJi.domain.member.model.dto.MemberResponseDTO;
 import umc.SukBakJi.domain.member.model.entity.Member;
 import umc.SukBakJi.domain.common.entity.enums.Provider;
 import umc.SukBakJi.domain.member.repository.MemberRepository;
@@ -30,7 +31,7 @@ public class KakaoService {
     @Value("${spring.security.oauth2.client.provider.kakao.user-info-uri}")
     private String kakaoApiUri;
 
-    public MemberResponseDto.LoginResponseDto kakaoLogin(String accessToken) {
+    public MemberResponseDTO.LoginResponseDto kakaoLogin(String accessToken) {
         // 액세스 토큰 검증 및 사용자 정보 조회
         OAuth2UserInfo userInfo = getUserInfo(accessToken);
         if (userInfo == null) {
@@ -67,6 +68,7 @@ public class KakaoService {
                 .orElseGet(() -> memberRepository.save(Member.builder()
                         .email(kakaoUserInfo.getEmail())
                         .provider(kakaoUserInfo.getProvider())
+                        .role(Role.ROLE_USER)
                         .build()));
     }
 }
