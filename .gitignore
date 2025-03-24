@@ -36,7 +36,8 @@ out/
 ### VS Code ###
 .vscode/
 
-/src/main/resources/**
+/src/main/resources/application.yml
+/src/main/resources/key/**
 
 deploy.sh
 
