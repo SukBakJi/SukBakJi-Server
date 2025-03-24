@@ -29,14 +29,16 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
+        String uri = request.getRequestURI();
 
         // 로그인 및 회원가입 관련 요청은 JWT 검증 안함
-        if (request.getRequestURI().startsWith("/api/auth/") ||
-                request.getRequestURI().startsWith("/api/sms/") ||
-                request.getRequestURI().startsWith("/login/oauth2/code/apple") ||
-                request.getRequestURI().startsWith("/v3/api-docs") ||
-                request.getRequestURI().startsWith("/swagger-ui/") ||
-                request.getRequestURI().startsWith("/swagger-resources/")) {
+        if ((uri.startsWith("/api/auth/") && !uri.equals("/api/auth/logout")) ||
+                uri.startsWith("/api/sms/") ||
+                uri.startsWith("/login/oauth2/code/apple") ||
+                uri.startsWith("/v3/api-docs") ||
+                uri.startsWith("/swagger-ui/") ||
+                uri.startsWith("/swagger-resources/") ||
+                uri.startsWith("/admin/")) {
             filterChain.doFilter(request, response);
             return;
         }

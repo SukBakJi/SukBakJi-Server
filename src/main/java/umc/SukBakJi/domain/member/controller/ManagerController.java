@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import umc.SukBakJi.domain.common.entity.enums.UpdateStatus;
 import umc.SukBakJi.domain.member.model.dto.EducationVerificationResponseDTO;
@@ -22,9 +23,10 @@ public class ManagerController {
 
     @GetMapping("/education-certifications")
     @PreAuthorize("hasRole('ADMIN')")
-    @Operation(summary = "학력 인증 사용자 목록 조회", description = "사용자 학력 인증 관리를 위해 사용자 목록을 조회합니다.")
-    public ResponseEntity<ApiResponse<List<EducationVerificationResponseDTO>>> getAllPendingVerifications() {
-        return ResponseEntity.ok(ApiResponse.onSuccess(managerService.getAllPendingVerifications()));
+    public String adminCertList(Model model) {
+        List<EducationVerificationResponseDTO> list = managerService.getAllPendingVerifications();
+        model.addAttribute("certifications", list);
+        return "admin/education-certifications";
     }
 
     @PostMapping("/education-certifications/{memberId}/approve")
