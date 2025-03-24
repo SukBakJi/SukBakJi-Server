@@ -68,10 +68,6 @@ public class SecurityConfig {
                         .requestMatchers("/api/auth/logout").authenticated()
                         .anyRequest().authenticated()
                 )
-                .logout(logout -> logout
-                        .logoutUrl("/api/auth/logout")
-                        .invalidateHttpSession(true) // 세션 무효화
-                )
 
                 // jwt 필터 설정
                 .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class);
