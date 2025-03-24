@@ -9,6 +9,7 @@ import org.springframework.web.client.RestTemplate;
 import umc.SukBakJi.domain.auth.converter.AuthConverter;
 import umc.SukBakJi.domain.auth.model.dto.KakaoUserInfo;
 import umc.SukBakJi.domain.auth.model.dto.OAuth2UserInfo;
+import umc.SukBakJi.domain.common.entity.enums.Role;
 import umc.SukBakJi.domain.member.model.dto.MemberResponseDTO;
 import umc.SukBakJi.domain.member.model.entity.Member;
 import umc.SukBakJi.domain.common.entity.enums.Provider;
@@ -67,6 +68,7 @@ public class KakaoService {
                 .orElseGet(() -> memberRepository.save(Member.builder()
                         .email(kakaoUserInfo.getEmail())
                         .provider(kakaoUserInfo.getProvider())
+                        .role(Role.ROLE_USER)
                         .build()));
     }
 }

@@ -7,6 +7,7 @@ import umc.SukBakJi.domain.board.model.entity.Post;
 import umc.SukBakJi.domain.board.model.entity.Reply;
 import umc.SukBakJi.domain.common.entity.enums.DegreeLevel;
 import umc.SukBakJi.domain.common.entity.enums.Provider;
+import umc.SukBakJi.domain.common.entity.enums.Role;
 import umc.SukBakJi.domain.common.entity.enums.UpdateStatus;
 import umc.SukBakJi.domain.common.entity.mapping.BoardLike;
 import umc.SukBakJi.domain.common.entity.mapping.FavoriteLab;
@@ -63,6 +64,9 @@ public class Member extends BaseEntity {
 
     private Long labId;
 
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private Role role;
 
     @Column(nullable = false, columnDefinition = "BOOLEAN DEFAULT FALSE")
     private boolean isEducationVerified;

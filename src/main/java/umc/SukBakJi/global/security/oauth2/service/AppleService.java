@@ -8,6 +8,7 @@ import umc.SukBakJi.domain.auth.converter.AuthConverter;
 import umc.SukBakJi.domain.auth.model.dto.AppleIdTokenPayload;
 import umc.SukBakJi.domain.auth.model.dto.AppleTokenResponse;
 import umc.SukBakJi.domain.auth.model.dto.AppleUserInfo;
+import umc.SukBakJi.domain.common.entity.enums.Role;
 import umc.SukBakJi.domain.member.model.dto.MemberResponseDTO;
 import umc.SukBakJi.domain.member.model.entity.Member;
 import umc.SukBakJi.domain.common.entity.enums.Provider;
@@ -130,6 +131,7 @@ public class AppleService {
                 .sub(appleUserInfo.getSub())
                 .email(appleUserInfo.getEmail() == null ? appleUserInfo.getSub() : appleUserInfo.getEmail())
                 .provider(Provider.APPLE)
+                .role(Role.ROLE_USER)
                 .build());
     }
 }
