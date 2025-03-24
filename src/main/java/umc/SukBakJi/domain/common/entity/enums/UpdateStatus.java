@@ -1,13 +1,13 @@
 package umc.SukBakJi.domain.common.entity.enums;
 
-public enum LabUpdateStatus {
-    PENDING("대기 중"),
+public enum UpdateStatus {
     APPROVED("승인됨"),
+    PENDING("대기 중"),
     REJECTED("반려됨");
 
     private final String value;
 
-    LabUpdateStatus(String value) {
+    UpdateStatus(String value) {
         this.value = value;
     }
 

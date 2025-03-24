@@ -3,6 +3,7 @@ package umc.SukBakJi.domain.member.model.entity;
 import jakarta.persistence.*;
 import lombok.*;
 import umc.SukBakJi.domain.common.entity.BaseEntity;
+import umc.SukBakJi.domain.common.entity.enums.EducationCertificateType;
 
 @Entity
 @Builder
@@ -16,4 +17,10 @@ public class Image extends BaseEntity {
 
     @Column(unique = true)
     private String uuid;
+
+    @Enumerated(EnumType.STRING)
+    private EducationCertificateType type;
+
+    @OneToOne(mappedBy = "educationCertificateImage")
+    private Member member;
 }

@@ -19,7 +19,7 @@ public class PrincipalDetails implements UserDetails, OAuth2User {
     // 일반 로그인 생성자
     public PrincipalDetails(Member member) {
         this.member = member;
-        this.authorities = Collections.singletonList(new SimpleGrantedAuthority("ROLE_USER"));
+        this.authorities = Collections.singletonList(new SimpleGrantedAuthority(member.getRole().name()));
     }
 
     /**

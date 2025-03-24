@@ -19,7 +19,6 @@ import java.io.IOException;
 public class AmazonS3Manager {
     private final AmazonS3 amazonS3;
     private final S3Config s3Config;
-    private final ImageRepository imageRepository;
 
     public String uploadFile(String keyName, MultipartFile file) {
         ObjectMetadata metadata = new ObjectMetadata();
@@ -30,10 +29,14 @@ public class AmazonS3Manager {
         } catch (IOException e) {
             log.error("error at AmazonS3Manager uploadFile : {}", (Object) e.getStackTrace());
         }
-        return amazonS3.getUrl(s3Config.getBucket(), keyName).toString();
+        return getFileUrl(keyName);
     }
 
     public String generateEducationCertificateKeyName(Long userId, EducationCertificateType type, String uuid) {
         return String.format("education-certificates/users/%d/%s/%s.jpg", userId, type.getValue(), uuid);
+    }
+
+    public String getFileUrl(String keyName) {
+        return amazonS3.getUrl(s3Config.getBucket(), keyName).toString();
     }
 }

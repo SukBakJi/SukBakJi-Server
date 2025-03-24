@@ -16,7 +16,7 @@ import umc.SukBakJi.domain.lab.model.dto.LabRequestDTO;
 import umc.SukBakJi.domain.lab.model.entity.Lab;
 import umc.SukBakJi.domain.member.model.entity.Member;
 import umc.SukBakJi.domain.university.model.entity.University;
-import umc.SukBakJi.domain.common.entity.enums.LabUpdateStatus;
+import umc.SukBakJi.domain.common.entity.enums.UpdateStatus;
 import umc.SukBakJi.domain.common.entity.mapping.FavoriteLab;
 import umc.SukBakJi.domain.common.entity.mapping.LabResearchTopic;
 import umc.SukBakJi.domain.common.entity.mapping.LabUpdateRequest;
@@ -210,7 +210,7 @@ public class LabService {
                         .lab(lab)
                         .requestCategory(request.getRequestCategory())
                         .content(request.getContent())
-                        .labUpdateStatus(LabUpdateStatus.PENDING)
+                        .labUpdateStatus(UpdateStatus.PENDING)
                         .build()
         );
     }

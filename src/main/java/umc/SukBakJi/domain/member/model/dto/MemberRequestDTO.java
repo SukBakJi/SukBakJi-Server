@@ -5,13 +5,12 @@ import lombok.*;
 import org.springframework.web.multipart.MultipartFile;
 import umc.SukBakJi.domain.common.entity.enums.DegreeLevel;
 import umc.SukBakJi.domain.common.entity.enums.EducationCertificateType;
-import umc.SukBakJi.domain.common.entity.enums.Provider;
 
 import java.util.List;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class MemberRequestDto {
+public class MemberRequestDTO {
     @Builder
     @Getter
     @NoArgsConstructor
@@ -44,7 +43,7 @@ public class MemberRequestDto {
     @Getter
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class searchEmailDto {
+    public static class SearchEmailDto {
         private String name;
         private String phoneNumber;
     }
@@ -83,5 +82,13 @@ public class MemberRequestDto {
     public static class AppleDto {
         @Email(message = "유효하지 않은 이메일 형식입니다.")
         private String email;
+    }
+
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class DeviceTokenDto {
+        private String deviceToken;
     }
 }

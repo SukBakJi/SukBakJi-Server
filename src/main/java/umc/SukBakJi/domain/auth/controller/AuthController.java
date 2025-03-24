@@ -12,8 +12,8 @@ import org.springframework.web.bind.annotation.*;
 import umc.SukBakJi.domain.auth.model.dto.AuthRequestDTO;
 import umc.SukBakJi.domain.auth.model.dto.RefreshTokenRequest;
 import umc.SukBakJi.domain.auth.model.dto.OAuth2RequestDTO;
-import umc.SukBakJi.domain.member.model.dto.MemberRequestDto;
-import umc.SukBakJi.domain.member.model.dto.MemberResponseDto;
+import umc.SukBakJi.domain.member.model.dto.MemberRequestDTO;
+import umc.SukBakJi.domain.member.model.dto.MemberResponseDTO;
 import umc.SukBakJi.domain.auth.service.AuthService;
 import umc.SukBakJi.global.apiPayload.ApiResponse;
 
@@ -33,16 +33,16 @@ public class AuthController {
 
     @PostMapping("/login")
     @Operation(summary = "일반 로그인", description = "일반 회원가입 시 입력했던 이메일과 비밀번호로 로그인합니다.")
-    public ResponseEntity<ApiResponse<MemberResponseDto.LoginResponseDto>> login(@RequestBody AuthRequestDTO.LoginDto requestDto) {
-        MemberResponseDto.LoginResponseDto responseDto = authService.login(requestDto);
+    public ResponseEntity<ApiResponse<MemberResponseDTO.LoginResponseDto>> login(@RequestBody AuthRequestDTO.LoginDto requestDto) {
+        MemberResponseDTO.LoginResponseDto responseDto = authService.login(requestDto);
         return ResponseEntity.ok(ApiResponse.onSuccess(responseDto));
     }
 
     // OAuth2 로그인
     @PostMapping("/oauth2/login")
     @Operation(summary = "OAuth2 로그인", description = "OAuth2 로그인 후 액세스 토큰을 전달해 JWT를 발급받습니다. 존재하지 않는 회원이라면 회원가입을 진행하고 이미 존재하는 회원이라면 로그인을 진행합니다.")
-    public ResponseEntity<ApiResponse<MemberResponseDto.LoginResponseDto>> oauthLogin(@RequestBody OAuth2RequestDTO request) {
-        MemberResponseDto.LoginResponseDto response = authService.oauthLogin(request.getProvider(), request.getAccessToken());
+    public ResponseEntity<ApiResponse<MemberResponseDTO.LoginResponseDto>> oauthLogin(@RequestBody OAuth2RequestDTO request) {
+        MemberResponseDTO.LoginResponseDto response = authService.oauthLogin(request.getProvider(), request.getAccessToken());
         return ResponseEntity.ok(ApiResponse.onSuccess(response));
     }
 
@@ -59,21 +59,21 @@ public class AuthController {
 
     @PostMapping("/member-email")
     @Operation(summary = "이름과 전화번호로 이메일 찾기", description = "이름과 전화번호로 등록된 이메일을 일부 반환합니다.")
-    public ResponseEntity<ApiResponse<String>> findEmail(@RequestBody MemberRequestDto.searchEmailDto requestDto) {
+    public ResponseEntity<ApiResponse<String>> findEmail(@RequestBody MemberRequestDTO.SearchEmailDto requestDto) {
         String response = authService.findEmail(requestDto);
         return ResponseEntity.ok(ApiResponse.onSuccess(response));
     }
 
     @PostMapping("/password")
     @Operation(summary = "비밀번호 찾기", description = "이메일을 입력하여 해당 이메일로 인증번호를 전송합니다.")
-    public ResponseEntity<ApiResponse<String>> findPassword(@Valid @RequestBody MemberRequestDto.SearchPasswordDto searchPasswordDto) throws MessagingException {
+    public ResponseEntity<ApiResponse<String>> findPassword(@Valid @RequestBody MemberRequestDTO.SearchPasswordDto searchPasswordDto) throws MessagingException {
         authService.searchPassword(searchPasswordDto);
         return ResponseEntity.ok(ApiResponse.onSuccess("비밀번호 재설정에 필요한 인증번호가 이메일로 전송되었습니다."));
     }
 
     @PostMapping("/email-code")
     @Operation(summary = "이메일 인증번호 인증", description = "이메일로 전달된 인증번호를 검사합니다.")
-    public ResponseEntity<ApiResponse<String>> verifyEmailCode(@Valid @RequestBody MemberRequestDto.EmailCodeDto emailCodeDto) throws MessagingException {
+    public ResponseEntity<ApiResponse<String>> verifyEmailCode(@Valid @RequestBody MemberRequestDTO.EmailCodeDto emailCodeDto) throws MessagingException {
         String response = authService.verifyEmailCode(emailCodeDto);
         return ResponseEntity.ok(ApiResponse.onSuccess(response));
     }
@@ -83,7 +83,7 @@ public class AuthController {
     public ResponseEntity<ApiResponse<?>> refreshToken(@RequestBody RefreshTokenRequest refreshTokenRequest) {
         log.info("Received refresh token request: " + refreshTokenRequest.getRefreshToken());
         try {
-            MemberResponseDto.LoginResponseDto responseDto = authService.refreshAccessToken(refreshTokenRequest.getRefreshToken());
+            MemberResponseDTO.LoginResponseDto responseDto = authService.refreshAccessToken(refreshTokenRequest.getRefreshToken());
             return ResponseEntity.ok(ApiResponse.onSuccess(responseDto));
         } catch (Exception e) {
             log.error("Error processing refresh token request", e);
