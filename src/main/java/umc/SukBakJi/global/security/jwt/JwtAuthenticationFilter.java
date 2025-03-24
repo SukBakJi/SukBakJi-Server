@@ -32,13 +32,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         String uri = request.getRequestURI();
 
         // 로그인 및 회원가입 관련 요청은 JWT 검증 안함
-        if ((uri.startsWith("/api/auth/") && !uri.equals("/api/auth/logout")) ||
+        if (uri.startsWith("/admin/") ||
+                (uri.startsWith("/api/auth/") && !uri.equals("/api/auth/logout")) ||
                 uri.startsWith("/api/sms/") ||
-                uri.startsWith("/login/oauth2/code/apple") ||
                 uri.startsWith("/v3/api-docs") ||
                 uri.startsWith("/swagger-ui/") ||
-                uri.startsWith("/swagger-resources/") ||
-                uri.startsWith("/admin/")) {
+                uri.startsWith("/swagger-resources/")
+        ) {
             filterChain.doFilter(request, response);
             return;
         }
