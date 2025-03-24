@@ -70,7 +70,6 @@ public class SecurityConfig {
                 )
                 .logout(logout -> logout
                         .logoutUrl("/api/auth/logout")
-                        .logoutSuccessUrl("/")
                         .invalidateHttpSession(true) // 세션 무효화
                 )
 
