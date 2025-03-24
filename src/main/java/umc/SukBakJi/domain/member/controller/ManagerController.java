@@ -1,12 +1,10 @@
 package umc.SukBakJi.domain.member.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import umc.SukBakJi.domain.common.entity.enums.UpdateStatus;
 import umc.SukBakJi.domain.member.model.dto.EducationVerificationResponseDTO;
 import umc.SukBakJi.domain.member.model.entity.Member;
@@ -18,24 +16,28 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
+@RequestMapping("/api/admin")
 public class ManagerController {
     private final ManagerService managerService;
 
-    @GetMapping("/admin/education-certifications")
+    @GetMapping("/education-certifications")
     @PreAuthorize("hasRole('ADMIN')")
+    @Operation(summary = "학력 인증 사용자 목록 조회", description = "사용자 학력 인증 관리를 위해 사용자 목록을 조회합니다.")
     public ResponseEntity<ApiResponse<List<EducationVerificationResponseDTO>>> getAllPendingVerifications() {
         return ResponseEntity.ok(ApiResponse.onSuccess(managerService.getAllPendingVerifications()));
     }
 
-    @PostMapping("/admin/education-certifications/{memberId}/approve")
+    @PostMapping("/education-certifications/{memberId}/approve")
     @PreAuthorize("hasRole('ADMIN')")
+    @Operation(summary = "학력 인증 승인", description = "학력 인증을 승인합니다.")
     public ResponseEntity<ApiResponse<String>> approve(@PathVariable Long memberId) {
         managerService.approveEducation(memberId);
         return ResponseEntity.ok(ApiResponse.onSuccess("승인이 완료되었습니다."));
     }
 
-    @PostMapping("/admin/education-certifications/{memberId}/reject")
+    @PostMapping("/education-certifications/{memberId}/reject")
     @PreAuthorize("hasRole('ADMIN')")
+    @Operation(summary = "학력 인증 거절", description = "학력 인증을 거절합니다.")
     public ResponseEntity<ApiResponse<String>> reject(@PathVariable Long memberId) {
         managerService.rejectEducation(memberId);
         return ResponseEntity.ok(ApiResponse.onSuccess("거절이 완료되었습니다."));
