@@ -79,6 +79,9 @@ dependencies {
 	testAnnotationProcessor('org.projectlombok:lombok')
 
 	implementation 'com.sun.mail:jakarta.mail:2.0.1'
+
+	// fcm
+	implementation 'com.google.firebase:firebase-admin:9.2.0'
 }
 tasks.named('test') {
 	useJUnitPlatform()
