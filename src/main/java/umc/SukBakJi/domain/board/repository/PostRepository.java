@@ -46,7 +46,7 @@ public interface PostRepository extends JpaRepository<Post, Long> {
     @Query("SELECT p FROM Post p WHERE p.title LIKE %:keyword% OR p.content LIKE %:keyword%")
     List<Post> searchAllPosts(@Param("keyword") String keyword);
 
-    @Query("SELECT p FROM Post p WHERE p.board.menu = :menu AND p.board.boardName = '질문 게시판' ORDER BY p.createdAt DESC")
+    @Query("SELECT p FROM Post p WHERE p.board.menu IN :menu AND p.board.menu <> '자유' AND p.board.boardName = '질문 게시판' ORDER BY p.createdAt DESC")
     List<Post> findByBoardMenuAndBoardNameOrderByCreatedAtDesc(@Param("menu") Menu menu, Pageable pageable);
 
 }
