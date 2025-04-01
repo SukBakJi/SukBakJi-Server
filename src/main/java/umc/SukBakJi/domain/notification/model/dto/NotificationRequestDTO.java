@@ -1,4 +1,4 @@
-package umc.SukBakJi.domain.Notification.model.dto;
+package umc.SukBakJi.domain.notification.model.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

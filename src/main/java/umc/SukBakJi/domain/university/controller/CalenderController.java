@@ -48,8 +48,7 @@ public class CalenderController {
     })
     @GetMapping("/member")
     public ApiResponse<UnivResponseDTO.memberIdDTO> getMemberId(@AuthenticationPrincipal PrincipalDetails principalDetails){
-        Long memberId = principalDetails.getMember().getId();
-        System.out.println("memberId = " + memberId);
+        Long memberId = principalDetails.getMember().getMemberId();
         UnivResponseDTO.memberIdDTO memberIdDTO = new UnivResponseDTO.memberIdDTO(memberId);
         return ApiResponse.onSuccess(memberIdDTO);
     }
@@ -138,7 +137,7 @@ public class CalenderController {
     })
     @GetMapping("/univ")
     public ApiResponse<UnivResponseDTO.getUnivListDTO> getUnivList(@AuthenticationPrincipal PrincipalDetails principalDetails) {
-        Long memberId = principalDetails.getMember().getId();
+        Long memberId = principalDetails.getMember().getMemberId();
         List<SetUniv> univList = calenderService.getUnivList(memberId);
         if (univList == null) {
             return ApiResponse.onSuccess(UnivConverter.toGetUnivListDTO(memberId, null));
@@ -162,7 +161,7 @@ public class CalenderController {
             @AuthenticationPrincipal PrincipalDetails principalDetails,
             @PathVariable Long univId,
             @RequestBody UnivRequestDTO.UpdateUnivDTO request){
-        Long memberId = principalDetails.getMember().getId();
+        Long memberId = principalDetails.getMember().getMemberId();
         calenderService.updateUnivSchedule(memberId, univId, request);
         return ApiResponse.onSuccess("대학 일정을 성공적으로 수정하였습니다.", null);
     }
@@ -202,7 +201,8 @@ public class CalenderController {
             @AuthenticationPrincipal PrincipalDetails principalDetails,
             @Parameter(description = "삭제할 학교 DTO", required = true)
             @RequestBody UnivRequestDTO.DeleteSelectedUnivDTO request) {
-        Long memberId = principalDetails.getMember().getId();
+        Long memberId = principalDetails.getMember().getMemberId();
+
         calenderService.deleteSelectedUniv(memberId, request);
         return ApiResponse.onSuccess("대학 일정을 선택 삭제하였습니다.", null);
     }
@@ -221,7 +221,7 @@ public class CalenderController {
     @DeleteMapping("/univ/all")
     public ApiResponse<Void> deleteAllUniv(
             @AuthenticationPrincipal PrincipalDetails principalDetails) {
-        Long memberId = principalDetails.getMember().getId();
+        Long memberId = principalDetails.getMember().getMemberId();
         calenderService.deleteAllUniv(memberId);
         return ApiResponse.onSuccess("대학 일정을 전체 삭제하였습니다.", null);
     }
@@ -258,8 +258,7 @@ public class CalenderController {
     })
     @GetMapping("/schedule")
     public ApiResponse<UnivResponseDTO.getScheduleListDTO> getSchedule(@AuthenticationPrincipal PrincipalDetails principalDetails) {
-        Long memberId = principalDetails.getMember().getId();
-
+        Long memberId = principalDetails.getMember().getMemberId();
         List<UnivScheduleInfo> univScheduleInfoList = calenderService.getScheduleList(memberId);
         List<UnivResponseDTO.scheduleListDTO> scheduleListDTOList = UnivConverter.toScheduleList(univScheduleInfoList);
         return ApiResponse.onSuccess(UnivConverter.toGetScheduleList(memberId, scheduleListDTOList));
@@ -277,9 +276,10 @@ public class CalenderController {
                             schema = @Schema(implementation = ErrorReasonDTO.class)))
     })
     @GetMapping("/schedule/{date}")
-    public ApiResponse<UnivResponseDTO.getSpeciDateListDTO> getSpeciDateSchedule(@AuthenticationPrincipal PrincipalDetails principalDetails, @RequestParam("date") String date) {
-        Long memberId = principalDetails.getMember().getId();
-
+    public ApiResponse<UnivResponseDTO.getSpeciDateListDTO> getSpeciDateSchedule(
+            @AuthenticationPrincipal PrincipalDetails principalDetails,
+            @RequestParam("date") String date){
+        Long memberId = principalDetails.getMember().getMemberId();
         List<UnivScheduleInfo> univScheduleInfoList = calenderService.getSpeciDateScheduleList(memberId, date);
         List<UnivResponseDTO.speciDateListDTO> speciDateList = UnivConverter.speciDateList(univScheduleInfoList);
         return ApiResponse.onSuccess(UnivConverter.toGetSpeciDateList(memberId, speciDateList));
@@ -315,7 +315,7 @@ public class CalenderController {
     })
     @GetMapping("/alarm")
     public ApiResponse<AlarmResponseDTO.getAlarmListDTO> viewAlarmList(@AuthenticationPrincipal PrincipalDetails principalDetails) {
-        Long memberId = principalDetails.getMember().getId();
+        Long memberId = principalDetails.getMember().getMemberId();
 
         List<Alarm> alarmList = calenderService.getAlarmList(memberId);
         if (alarmList == null) {
@@ -358,8 +358,8 @@ public class CalenderController {
     })
     @DeleteMapping("/alarm/{alarmId}")
     public ApiResponse<Void> deleteAlarm(@AuthenticationPrincipal PrincipalDetails principalDetails, @PathVariable Long alarmId) {
-        Long memberId = principalDetails.getMember().getId();
-
+        Long memberId = principalDetails.getMember().getMemberId();
+      
         calenderService.deleteAlarm(memberId, alarmId);
         return ApiResponse.onSuccess("알람이 성공적으로 삭제되었습니다.", null);
     }

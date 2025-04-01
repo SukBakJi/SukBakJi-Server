@@ -30,9 +30,8 @@ public class ManagerService {
                 .map(member -> {
                     Image image = member.getEducationCertificateImage();
                     EducationCertificateType type = image.getType();
-                    String uuid = image.getUuid();
 
-                    String key = amazonS3Manager.generateEducationCertificateKeyName(member.getId(), type, uuid);
+                    String key = amazonS3Manager.generateEducationCertificateKeyName(member.getId(), type);
                     String url = amazonS3Manager.getFileUrl(key);
 
                     return EducationVerificationResponseDTO.builder()
@@ -45,18 +44,26 @@ public class ManagerService {
                 .collect(Collectors.toList());
     }
 
-    public void approveEducation(Long memberId) {
+    public Member approveEducation(Long memberId) {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new MemberHandler(ErrorStatus.MEMBER_NOT_FOUND));
 
+        Image image = member.getEducationCertificateImage();
+        if (image != null) {
+            String key = amazonS3Manager.generateEducationCertificateKeyName(member.getId(), image.getType());
+            amazonS3Manager.deleteFile(key);
+        }
+
         member.setEducationVerificationStatus(UpdateStatus.APPROVED);
         memberRepository.save(member);
+        return member;
     }
 
-    public void rejectEducation(Long memberId) {
+    public Member rejectEducation(Long memberId) {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new MemberHandler(ErrorStatus.MEMBER_NOT_FOUND));
         member.setEducationVerificationStatus(UpdateStatus.REJECTED);
         memberRepository.save(member);
+        return member;
     }
 }

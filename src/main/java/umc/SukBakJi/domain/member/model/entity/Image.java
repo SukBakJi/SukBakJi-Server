@@ -15,9 +15,6 @@ public class Image extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(unique = true)
-    private String uuid;
-
     @Enumerated(EnumType.STRING)
     private EducationCertificateType type;
 
