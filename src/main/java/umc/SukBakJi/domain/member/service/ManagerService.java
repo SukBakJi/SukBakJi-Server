@@ -30,8 +30,9 @@ public class ManagerService {
                 .map(member -> {
                     Image image = member.getEducationCertificateImage();
                     EducationCertificateType type = image.getType();
+                    String uuid = image.getUuid();
 
-                    String key = amazonS3Manager.generateEducationCertificateKeyName(member.getId(), type);
+                    String key = amazonS3Manager.generateEducationCertificateKeyName(member.getId(), type, uuid);
                     String url = amazonS3Manager.getFileUrl(key);
 
                     return EducationVerificationResponseDTO.builder()
@@ -50,7 +51,7 @@ public class ManagerService {
 
         Image image = member.getEducationCertificateImage();
         if (image != null) {
-            String key = amazonS3Manager.generateEducationCertificateKeyName(member.getId(), image.getType());
+            String key = amazonS3Manager.generateEducationCertificateKeyName(member.getId(), image.getType(), image.getUuid());
             amazonS3Manager.deleteFile(key);
         }
 
