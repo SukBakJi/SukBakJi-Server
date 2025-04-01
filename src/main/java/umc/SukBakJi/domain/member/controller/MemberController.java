@@ -10,16 +10,18 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import umc.SukBakJi.domain.member.model.dto.MemberRequestDTO;
 import umc.SukBakJi.domain.member.model.dto.MemberResponseDTO;
+import umc.SukBakJi.domain.member.service.ManagerService;
 import umc.SukBakJi.domain.member.service.MemberService;
 import umc.SukBakJi.global.apiPayload.ApiResponse;
+import umc.SukBakJi.global.security.PrincipalDetails;
 
 @RestController
 @RequiredArgsConstructor
 @Validated
 @RequestMapping("/api/user")
 public class MemberController {
-
     private final MemberService memberService;
+    private final ManagerService managerService;
 
     @PostMapping("/profile")
     @Operation(summary = "프로필 설정", description = "회원가입 이후 진행되는 프로필 설정입니다.")
@@ -59,8 +61,9 @@ public class MemberController {
 
     @PostMapping("/password-reset")
     @Operation(summary = "비밀번호 재설정", description = "비밀번호를 재설정합니다.")
-    public ApiResponse<String> resetPassword(@AuthenticationPrincipal Long memberId,
+    public ApiResponse<String> resetPassword(@AuthenticationPrincipal PrincipalDetails principalDetails,
                                         @Valid @RequestBody MemberRequestDTO.ModifyPasswordDto modifyPasswordDto) {
+        Long memberId = principalDetails.getMember().getMemberId();
         memberService.resetPassword(memberId, modifyPasswordDto);
         return ApiResponse.onSuccess("비밀번호를 재설정하였습니다.");
     }
@@ -68,8 +71,9 @@ public class MemberController {
     @PostMapping("/apple-email")
     @Operation(summary = "애플 이메일 설정", description = "애플 이메일을 설정합니다.")
     public ApiResponse<String> setAppleEmail(
-            @AuthenticationPrincipal Long memberId,
+            @AuthenticationPrincipal PrincipalDetails principalDetails,
             @Valid @RequestBody MemberRequestDTO.AppleDto request) {
+        Long memberId = principalDetails.getMember().getMemberId();
         memberService.setAppleEmail(memberId, request);
         return ApiResponse.onSuccess("이메일을 설정하였습니다.");
     }
@@ -77,8 +81,9 @@ public class MemberController {
     @PostMapping("/fcm-token")
     @Operation(summary = "FCM 기기 토큰 설정", description = "FCM 기기 토큰을 설정하였습니다.")
     public ApiResponse<String> setDeviceToken(
-            @AuthenticationPrincipal Long memberId,
+            @AuthenticationPrincipal PrincipalDetails principalDetails,
             @Valid @RequestBody MemberRequestDTO.DeviceTokenDto request) {
+        Long memberId = principalDetails.getMember().getMemberId();
         memberService.setDeviceToken(memberId, request);
         return ApiResponse.onSuccess("FCM 기기 토큰을 설정하였습니다.");
     }

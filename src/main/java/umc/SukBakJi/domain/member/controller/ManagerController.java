@@ -42,5 +42,4 @@ public class ManagerController {
         managerService.rejectEducation(memberId);
         return "redirect:/admin/education-certifications";
     }
-
 }

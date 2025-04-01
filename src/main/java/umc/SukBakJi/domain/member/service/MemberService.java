@@ -120,7 +120,6 @@ public class MemberService {
         String uuid = UUID.randomUUID().toString();
         Image savedImage = imageRepository.save(
                 Image.builder()
-                        .uuid(uuid)
                         .type(EducationCertificateType.fromString(educationCertificateType))
                         .build()
         );
@@ -129,8 +128,8 @@ public class MemberService {
 
         EducationCertificateType type = EducationCertificateType.fromString(educationCertificateType);
         try {
-            String s3Key = amazonS3Manager.generateEducationCertificateKeyName(member.getId(), type, uuid);
-            amazonS3Manager.uploadFile(s3Key, certificationPicture);
+            String key = amazonS3Manager.generateEducationCertificateKeyName(member.getId(), type);
+            amazonS3Manager.uploadFile(key, certificationPicture);
 
             member.setEducationVerified(true);
             member.setEducationCertificateImage(savedImage);
@@ -187,6 +186,6 @@ public class MemberService {
     public void setDeviceToken(Long memberId, MemberRequestDTO.DeviceTokenDto request) {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new MemberHandler(ErrorStatus.MEMBER_NOT_FOUND));
-        member.setEmail(request.getDeviceToken());
+        member.setFcmToken(request.getDeviceToken());
     }
 }

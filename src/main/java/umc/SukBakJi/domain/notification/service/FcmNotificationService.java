@@ -1,11 +1,11 @@
-package umc.SukBakJi.domain.Notification.service;
+package umc.SukBakJi.domain.notification.service;
 
 
 import com.google.firebase.messaging.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import umc.SukBakJi.domain.Notification.model.dto.NotificationRequestDTO;
+import umc.SukBakJi.domain.notification.model.dto.NotificationRequestDTO;
 
 import java.util.List;
 

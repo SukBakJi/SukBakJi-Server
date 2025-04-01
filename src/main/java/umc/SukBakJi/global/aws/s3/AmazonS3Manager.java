@@ -5,6 +5,7 @@ import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import lombok.val;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 import umc.SukBakJi.domain.common.entity.enums.EducationCertificateType;
@@ -32,8 +33,17 @@ public class AmazonS3Manager {
         return getFileUrl(keyName);
     }
 
-    public String generateEducationCertificateKeyName(Long userId, EducationCertificateType type, String uuid) {
-        return String.format("education-certificates/users/%d/%s/%s.jpg", userId, type.getValue(), uuid);
+    public void deleteFile(String keyName) {
+        try {
+            amazonS3.deleteObject(s3Config.getBucket(), keyName);
+            log.info("File deleted from S3: {}", keyName);
+        } catch (Exception e) {
+            log.error("Error deleting file from S3: {}", keyName, e);
+        }
+    }
+
+    public String generateEducationCertificateKeyName(Long userId, EducationCertificateType type) {
+        return String.format("education-certificates/users/%d/%s.jpg", userId, type.getValue());
     }
 
     public String getFileUrl(String keyName) {
