@@ -94,19 +94,19 @@ public class CalenderService {
     }
 
     @Transactional
-    public AlarmResponseDTO.alarmDTO updateAlarm(Long memberId, AlarmRequestDTO.updateAlarm request){
-        Member member = memberRepository.findById(memberId)
+    public AlarmResponseDTO.alarmDTO updateAlarm(Long alarmId, AlarmRequestDTO.updateAlarm request){
+        Member member = memberRepository.findById(request.getMemberId())
                 .orElseThrow(() -> new MemberHandler(ErrorStatus.MEMBER_NOT_FOUND));
 
-        Alarm existingAlarm = alarmRepository.findById(request.getAlarmId())
+        Alarm existingAlarm = alarmRepository.findById(alarmId)
                 .orElseThrow(() -> new CalendarHandler(ErrorStatus.INVALID_ALARM));
 
         boolean isNameChanged = !existingAlarm.getName().equals(request.getName());
         boolean isUnivNameChanged = !existingAlarm.getUnivName().equals(request.getUnivName());
 
         if ((isNameChanged || isUnivNameChanged) && (request.getName() != null || request.getUnivName() != null)) {
-            boolean isDuplicate = alarmRepository.existsByNameAndMemberAndIdNot(request.getName(), member, request.getAlarmId()) ||
-                    alarmRepository.existsByUnivNameAndMemberAndIdNot(request.getUnivName(), member, request.getAlarmId());
+            boolean isDuplicate = alarmRepository.existsByNameAndMemberAndIdNot(request.getName(), member, alarmId) ||
+                    alarmRepository.existsByUnivNameAndMemberAndIdNot(request.getUnivName(), member, alarmId);
 
             if (isDuplicate) {
                 throw new GeneralException(ErrorStatus.DUPLICATE_ALARM_NAME);

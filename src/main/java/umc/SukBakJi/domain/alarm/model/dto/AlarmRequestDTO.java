@@ -28,7 +28,7 @@ public class AlarmRequestDTO {
     @Getter
     public static class updateAlarm{
         @NotNull
-        Long alarmId;
+        Long memberId;
         @NotNull
         String univName;
         @NotNull
