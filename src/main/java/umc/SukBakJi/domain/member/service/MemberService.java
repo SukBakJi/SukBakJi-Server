@@ -121,6 +121,7 @@ public class MemberService {
         Image savedImage = imageRepository.save(
                 Image.builder()
                         .type(EducationCertificateType.fromString(educationCertificateType))
+                        .uuid(uuid)
                         .build()
         );
 
@@ -128,7 +129,7 @@ public class MemberService {
 
         EducationCertificateType type = EducationCertificateType.fromString(educationCertificateType);
         try {
-            String key = amazonS3Manager.generateEducationCertificateKeyName(member.getId(), type);
+            String key = amazonS3Manager.generateEducationCertificateKeyName(member.getId(), type, uuid);
             amazonS3Manager.uploadFile(key, certificationPicture);
 
             member.setEducationVerified(true);

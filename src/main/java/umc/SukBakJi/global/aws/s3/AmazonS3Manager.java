@@ -5,11 +5,9 @@ import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import lombok.val;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 import umc.SukBakJi.domain.common.entity.enums.EducationCertificateType;
-import umc.SukBakJi.domain.member.repository.ImageRepository;
 import umc.SukBakJi.global.config.S3Config;
 
 import java.io.IOException;
@@ -42,8 +40,8 @@ public class AmazonS3Manager {
         }
     }
 
-    public String generateEducationCertificateKeyName(Long userId, EducationCertificateType type) {
-        return String.format("education-certificates/users/%d/%s.jpg", userId, type.getValue());
+    public String generateEducationCertificateKeyName(Long userId, EducationCertificateType type, String uuid) {
+        return String.format("education-certificates/users/%d/%s/%s.jpg", userId, type.getValue(), uuid);
     }
 
     public String getFileUrl(String keyName) {
