@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import umc.SukBakJi.domain.member.model.dto.MemberRequestDTO;
 import umc.SukBakJi.domain.member.model.dto.MemberResponseDTO;
+import umc.SukBakJi.domain.member.service.ManagerService;
 import umc.SukBakJi.domain.member.service.MemberService;
 import umc.SukBakJi.global.apiPayload.ApiResponse;
 import umc.SukBakJi.global.security.PrincipalDetails;
@@ -19,8 +20,8 @@ import umc.SukBakJi.global.security.PrincipalDetails;
 @Validated
 @RequestMapping("/api/user")
 public class MemberController {
-
     private final MemberService memberService;
+    private final ManagerService managerService;
 
     @PostMapping("/profile")
     @Operation(summary = "프로필 설정", description = "회원가입 이후 진행되는 프로필 설정입니다.")

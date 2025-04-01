@@ -1,9 +1,8 @@
-package umc.SukBakJi.domain.Notification.model.entity;
+package umc.SukBakJi.domain.notification.model.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
-import umc.SukBakJi.domain.common.entity.BaseEntity;
 import umc.SukBakJi.domain.common.entity.enums.NotificationType;
 
 import java.time.LocalDateTime;

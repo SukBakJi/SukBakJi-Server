@@ -1,4 +1,4 @@
-package umc.SukBakJi.domain.Notification.aop;
+package umc.SukBakJi.domain.notification.aop;
 
 import com.google.firebase.messaging.FirebaseMessagingException;
 import lombok.RequiredArgsConstructor;
@@ -7,11 +7,10 @@ import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.Aspect;
 import org.springframework.stereotype.Component;
-import umc.SukBakJi.domain.Notification.model.dto.NotificationRequestDTO;
-import umc.SukBakJi.domain.Notification.service.FcmNotificationService;
+import umc.SukBakJi.domain.notification.model.dto.NotificationRequestDTO;
+import umc.SukBakJi.domain.notification.service.FcmNotificationService;
 import umc.SukBakJi.domain.board.model.entity.Comment;
 import umc.SukBakJi.domain.common.entity.enums.NotificationType;
-import umc.SukBakJi.domain.common.entity.enums.UpdateStatus;
 import umc.SukBakJi.domain.member.model.entity.Member;
 
 @Aspect
@@ -44,28 +43,47 @@ public class NotificationAspect {
     /**
      * 학력 인증 완료 후 알림 전송
      */
-    @AfterReturning(value = "execution(* umc.SukBakJi.domain.member.service.ManagerService.approveEducation(..))", returning = "member")
+    @AfterReturning(
+            value = "execution(* umc.SukBakJi.domain.member.service.ManagerService.approveEducation(..))",
+            returning = "member"
+    )
     public void sendNotificationAfterVerification(JoinPoint joinPoint, Member member) {
         if (member == null || member.getFcmToken() == null) {
             log.warn("FCM 토큰이 없거나 회원 정보가 없습니다.");
             return;
         }
+        sendNotification(member, NotificationType.EDUCATION_CERTIFICATION);
+    }
 
-        // 학력 인증이 승인된 경우에만 알림 전송
-        if (member.getEducationVerificationStatus() == UpdateStatus.APPROVED) {
-            try {
-                NotificationRequestDTO notification = NotificationRequestDTO.builder()
-                        .deviceToken(member.getFcmToken())
-                        .title(NotificationType.EDUCATION_CERTIFICATION.getTitle())
-                        .body(NotificationType.EDUCATION_CERTIFICATION.getBody())
-                        .build();
-                fcmNotificationService.sendNotification(notification);
-                log.info("학력 인증 알림 전송 완료: {}", member.getEmail());
-            } catch (FirebaseMessagingException e) {
-                log.error("학력 인증 알림 전송 실패", e);
-            }
-        } else {
-            log.info("학력 인증이 승인되지 않아서 알림을 전송하지 않습니다.");
+    @AfterReturning(
+            value = "execution(* umc.SukBakJi.domain.member.service.ManagerService.rejectEducation(..))",
+            returning = "member"
+    )
+    public void sendNotificationAfterRejection(JoinPoint joinPoint, Member member) {
+        if (member == null || member.getFcmToken() == null) {
+            log.warn("FCM 토큰이 없거나 회원 정보가 없습니다.");
+            return;
+        }
+
+        sendNotification(member, NotificationType.FAILED_EDUCATION_CERTIFICATION);
+    }
+
+    private void sendNotification(Member member, NotificationType type) {
+        if (member.getFcmToken() == null) {
+            log.warn("FCM 토큰이 없어 알림을 전송하지 않습니다.");
+            return;
+        }
+
+        try {
+            NotificationRequestDTO notification = NotificationRequestDTO.builder()
+                    .deviceToken(member.getFcmToken())
+                    .title(type.getTitle())
+                    .body(type.getBody())
+                    .build();
+            fcmNotificationService.sendNotification(notification);
+            log.info("학력 인증 알림 전송 완료: {}", member.getEmail());
+        } catch (FirebaseMessagingException e) {
+            log.error("학력 인증 알림 전송 실패", e);
         }
     }
 }
