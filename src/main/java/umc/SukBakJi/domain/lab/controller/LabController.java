@@ -17,6 +17,7 @@ import umc.SukBakJi.global.apiPayload.ApiResponse;
 import umc.SukBakJi.global.apiPayload.code.status.ErrorStatus;
 import umc.SukBakJi.global.apiPayload.exception.GeneralException;
 import umc.SukBakJi.global.apiPayload.exception.handler.MemberHandler;
+import umc.SukBakJi.global.security.PrincipalDetails;
 import umc.SukBakJi.global.security.jwt.JwtTokenProvider;
 
 import java.util.List;
@@ -65,8 +66,8 @@ public class LabController {
     @Operation(summary = "필터링 대학 목록 조회",
             description = "필터링이 가능한 대학 목록을 조회합니다.")
     public ApiResponse<List<LabResponseDTO.UniversityFilterResponseDTO>> getFilterableUniversities(
-            @AuthenticationPrincipal Long memberId) {
-
+            @AuthenticationPrincipal PrincipalDetails principalDetails) {
+        Long memberId = principalDetails.getMember().getMemberId();
         List<LabResponseDTO.UniversityFilterResponseDTO> universities = labService.getFilterableUniversities(memberId);
         return ApiResponse.onSuccess(universities);
     }
@@ -110,8 +111,9 @@ public class LabController {
     @Operation(summary = "연구실 즐겨찾기 추가 및 취소",
                 description = "특정 연구실을 사용자의 즐겨찾기에 추가하고, 이미 추가한 상태라면 다시 요청했을 때 즐겨찾기를 취소합니다.")
     public ApiResponse<String> toggleFavoriteLab(
-            @AuthenticationPrincipal Long memberId,
+            @AuthenticationPrincipal PrincipalDetails principalDetails,
             @RequestParam Long labId) {
+        Long memberId = principalDetails.getMember().getMemberId();
         Boolean isAdded = labService.toggleFavoriteLab(memberId, labId);
         String message = isAdded ? "연구실을 즐겨찾기에 추가하였습니다." : "연구실을 즐겨찾기에서 취소하였습니다.";
         return ApiResponse.onSuccess(message);
@@ -121,8 +123,9 @@ public class LabController {
     @Operation(summary = "연구실 즐겨찾기 항목 취소",
             description = "즐겨찾기에서 삭제할 연구실 ID를 입력해 즐겨찾기를 취소합니다.")
     public ApiResponse<String> cancelFavoriteLab(
-            @AuthenticationPrincipal Long memberId,
+            @AuthenticationPrincipal PrincipalDetails principalDetails,
             @RequestBody LabRequestDTO.CancelLabDTO request) {
+        Long memberId = principalDetails.getMember().getMemberId();
         labService.cancelFavoriteLab(memberId, request);
         return ApiResponse.onSuccess("연구실을 즐겨찾기에서 삭제하였습니다.");
     }
@@ -131,8 +134,9 @@ public class LabController {
     @Operation(summary = "연구실 정보 문의 등록",
             description = "연구실에 잘못 기입되어 있는 정보에 대한 문의를 등록합니다.")
     public ApiResponse<String> inquiryLabInfo(
-            @AuthenticationPrincipal Long memberId,
+            @AuthenticationPrincipal PrincipalDetails principalDetails,
             @RequestBody LabRequestDTO.InquireLabDTO request) {
+        Long memberId = principalDetails.getMember().getMemberId();
         labService.labUpdateRequest(memberId, request);
         return ApiResponse.onSuccess("연구실 정보에 대한 문의를 등록하였습니다.");
     }
