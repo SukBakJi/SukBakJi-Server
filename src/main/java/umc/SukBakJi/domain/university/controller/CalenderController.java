@@ -123,6 +123,7 @@ public class CalenderController {
         return ApiResponse.onSuccess(UnivConverter.toSetUnivDTO(request.getMemberId()));
     }
 
+    // TODO : 학교 조회
     @Operation(summary = "학교 조회", description = "등록한 학교를 조회합니다.")
     @ApiResponses(value = {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "성공",
@@ -135,10 +136,10 @@ public class CalenderController {
                             schema = @Schema(implementation = ErrorReasonDTO.class)))
     })
     @GetMapping("/univ")
-    public ApiResponse<UnivResponseDTO.getUnivListDTO> getUnivList(@AuthenticationPrincipal PrincipalDetails principalDetails){
+    public ApiResponse<UnivResponseDTO.getUnivListDTO> getUnivList(@AuthenticationPrincipal PrincipalDetails principalDetails) {
         Long memberId = principalDetails.getMember().getMemberId();
         List<SetUniv> univList = calenderService.getUnivList(memberId);
-        if(univList == null){
+        if (univList == null) {
             return ApiResponse.onSuccess(UnivConverter.toGetUnivListDTO(memberId, null));
         }
         return ApiResponse.onSuccess(UnivConverter.toGetUnivListDTO(memberId, univList));
@@ -201,6 +202,7 @@ public class CalenderController {
             @Parameter(description = "삭제할 학교 DTO", required = true)
             @RequestBody UnivRequestDTO.DeleteSelectedUnivDTO request) {
         Long memberId = principalDetails.getMember().getMemberId();
+
         calenderService.deleteSelectedUniv(memberId, request);
         return ApiResponse.onSuccess("대학 일정을 선택 삭제하였습니다.", null);
     }
@@ -314,8 +316,9 @@ public class CalenderController {
     @GetMapping("/alarm")
     public ApiResponse<AlarmResponseDTO.getAlarmListDTO> viewAlarmList(@AuthenticationPrincipal PrincipalDetails principalDetails) {
         Long memberId = principalDetails.getMember().getMemberId();
+
         List<Alarm> alarmList = calenderService.getAlarmList(memberId);
-        if(alarmList == null){
+        if (alarmList == null) {
             return ApiResponse.onSuccess(AlarmConverter.getAlarmListDTO(memberId, null));
         }
         return ApiResponse.onSuccess(AlarmConverter.getAlarmListDTO(memberId, alarmList));
@@ -337,11 +340,8 @@ public class CalenderController {
                             schema = @Schema(implementation = ErrorReasonDTO.class)))
     })
     @PatchMapping("/alarm/{alarmId}")
-    public ApiResponse<AlarmResponseDTO.alarmDTO> updateAlarm(
-            @AuthenticationPrincipal PrincipalDetails principalDetails,
-            @RequestBody @Valid AlarmRequestDTO.updateAlarm request){
-        Long memberId = principalDetails.getMember().getMemberId();
-        AlarmResponseDTO.alarmDTO updatedAlarm = calenderService.updateAlarm(memberId, request);
+    public ApiResponse<AlarmResponseDTO.alarmDTO> updateAlarm(@PathVariable Long alarmId, @RequestBody @Valid AlarmRequestDTO.updateAlarm request){
+        AlarmResponseDTO.alarmDTO updatedAlarm = calenderService.updateAlarm(alarmId, request);
         return ApiResponse.onSuccess("알람이 성공적으로 수정되었습니다.", updatedAlarm);
     }
 
@@ -359,6 +359,7 @@ public class CalenderController {
     @DeleteMapping("/alarm/{alarmId}")
     public ApiResponse<Void> deleteAlarm(@AuthenticationPrincipal PrincipalDetails principalDetails, @PathVariable Long alarmId) {
         Long memberId = principalDetails.getMember().getMemberId();
+      
         calenderService.deleteAlarm(memberId, alarmId);
         return ApiResponse.onSuccess("알람이 성공적으로 삭제되었습니다.", null);
     }
