@@ -2,7 +2,9 @@ package umc.SukBakJi.domain.alarm.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import umc.SukBakJi.domain.alarm.model.entity.Alarm;
+import umc.SukBakJi.domain.common.entity.mapping.SetUniv;
 import umc.SukBakJi.domain.member.model.entity.Member;
+import umc.SukBakJi.domain.university.model.entity.University;
 
 import java.util.List;
 

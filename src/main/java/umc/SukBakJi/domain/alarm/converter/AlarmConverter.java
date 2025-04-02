@@ -3,6 +3,7 @@ package umc.SukBakJi.domain.alarm.converter;
 import umc.SukBakJi.domain.alarm.model.dto.AlarmRequestDTO;
 import umc.SukBakJi.domain.alarm.model.dto.AlarmResponseDTO;
 import umc.SukBakJi.domain.alarm.model.entity.Alarm;
+import umc.SukBakJi.domain.common.entity.mapping.SetUniv;
 import umc.SukBakJi.domain.member.model.entity.Member;
 
 import java.util.List;
@@ -54,6 +55,13 @@ public class AlarmConverter {
                 .memberId(memberId)
                 .alarmList(getAlarmListDTOList)
                 .build();
+    }
+
+    public static List<String> toAlarmList(List<SetUniv> setUnivList) {
+        return setUnivList.stream()
+                .map(setUniv -> setUniv.getUniversity().getName())
+                .distinct()
+                .collect(Collectors.toList());
     }
 
     public static AlarmResponseDTO.turnOnOff turnOnOff(Alarm alarm){
