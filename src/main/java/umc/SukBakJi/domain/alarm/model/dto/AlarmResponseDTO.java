@@ -1,9 +1,6 @@
 package umc.SukBakJi.domain.alarm.model.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.List;
 
@@ -28,6 +25,7 @@ public class AlarmResponseDTO {
         Long memberId;
         List<AlarmResponseDTO.alarmDTO> alarmList;
     }
+
     @Builder
     @Getter
     @NoArgsConstructor
