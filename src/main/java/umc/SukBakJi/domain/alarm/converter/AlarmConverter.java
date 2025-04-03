@@ -57,13 +57,6 @@ public class AlarmConverter {
                 .build();
     }
 
-    public static List<String> toAlarmList(List<SetUniv> setUnivList) {
-        return setUnivList.stream()
-                .map(setUniv -> setUniv.getUniversity().getName())
-                .distinct()
-                .collect(Collectors.toList());
-    }
-
     public static AlarmResponseDTO.turnOnOff turnOnOff(Alarm alarm){
         return AlarmResponseDTO.turnOnOff.builder()
                 .alarmId(alarm.getId())
