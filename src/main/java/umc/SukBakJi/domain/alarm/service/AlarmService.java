@@ -14,6 +14,7 @@ import umc.SukBakJi.domain.university.model.dto.UnivResponseDTO;
 import umc.SukBakJi.domain.alarm.model.entity.Alarm;
 import umc.SukBakJi.domain.member.model.entity.Member;
 import umc.SukBakJi.domain.university.repository.SetUnivRepository;
+import umc.SukBakJi.domain.university.repository.UnivRepository;
 import umc.SukBakJi.global.apiPayload.code.status.ErrorStatus;
 import umc.SukBakJi.global.apiPayload.exception.GeneralException;
 import umc.SukBakJi.global.apiPayload.exception.handler.CalendarHandler;
@@ -25,7 +26,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class AlarmService {
     private final AlarmRepository alarmRepository;
-    private final SetUnivRepository setUnivRepository;
+    private final UnivRepository univRepository;
     private final MemberRepository memberRepository;
 
     @Transactional
@@ -118,8 +119,7 @@ public class AlarmService {
         return alarm;
     }
 
-    public List<String> getAlarmUnivList(Long memberId){
-        List<SetUniv> setUnivList = setUnivRepository.findAllByMemberId(memberId);
-        return AlarmConverter.toAlarmList(setUnivList);
+    public List<String> getAlarmUnivList() {
+        return univRepository.findAllUniversityNames();
     }
 }

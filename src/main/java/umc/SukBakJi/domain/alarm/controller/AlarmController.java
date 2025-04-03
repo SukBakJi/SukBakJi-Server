@@ -94,7 +94,7 @@ public class AlarmController {
         return ApiResponse.onSuccess("알람이 성공적으로 수정되었습니다.", updatedAlarm);
     }
 
-    @Operation(summary = "알람 수정 화면에서 대학교 목록 조회", description = "알람 수정 시 대학 선택에서 대학교 목록을 조회합니다")
+    @Operation(summary = "알람 설정 화면에서 대학교 목록 조회", description = "알람 설정 시 대학 선택에서 대학교 목록을 조회합니다")
     @ApiResponses(value = {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "성공",
                     content = @Content(mediaType = "application/json",
@@ -106,9 +106,8 @@ public class AlarmController {
                             schema = @Schema(implementation = ErrorReasonDTO.class)))
     })
     @GetMapping("/alarm/univ")
-    public ApiResponse<List<String>> getAlarmUnivList(@AuthenticationPrincipal PrincipalDetails principalDetails){
-        Long memberId = principalDetails.getMember().getMemberId();
-        List<String > univList = alarmService.getAlarmUnivList(memberId);
+    public ApiResponse<List<String>> getAlarmUnivList() {
+        List<String> univList = alarmService.getAlarmUnivList();
         return ApiResponse.onSuccess(univList);
     }
 
