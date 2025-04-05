@@ -154,6 +154,7 @@ public class PostService {
     private PostDetailResponseDTO.CommentDTO convertToCommentDTO(Comment comment, String anonymousName) {
         PostDetailResponseDTO.CommentDTO dto = new PostDetailResponseDTO.CommentDTO();
         dto.setCommentId(comment.getCommentId()); // commentId 추가
+        dto.setMemberId(comment.getMember().getId());
         dto.setAnonymousName(anonymousName);
         dto.setDegreeLevel(comment.getMember().getDegreeLevel() != null
                 ? comment.getMember().getDegreeLevel().toString()
