@@ -28,5 +28,6 @@ public class PostDetailResponseDTO {
         private String degreeLevel;
         private String content;
         private LocalDateTime createdDate;
+        private Long memberId;
     }
 }
