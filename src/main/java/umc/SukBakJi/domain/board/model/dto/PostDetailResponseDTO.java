@@ -23,6 +23,7 @@ public class PostDetailResponseDTO {
     @Getter
     @Setter
     public static class CommentDTO {
+        private Long commentId;
         private String anonymousName;
         private String degreeLevel;
         private String content;

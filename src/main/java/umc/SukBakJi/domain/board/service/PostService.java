@@ -116,46 +116,48 @@ public class PostService {
         response.setMenu(post.getBoard().getMenu().name());
         response.setTitle(post.getTitle());
         response.setContent(post.getContent());
-        response.setSupportField(post.getSupportField()); // If needed
-        response.setHiringType(post.getHiringType());     // If needed
+        response.setSupportField(post.getSupportField());
+        response.setHiringType(post.getHiringType());
         response.setViews(post.getViews());
         response.setCommentCount((long) post.getComments().size());
-        response.setMemberId(post.getMember().getId()); // Set the member ID
+        response.setMemberId(post.getMember().getId());
 
-        // Map to store Member IDs and their assigned anonymous names
         Map<Long, String> memberAnonymousMap = new HashMap<>();
         Set<Integer> usedNumbers = new HashSet<>();
 
         response.setComments(post.getComments().stream().map(comment -> {
-            // Reuse or generate anonymous names consistently
-            if (!memberAnonymousMap.containsKey(comment.getMember().getId())) {
-                String newAnonymousName;
-                do {
-                    int nextNumber = usedNumbers.size() + 1;
-                    newAnonymousName = "익명" + nextNumber;
-                    usedNumbers.add(nextNumber);
-                } while (usedNumbers.contains(newAnonymousName));
+            Long commentMemberId = comment.getMember().getId();
 
-                memberAnonymousMap.put(comment.getMember().getId(), newAnonymousName);
+            // 글쓴이 여부 확인
+            String anonymousName;
+            if (commentMemberId.equals(post.getMember().getId())) {
+                anonymousName = "글쓴이";
+            } else {
+                if (!memberAnonymousMap.containsKey(commentMemberId)) {
+                    int nextNumber = 1;
+                    while (usedNumbers.contains(nextNumber)) nextNumber++;
+                    anonymousName = "익명" + nextNumber;
+                    usedNumbers.add(nextNumber);
+                    memberAnonymousMap.put(commentMemberId, anonymousName);
+                } else {
+                    anonymousName = memberAnonymousMap.get(commentMemberId);
+                }
             }
 
-            return convertToCommentDTO(comment, memberAnonymousMap.get(comment.getMember().getId()));
+            return convertToCommentDTO(comment, anonymousName);
         }).collect(Collectors.toList()));
 
         return response;
     }
 
+
     private PostDetailResponseDTO.CommentDTO convertToCommentDTO(Comment comment, String anonymousName) {
         PostDetailResponseDTO.CommentDTO dto = new PostDetailResponseDTO.CommentDTO();
+        dto.setCommentId(comment.getCommentId()); // commentId 추가
         dto.setAnonymousName(anonymousName);
-
-        // Check for null DegreeLevel and handle accordingly
-        if (comment.getMember().getDegreeLevel() != null) {
-            dto.setDegreeLevel(comment.getMember().getDegreeLevel().toString());
-        } else {
-            dto.setDegreeLevel("Unknown"); // or any other default value you prefer
-        }
-
+        dto.setDegreeLevel(comment.getMember().getDegreeLevel() != null
+                ? comment.getMember().getDegreeLevel().toString()
+                : "Unknown");
         dto.setContent(comment.getContent());
         dto.setCreatedDate(comment.getCreatedAt());
         return dto;
