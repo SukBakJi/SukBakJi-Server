@@ -86,3 +86,9 @@ dependencies {
 tasks.named('test') {
 	useJUnitPlatform()
 }
+
+processResources {
+    from('src/main/resources/key') {
+        into 'key'
+    }
+}
