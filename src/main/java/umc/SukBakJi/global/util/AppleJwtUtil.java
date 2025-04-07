@@ -5,6 +5,8 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;
 import umc.SukBakJi.domain.auth.model.dto.AppleIdTokenPayload;
 import umc.SukBakJi.global.security.oauth2.service.AppleTokenValidator;
@@ -47,6 +49,9 @@ public class AppleJwtUtil {
                     .build()
                     .parseClaimsJws(identityToken)
                     .getBody();
+            if (claims == null || claims.getSubject() == null) {
+                log.warn("JWT claims is null or missing sub");
+            }
 
             String email = claims.get("email", String.class);
             String sub = claims.getSubject();
@@ -78,7 +83,9 @@ public class AppleJwtUtil {
     }
 
     private static PrivateKey getPrivateKey(String resourcePath) throws Exception {
-        try (InputStream inputStream = AppleJwtUtil.class.getClassLoader().getResourceAsStream(resourcePath);
+        Resource resource = new ClassPathResource(resourcePath);
+
+        try (InputStream inputStream = resource.getInputStream();
              BufferedReader br = new BufferedReader(new InputStreamReader(inputStream))) {
 
             StringBuilder privateKeyContent = new StringBuilder();
