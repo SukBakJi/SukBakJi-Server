@@ -60,7 +60,7 @@ public class AppleService {
 
         try {
             // 회원 가입 또는 로그인 처리
-            Member member = saveOrUpdate(new AppleUserInfo(appleUser.getEmail()));
+            Member member = saveOrUpdate(new AppleUserInfo(appleUser.getSub(), appleUser.getEmail()));
 
             // JWT 토큰 생성
             JwtToken jwtToken = jwtTokenProvider.generateJwtToken(member);
@@ -90,22 +90,17 @@ public class AppleService {
         log.info("애플 토큰 응답: {}", response);
 
         AppleIdTokenPayload payload = appleJwtUtil.decodeJwt(response.getIdToken());
-        log.info("Apple ID Token Payload: {}", payload);
-
-        Optional<Member> existingMember = memberRepository.findBySubAndProvider(payload.getSub(), Provider.APPLE);
-        String email = payload.getEmail();
-        if (email == null && existingMember.isPresent()) {
-            email = existingMember.get().getEmail();
-        }
 
         return AppleIdTokenPayload.builder()
                 .sub(payload.getSub())
-                .email(email)
+                .email(payload.getEmail())
                 .build();
     }
 
     // 사용자 정보 저장 및 업데이트
     private Member saveOrUpdate(AppleUserInfo appleUserInfo) {
+        log.info("Apple 로그인: sub={}, email={}", appleUserInfo.getSub(), appleUserInfo.getEmail());
+
         // sub으로 회원 조회
         Optional<Member> existingMember = memberRepository.findBySubAndProvider(appleUserInfo.getSub(), Provider.APPLE);
 
