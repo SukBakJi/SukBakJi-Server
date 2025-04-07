@@ -77,8 +77,8 @@ public class AppleJwtUtil {
                 .compact();
     }
 
-    private static PrivateKey getPrivateKey(String privateKeyPath) throws Exception {
-        try (InputStream inputStream = new FileInputStream(privateKeyPath);
+    private static PrivateKey getPrivateKey(String resourcePath) throws Exception {
+        try (InputStream inputStream = AppleJwtUtil.class.getClassLoader().getResourceAsStream(resourcePath);
              BufferedReader br = new BufferedReader(new InputStreamReader(inputStream))) {
 
             StringBuilder privateKeyContent = new StringBuilder();
