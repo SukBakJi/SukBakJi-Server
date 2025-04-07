@@ -1,5 +1,6 @@
 package umc.SukBakJi.domain.auth.model.dto;
 
+import lombok.Builder;
 import lombok.RequiredArgsConstructor;
 import umc.SukBakJi.domain.common.entity.enums.Provider;
 
@@ -27,12 +28,11 @@ public class AppleUserInfo implements OAuth2UserInfo {
         return (String) attributes.get("sub");
     }
 
-    public AppleUserInfo(String email) {
-        if (email == null) {
-            this.attributes = Map.of();
-        } else {
-            this.attributes = Map.of("email", email);
-        }
+    public AppleUserInfo(String sub, String email) {
+        this.attributes = Map.of(
+                "sub", sub,
+                "email", email
+        );
     }
 }
 
