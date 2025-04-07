@@ -86,3 +86,10 @@ dependencies {
 tasks.named('test') {
 	useJUnitPlatform()
 }
+
+processResources {
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+    from('src/main/resources/key') {
+        into 'key'
+    }
+}
