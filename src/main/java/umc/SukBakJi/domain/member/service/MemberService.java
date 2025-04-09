@@ -178,12 +178,6 @@ public class MemberService {
         memberRepository.save(member);
     }
 
-    public void setAppleEmail(Long memberId, MemberRequestDTO.AppleDto request) {
-        Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new MemberHandler(ErrorStatus.MEMBER_NOT_FOUND));
-        member.setEmail(request.getEmail());
-    }
-
     public void setDeviceToken(Long memberId, MemberRequestDTO.DeviceTokenDto request) {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new MemberHandler(ErrorStatus.MEMBER_NOT_FOUND));
