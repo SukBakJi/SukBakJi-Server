@@ -79,15 +79,6 @@ public class MemberRequestDTO {
     @Getter
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class AppleDto {
-        @Email(message = "유효하지 않은 이메일 형식입니다.")
-        private String email;
-    }
-
-    @Builder
-    @Getter
-    @NoArgsConstructor
-    @AllArgsConstructor
     public static class DeviceTokenDto {
         private String deviceToken;
     }
