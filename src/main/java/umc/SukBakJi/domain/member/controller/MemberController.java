@@ -68,16 +68,6 @@ public class MemberController {
         return ApiResponse.onSuccess("비밀번호를 재설정하였습니다.");
     }
 
-    @PostMapping("/apple-email")
-    @Operation(summary = "애플 이메일 설정", description = "애플 이메일을 설정합니다.")
-    public ApiResponse<String> setAppleEmail(
-            @AuthenticationPrincipal PrincipalDetails principalDetails,
-            @Valid @RequestBody MemberRequestDTO.AppleDto request) {
-        Long memberId = principalDetails.getMember().getMemberId();
-        memberService.setAppleEmail(memberId, request);
-        return ApiResponse.onSuccess("이메일을 설정하였습니다.");
-    }
-
     @PostMapping("/fcm-token")
     @Operation(summary = "FCM 기기 토큰 설정", description = "FCM 기기 토큰을 설정하였습니다.")
     public ApiResponse<String> setDeviceToken(
