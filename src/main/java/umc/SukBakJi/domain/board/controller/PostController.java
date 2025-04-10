@@ -108,4 +108,22 @@ public class PostController {
                     .body(ApiResponse.onFailure("COMMON500", "Internal server error", null));
         }
     }
+
+    @DeleteMapping("/{postId}/delete")
+    public ResponseEntity<ApiResponse<?>> deletePost(
+            @PathVariable Long postId,
+            @RequestHeader("Authorization") String token) {
+        try {
+            token = token.replace("Bearer ", "");
+            Long memberId = jwtTokenProvider.getMemberIdFromToken(token);
+            postService.deletePost(postId, memberId);
+            return ResponseEntity.ok(ApiResponse.onSuccess("게시글 삭제에 성공했습니다.", null));
+        } catch (GeneralException e) {
+            return ResponseEntity.status(e.getErrorReasonHttpStatus().getHttpStatus())
+                    .body(ApiResponse.onFailure(e.getErrorReasonHttpStatus().getCode(), e.getErrorReasonHttpStatus().getMessage(), null));
+        } catch (Exception e) {
+            return ResponseEntity.status(500)
+                    .body(ApiResponse.onFailure("COMMON500", "Internal server error", null));
+        }
+    }
 }
