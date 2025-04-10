@@ -80,6 +80,7 @@ public enum ErrorStatus implements BaseErrorCode {
     NO_SCRAP_FOUND(HttpStatus.NOT_FOUND, "SCRAP4041", "스크랩한 게시물이 없습니다."),
     NO_COMMENTS_FOUND(HttpStatus.NOT_FOUND, "COMMENT4041", "댓글을 작성한 게시물이 없습니다."),
     FAVORITE_ALREADY_EXISTS(HttpStatus.CONFLICT, "FAVORITE4091", "즐겨찾기에 이미 존재합니다."),
+    UNAUTHORIZED_ACCESS(HttpStatus.FORBIDDEN,"POST403",  "접근 권한이 없습니다."),
 
     // Post-related errors
     POST_CREATION_FAILED(HttpStatus.BAD_REQUEST, "POST4001", "게시글 작성에 실패했습니다."),
