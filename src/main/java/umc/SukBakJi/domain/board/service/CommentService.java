@@ -78,15 +78,15 @@ public class CommentService {
         Comment savedComment = commentRepository.save(comment);
 
         // Map the saved comment to CommentResponseDTO
-        CommentResponseDTO responseDTO = new CommentResponseDTO();
-        responseDTO.setCommentId(savedComment.getCommentId());
-        responseDTO.setContent(savedComment.getContent());
-        responseDTO.setNickname(savedComment.getNickname());
-        responseDTO.setMemberId(savedComment.getMember().getId()); // Set the member ID
-        responseDTO.setCreatedAt(savedComment.getCreatedAt());
-        responseDTO.setUpdatedAt(savedComment.getUpdatedAt());
-
-        return responseDTO;
+        return CommentResponseDTO.builder()
+                .commentId(savedComment.getCommentId())
+                .content(savedComment.getContent())
+                .nickname(savedComment.getNickname())
+                .memberId(savedComment.getMember().getId())
+                .postId(savedComment.getPost().getPostId())
+                .createdAt(savedComment.getCreatedAt())
+                .updatedAt(savedComment.getUpdatedAt())
+                .build();
     }
 
     public CommentResponseDTO updateComment(UpdateCommentRequestDTO request, Long memberId) {
@@ -103,14 +103,13 @@ public class CommentService {
         Comment updatedComment = commentRepository.save(comment);
 
         // 수정된 댓글 정보를 반환
-        CommentResponseDTO responseDTO = new CommentResponseDTO();
-        responseDTO.setCommentId(updatedComment.getCommentId());
-        responseDTO.setContent(updatedComment.getContent());
-        responseDTO.setNickname(updatedComment.getNickname());
-        responseDTO.setMemberId(updatedComment.getMember().getId());
-        responseDTO.setCreatedAt(updatedComment.getCreatedAt());
-        responseDTO.setUpdatedAt(updatedComment.getUpdatedAt());
-
-        return responseDTO;
+        return CommentResponseDTO.builder()
+                .commentId(updatedComment.getCommentId())
+                .content(updatedComment.getContent())
+                .nickname(updatedComment.getNickname())
+                .memberId(updatedComment.getMember().getId())
+                .createdAt(updatedComment.getCreatedAt())
+                .updatedAt(updatedComment.getUpdatedAt())
+                .build();
     }
 }
