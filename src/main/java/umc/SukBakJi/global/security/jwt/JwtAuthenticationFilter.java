@@ -47,20 +47,25 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         // 요청 헤더에서 JWT 토큰 추출
         String token = resolveToken(request);
 
-        // 토큰 유효성 검사
-        if (token != null && jwtBlacklistService.isBlacklisted(token)) {
-            if (jwtBlacklistService.isBlacklisted(token)) {
-                log.warn("블랙 리스트에 등록된 액세스 토큰입니다.");
-                handleException(response, HttpServletResponse.SC_UNAUTHORIZED, "이미 로그아웃된 토큰입니다. 다시 로그인해주세요.");
-            } else {
-                Authentication authentication = jwtTokenProvider.getAuthentication(token);
-                SecurityContextHolder.getContext().setAuthentication(authentication);
-            }
-        } else {
+        if (token == null) {
             handleException(response, HttpServletResponse.SC_UNAUTHORIZED, "JWT 토큰이 존재하지 않습니다.");
             return;
         }
-        filterChain.doFilter(request, response);
+
+        // 블랙 리스트 검사를 로그아웃 요청일 경우 제외
+        if (!uri.equals("/api/auth/logout") && jwtBlacklistService.isBlacklisted(token)) {
+            log.warn("블랙 리스트에 등록된 액세스 토큰입니다.");
+            handleException(response, HttpServletResponse.SC_UNAUTHORIZED, "이미 로그아웃된 토큰입니다. 다시 로그인해주세요.");
+            return;
+        }
+
+        try {
+            Authentication authentication = jwtTokenProvider.getAuthentication(token);
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+            filterChain.doFilter(request, response);
+        } catch (Exception e) {
+            handleException(response, HttpServletResponse.SC_UNAUTHORIZED, "인증에 실패하였습니다.");
+        }
     }
 
     // 요청 헤더에서 토큰 정보 추출

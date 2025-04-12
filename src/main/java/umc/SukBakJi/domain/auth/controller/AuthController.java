@@ -104,7 +104,6 @@ public class AuthController {
     public ResponseEntity<ApiResponse<String>> logout(@RequestHeader("Authorization") String tokenHeader) {
         String jwtToken = tokenHeader.substring(7);
         authService.logOut(jwtToken);
-        SecurityContextHolder.clearContext(); // 현재 요청에서의 인증 제거
-        return ResponseEntity.ok(ApiResponse.onSuccess("로그아웃되었습니다.", null));
+        return ResponseEntity.ok(ApiResponse.onSuccess("로그아웃되었습니다."));
     }
 }
