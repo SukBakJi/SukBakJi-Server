@@ -97,17 +97,4 @@ public class AuthController {
         authService.resetPassword(modifyPasswordDto);
         return ApiResponse.onSuccess("비밀번호를 재설정하였습니다.");
     }
-
-    @PostMapping("/logout")
-    @Operation(summary = "로그아웃", description = "로그인한 사용자가 로그아웃 처리됩니다.")
-    public ResponseEntity<ApiResponse<?>> logout() {
-        // 현재 사용자 인증 정보 가져오기
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
-        if (authentication != null && authentication.isAuthenticated()) {
-            SecurityContextHolder.clearContext();
-        }
-        authService.logOut(authentication.getName());
-        return ResponseEntity.ok(ApiResponse.onSuccess("로그아웃되었습니다.", authentication.getName()));
-    }
 }

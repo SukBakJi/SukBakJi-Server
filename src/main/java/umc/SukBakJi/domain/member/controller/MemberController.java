@@ -4,7 +4,9 @@ import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -21,7 +23,6 @@ import umc.SukBakJi.global.security.PrincipalDetails;
 @RequestMapping("/api/user")
 public class MemberController {
     private final MemberService memberService;
-    private final ManagerService managerService;
 
     @PostMapping("/profile")
     @Operation(summary = "프로필 설정", description = "회원가입 이후 진행되는 프로필 설정입니다.")
@@ -76,5 +77,14 @@ public class MemberController {
         Long memberId = principalDetails.getMember().getMemberId();
         memberService.setDeviceToken(memberId, request);
         return ApiResponse.onSuccess("FCM 기기 토큰을 설정하였습니다.");
+    }
+
+    @PostMapping("/logout")
+    @Operation(summary = "로그아웃", description = "로그인한 사용자가 로그아웃 처리됩니다.")
+    public ResponseEntity<ApiResponse<String>> logout(@AuthenticationPrincipal PrincipalDetails principalDetails) {
+        Long memberId = principalDetails.getMember().getMemberId();
+        memberService.logOut(memberId);
+        SecurityContextHolder.clearContext(); // 현재 요청에서만 인증 제거
+        return ResponseEntity.ok(ApiResponse.onSuccess("로그아웃되었습니다.", null));
     }
 }

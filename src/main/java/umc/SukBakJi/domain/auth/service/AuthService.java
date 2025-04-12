@@ -40,7 +40,7 @@ public class AuthService {
     // 회원가입
     public void signUp(AuthRequestDTO.SignUpDto requestDto) {
         // 이메일로 회원 조회
-        if (memberRepository.findByEmail(requestDto.getEmail()).isPresent()) {
+        if (memberRepository.findByEmailAndProvider(requestDto.getEmail(), Provider.BASIC).isPresent()) {
             throw new MemberHandler(ErrorStatus.MEMBER_ALREADY_EXISTS);
         }
 
@@ -53,7 +53,7 @@ public class AuthService {
 
     // 로그인
     public MemberResponseDTO.LoginResponseDto login(AuthRequestDTO.LoginDto loginDto) {
-        Member member = memberRepository.findByEmail(loginDto.getEmail())
+        Member member = memberRepository.findByEmailAndProvider(loginDto.getEmail(), Provider.BASIC)
                 .orElseThrow(() -> new MemberHandler(ErrorStatus.MEMBER_NOT_FOUND));
 
         // 비밀번호 검증
@@ -67,7 +67,7 @@ public class AuthService {
 
     // 이메일 중복 확인
     public Boolean verifyEmail(String email) {
-        return !memberRepository.findByEmail(email).isPresent();
+        return !memberRepository.findByEmailAndProvider(email, Provider.BASIC).isPresent();
     }
 
     public MemberResponseDTO.LoginResponseDto refreshAccessToken(String refreshToken) {
@@ -78,10 +78,10 @@ public class AuthService {
             throw new GeneralException(ErrorStatus.INVALID_REFRESH_TOKEN);
         }
 
-        // refresh token에서 사용자 이메일 추출
-        String email = jwtTokenProvider.getEmailFromRefreshToken(token);
+        // refresh token에서 사용자 아이디 추출
+        Long memberId = jwtTokenProvider.getMemberIdFromToken(token);
 
-        Member member = memberRepository.findByEmail(email)
+        Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new MemberHandler(ErrorStatus.MEMBER_NOT_FOUND));
 
         JwtToken newJwtToken = jwtTokenProvider.generateJwtToken(member);
@@ -150,7 +150,7 @@ public class AuthService {
     }
 
     public void resetPassword(AuthRequestDTO.LoginDto request) {
-        Member member = memberRepository.findByEmail(request.getEmail())
+        Member member = memberRepository.findByEmailAndProvider(request.getEmail(), Provider.BASIC)
                 .orElseThrow(() -> new MemberHandler(ErrorStatus.MEMBER_NOT_FOUND));
 
         // 소셜 로그인 계정은 비밀번호 변경 불가
@@ -159,12 +159,6 @@ public class AuthService {
         }
         member.setPassword(bCryptPasswordEncoder.encode(request.getPassword()));
         memberRepository.save(member);
-    }
-
-    public void logOut(String email) {
-        Member member = memberRepository.findByEmail(email)
-                .orElseThrow(() -> new MemberHandler(ErrorStatus.MEMBER_NOT_FOUND));
-        member.resetRefreshToken();
     }
 
     public MemberResponseDTO.LoginResponseDto oauthLogin(Provider provider, String accessToken) {
