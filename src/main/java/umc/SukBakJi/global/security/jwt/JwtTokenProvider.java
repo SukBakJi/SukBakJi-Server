@@ -67,6 +67,8 @@ public class JwtTokenProvider {
         String accessToken = Jwts.builder()
                 .setSubject(principal.getUsername())
                 .claim("auth", authorities)
+                .claim("memberId", member.getId())
+                .claim("provider", member.getProvider().name())
                 .setExpiration(accessTokenExpiresIn)
                 .signWith(key, SignatureAlgorithm.HS256)
                 .compact();
@@ -75,6 +77,7 @@ public class JwtTokenProvider {
         String refreshToken = Jwts.builder()
                 .setExpiration(new Date(now + refreshTokenExpiration))
                 .setSubject(principal.getUsername())
+                .claim("memberId", member.getId())
                 .signWith(key, SignatureAlgorithm.HS256)
                 .compact();
 
@@ -101,8 +104,8 @@ public class JwtTokenProvider {
                 .map(SimpleGrantedAuthority::new)
                 .collect(Collectors.toList());
 
-        String email = claims.getSubject();
-        Member member = memberRepository.findByEmail(email)
+        Long memberId = claims.get("memberId", Long.class);
+        Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new RuntimeException("회원 정보를 찾을 수 없습니다."));
 
         return new UsernamePasswordAuthenticationToken(
@@ -133,7 +136,7 @@ public class JwtTokenProvider {
     }
 
     // accessToken
-    private Claims parseClaims(String accessToken) {
+    public Claims parseClaims(String accessToken) {
         try {
             return Jwts.parserBuilder()
                     .setSigningKey(key)
@@ -145,25 +148,8 @@ public class JwtTokenProvider {
         }
     }
 
-    public String getEmailFromToken(String token) {
-        Claims claims = Jwts.parser()
-                .setSigningKey(secretKey)
-                .parseClaimsJws(token)
-                .getBody();
-        return claims.getSubject(); // 사용자 이메일
-    }
-
-    public String getEmailFromRefreshToken(String refreshToken) {
-        Claims claims = parseClaims(refreshToken);
-        return claims.getSubject();
-    }
-
     public Long getMemberIdFromToken(String token) {
-        String email = getEmailFromToken(token);
-        Member member = memberRepository.findByEmail(email)
-                .orElseThrow(() -> new MemberHandler(ErrorStatus.MEMBER_NOT_FOUND));
-
-        Long memberId = member.getId();
-        return memberId;
+        Claims claims = parseClaims(token);
+        return claims.get("memberId", Long.class);
     }
 }

@@ -23,6 +23,7 @@ public enum ErrorStatus implements BaseErrorCode {
     EMAIL_NOT_FOUND(HttpStatus.BAD_REQUEST, "AUTH4003", "가입된 이메일이 없습니다."),
     INVALID_EMAIL(HttpStatus.BAD_REQUEST, "AUTH4004", "유효하지 않은 이메일 주소입니다."),
     PHONE_ALREADY_EXISTS(HttpStatus.BAD_REQUEST, "AUTH4005", "이미 등록된 휴대폰 번호입니다."),
+    INVALID_ACCESS_TOKEN(HttpStatus.BAD_REQUEST, "AUTH4006", "유효하지 않은 Access Token입니다."),
 
     // 카카오 관련 에러
     KAKAO_INVALID_ACCESS_TOKEN(HttpStatus.UNAUTHORIZED, "KAKAO401", "유효하지 않거나 만료된 카카오 액세스 토큰입니다."),
