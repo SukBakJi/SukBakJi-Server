@@ -1,6 +1,12 @@
 package umc.SukBakJi.domain.member.service;
 
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.io.Decoders;
+import io.jsonwebtoken.security.Keys;
+import kotlinx.datetime.DateTimeUnit;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,6 +30,7 @@ import umc.SukBakJi.global.apiPayload.code.status.ErrorStatus;
 import umc.SukBakJi.global.apiPayload.exception.GeneralException;
 import umc.SukBakJi.global.apiPayload.exception.handler.MemberHandler;
 import umc.SukBakJi.global.aws.s3.AmazonS3Manager;
+import umc.SukBakJi.global.security.jwt.JwtBlacklistService;
 import umc.SukBakJi.global.security.jwt.JwtTokenProvider;
 
 import java.util.*;
@@ -37,11 +44,12 @@ public class MemberService {
     private final MemberRepository memberRepository;
     private final ResearchTopicRepository researchTopicRepository;
     private final MemberResearchTopicRepository memberResearchTopicRepository;
+    private final ImageRepository imageRepository;
     private final MemberResearchTopicService memberResearchTopicService;
     private final JwtTokenProvider jwtTokenProvider;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
-    private final ImageRepository imageRepository;
     private final AmazonS3Manager amazonS3Manager;
+    private final JwtBlacklistService jwtBlacklistService;
 
     // 프로필 설정
     public MemberResponseDTO.ProfileResultDto setMemberProfile(@RequestHeader("Authorization") String token, MemberRequestDTO.ProfileDto profileDto) {
@@ -185,7 +193,16 @@ public class MemberService {
         member.setFcmToken(request.getDeviceToken());
     }
 
-    public void logOut(Long memberId) {
+    public void logOut(String accessToken) {
+        if (!jwtTokenProvider.validateToken(accessToken)) {
+            throw new MemberHandler(ErrorStatus.INVALID_ACCESS_TOKEN);
+        }
+
+        Date expirationDate = jwtTokenProvider.parseClaims(accessToken).getExpiration();
+        long expirationMillis = expirationDate.getTime();
+        jwtBlacklistService.addToBlacklist(accessToken, expirationMillis);
+
+        Long memberId = jwtTokenProvider.getMemberIdFromToken(accessToken);
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new MemberHandler(ErrorStatus.MEMBER_NOT_FOUND));
         member.resetRefreshToken();

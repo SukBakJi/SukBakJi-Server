@@ -16,6 +16,7 @@ import umc.SukBakJi.domain.member.service.ManagerService;
 import umc.SukBakJi.domain.member.service.MemberService;
 import umc.SukBakJi.global.apiPayload.ApiResponse;
 import umc.SukBakJi.global.security.PrincipalDetails;
+import umc.SukBakJi.global.security.jwt.JwtTokenProvider;
 
 @RestController
 @RequiredArgsConstructor
@@ -81,10 +82,10 @@ public class MemberController {
 
     @PostMapping("/logout")
     @Operation(summary = "로그아웃", description = "로그인한 사용자가 로그아웃 처리됩니다.")
-    public ResponseEntity<ApiResponse<String>> logout(@AuthenticationPrincipal PrincipalDetails principalDetails) {
-        Long memberId = principalDetails.getMember().getMemberId();
-        memberService.logOut(memberId);
-        SecurityContextHolder.clearContext(); // 현재 요청에서만 인증 제거
+    public ResponseEntity<ApiResponse<String>> logout(@RequestHeader("Authorization") String tokenHeader) {
+        String jwtToken = tokenHeader.substring(7);
+        memberService.logOut(jwtToken);
+        SecurityContextHolder.clearContext(); // 현재 요청에서의 인증 제거
         return ResponseEntity.ok(ApiResponse.onSuccess("로그아웃되었습니다.", null));
     }
 }
