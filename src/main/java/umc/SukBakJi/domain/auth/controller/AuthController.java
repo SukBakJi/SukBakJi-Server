@@ -16,6 +16,7 @@ import umc.SukBakJi.domain.member.model.dto.MemberRequestDTO;
 import umc.SukBakJi.domain.member.model.dto.MemberResponseDTO;
 import umc.SukBakJi.domain.auth.service.AuthService;
 import umc.SukBakJi.global.apiPayload.ApiResponse;
+import umc.SukBakJi.global.security.jwt.JwtBlacklistService;
 
 @RestController
 @RequiredArgsConstructor
@@ -96,5 +97,14 @@ public class AuthController {
     public ApiResponse<String> resetPassword(@Valid @RequestBody AuthRequestDTO.LoginDto modifyPasswordDto) {
         authService.resetPassword(modifyPasswordDto);
         return ApiResponse.onSuccess("비밀번호를 재설정하였습니다.");
+    }
+
+    @PostMapping("/logout")
+    @Operation(summary = "로그아웃", description = "로그인한 사용자가 로그아웃 처리됩니다.")
+    public ResponseEntity<ApiResponse<String>> logout(@RequestHeader("Authorization") String tokenHeader) {
+        String jwtToken = tokenHeader.substring(7);
+        authService.logOut(jwtToken);
+        SecurityContextHolder.clearContext(); // 현재 요청에서의 인증 제거
+        return ResponseEntity.ok(ApiResponse.onSuccess("로그아웃되었습니다.", null));
     }
 }

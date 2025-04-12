@@ -10,6 +10,7 @@ import umc.SukBakJi.domain.auth.converter.AuthConverter;
 import umc.SukBakJi.domain.auth.model.dto.AuthRequestDTO;
 import umc.SukBakJi.domain.member.converter.MemberConverter;
 import umc.SukBakJi.global.apiPayload.exception.GeneralException;
+import umc.SukBakJi.global.security.jwt.JwtBlacklistService;
 import umc.SukBakJi.global.security.jwt.JwtToken;
 import umc.SukBakJi.domain.member.model.dto.MemberRequestDTO;
 import umc.SukBakJi.domain.member.model.dto.MemberResponseDTO;
@@ -22,6 +23,7 @@ import umc.SukBakJi.global.security.jwt.JwtTokenProvider;
 import umc.SukBakJi.global.security.oauth2.service.AppleService;
 import umc.SukBakJi.global.security.oauth2.service.KakaoService;
 
+import java.util.Date;
 import java.util.Optional;
 
 @Service
@@ -36,6 +38,7 @@ public class AuthService {
     private final MailService mailService;
     private final KakaoService kakaoService;
     private final AppleService appleService;
+    private final JwtBlacklistService jwtBlacklistService;
 
     // 회원가입
     public void signUp(AuthRequestDTO.SignUpDto requestDto) {
@@ -167,6 +170,21 @@ public class AuthService {
             case APPLE -> appleService.appleLogin(accessToken);
             default -> throw new IllegalArgumentException("지원하지 않는 로그인 방식: " + provider);
         };
+    }
+
+    public void logOut(String accessToken) {
+        if (!jwtTokenProvider.validateToken(accessToken)) {
+            throw new MemberHandler(ErrorStatus.INVALID_ACCESS_TOKEN);
+        }
+
+        Date expirationDate = jwtTokenProvider.parseClaims(accessToken).getExpiration();
+        long expirationMillis = expirationDate.getTime();
+        jwtBlacklistService.addToBlacklist(accessToken, expirationMillis);
+
+        Long memberId = jwtTokenProvider.getMemberIdFromToken(accessToken);
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new MemberHandler(ErrorStatus.MEMBER_NOT_FOUND));
+        member.resetRefreshToken();
     }
 }
 
