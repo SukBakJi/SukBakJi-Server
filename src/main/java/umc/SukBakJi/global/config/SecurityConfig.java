@@ -64,10 +64,10 @@ public class SecurityConfig {
 
                 // 요청 인증 및 인가 설정
                 .authorizeHttpRequests(request -> request
-                        .requestMatchers(
-                                "/api/auth/**", "/api/sms/**", "/v3/api-docs/**", "/swagger-ui/**", "/swagger-resources/**"
-                        ).permitAll()
                         .requestMatchers("/api/auth/logout").authenticated()
+                        .requestMatchers(
+                        "/api/auth/**", "/api/sms/**", "/v3/api-docs/**", "/swagger-ui/**", "/swagger-resources/**"
+                        ).permitAll()
                         .anyRequest().authenticated()
                 )
 
