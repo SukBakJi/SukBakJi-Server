@@ -83,8 +83,8 @@ public class LabController {
 
         String jwt = token.substring(7);
 
-        String email = jwtTokenProvider.getEmailFromToken(jwt);
-        Member member = memberRepository.findByEmail(email)
+        Long memberId = jwtTokenProvider.getMemberIdFromToken(jwt);
+        Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new MemberHandler(ErrorStatus.MEMBER_NOT_FOUND));
 
         InterestTopicsDTO topics = labService.getInterestTopics(member);

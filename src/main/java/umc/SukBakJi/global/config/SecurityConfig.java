@@ -12,6 +12,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import umc.SukBakJi.global.security.jwt.JwtBlacklistService;
 import umc.SukBakJi.global.security.jwt.JwtTokenProvider;
 import umc.SukBakJi.global.security.jwt.JwtAuthenticationFilter;
 
@@ -20,6 +21,7 @@ import umc.SukBakJi.global.security.jwt.JwtAuthenticationFilter;
 @RequiredArgsConstructor
 public class SecurityConfig {
     private final JwtTokenProvider jwtTokenProvider;
+    private final JwtBlacklistService jwtBlacklistService;
 
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) throws Exception {
@@ -70,7 +72,10 @@ public class SecurityConfig {
                 )
 
                 // jwt 필터 설정
-                .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class);
+                .addFilterBefore(
+                        new JwtAuthenticationFilter(jwtTokenProvider, jwtBlacklistService),
+                        UsernamePasswordAuthenticationFilter.class
+                );
 
         return http.build();
     }
