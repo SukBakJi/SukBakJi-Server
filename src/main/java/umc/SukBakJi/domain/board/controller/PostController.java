@@ -1,5 +1,6 @@
 package umc.SukBakJi.domain.board.controller;
 
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import umc.SukBakJi.domain.board.model.dto.*;
 import umc.SukBakJi.domain.board.service.PostService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import umc.SukBakJi.global.apiPayload.ApiResponse;
 import umc.SukBakJi.global.apiPayload.exception.GeneralException;
+import umc.SukBakJi.global.security.PrincipalDetails;
 import umc.SukBakJi.global.security.jwt.JwtTokenProvider;
 
 import javax.servlet.http.HttpServletRequest;
@@ -57,10 +59,14 @@ public class PostController {
         }
     }
 
+    // TODO : 차단한 유저의 글 가리기
     @GetMapping("/list")
-    public ResponseEntity<ApiResponse<List<PostListResponseDTO>>> getPostList(@RequestParam String menu, @RequestParam String boardName) {
+    public ResponseEntity<ApiResponse<List<PostListResponseDTO>>> getPostList(@RequestParam String menu,
+                                                                              @RequestParam String boardName,
+                                                                              @AuthenticationPrincipal PrincipalDetails principalDetails) {
         try {
-            List<PostListResponseDTO> postList = postService.getPostList(menu, boardName);
+            Long userId = principalDetails.getMember().getMemberId();
+            List<PostListResponseDTO> postList = postService.getPostList(menu, boardName, userId);
             return ResponseEntity.ok(ApiResponse.onSuccess(postList));
         } catch (GeneralException e) {
             return ResponseEntity.status(e.getErrorReasonHttpStatus().getHttpStatus())
@@ -71,10 +77,14 @@ public class PostController {
         }
     }
 
+    // TODO : 차단한 유저의 댓글 가리기
     @GetMapping("/{postId}")
-    public ResponseEntity<?> viewPostDetail(@PathVariable Long postId) {
+    public ResponseEntity<?> viewPostDetail(@PathVariable Long postId,
+                                            @AuthenticationPrincipal PrincipalDetails principalDetails
+                                            ) {
         try {
-            PostDetailResponseDTO postDetail = postService.getPostDetail(postId);
+            Long userId = principalDetails.getMember().getMemberId();
+            PostDetailResponseDTO postDetail = postService.getPostDetail(postId, userId);
             return ResponseEntity.ok(ApiResponse.onSuccess(postDetail));
         } catch (GeneralException e) {
             return ResponseEntity.status(e.getErrorReasonHttpStatus().getHttpStatus())

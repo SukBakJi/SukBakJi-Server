@@ -49,4 +49,11 @@ public interface PostRepository extends JpaRepository<Post, Long> {
     @Query("SELECT p FROM Post p WHERE p.board.menu IN :menu AND p.board.menu <> '자유' AND p.board.boardName = '질문 게시판' ORDER BY p.createdAt DESC")
     List<Post> findByBoardMenuAndBoardNameOrderByCreatedAtDesc(@Param("menu") Menu menu, Pageable pageable);
 
+    @Query("SELECT p FROM Post p WHERE p.board.menu = :menu AND p.board.boardName = :boardName AND p.member.id NOT IN :blockedIds")
+    List<Post> findByMenuAndBoardNameAndWriterIdNotIn(
+            @Param("menu") Menu menu,
+            @Param("boardName") String boardName,
+            @Param("blockedIds") List<Long> blockedIds);
+
+
 }
