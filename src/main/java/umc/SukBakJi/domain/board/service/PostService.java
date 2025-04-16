@@ -1,5 +1,6 @@
 package umc.SukBakJi.domain.board.service;
 
+import umc.SukBakJi.domain.block.repository.BlockRepository;
 import umc.SukBakJi.domain.board.model.dto.*;
 import umc.SukBakJi.domain.board.model.entity.Board;
 import umc.SukBakJi.domain.board.model.entity.Comment;
@@ -25,11 +26,14 @@ public class PostService {
     private final BoardRepository boardRepository;
     private final MemberRepository memberRepository;
 
+    private final BlockRepository blockRepository;
+
     @Autowired
-    public PostService(PostRepository postRepository, BoardRepository boardRepository, MemberRepository memberRepository) {
+    public PostService(PostRepository postRepository, BoardRepository boardRepository, MemberRepository memberRepository, BlockRepository blockRepository) {
         this.postRepository = postRepository;
         this.boardRepository = boardRepository;
         this.memberRepository = memberRepository;
+        this.blockRepository = blockRepository;
     }
 
     public PostResponseDTO createPost(CreatePostRequestDTO request, Long memberId) {
@@ -94,7 +98,7 @@ public class PostService {
         return responseDTO;
     }
 
-    public PostDetailResponseDTO getPostDetail(Long postId) {
+    public PostDetailResponseDTO getPostDetail(Long postId, Long currentMemberId) {
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new GeneralException(ErrorStatus.POST_NOT_FOUND));
 
@@ -108,10 +112,10 @@ public class PostService {
             postRepository.save(post);
         }
 
-        return convertToPostDetailResponseDTO(post);
+        return convertToPostDetailResponseDTO(post, currentMemberId);
     }
 
-    private PostDetailResponseDTO convertToPostDetailResponseDTO(Post post) {
+    private PostDetailResponseDTO convertToPostDetailResponseDTO(Post post, Long currentMemberId) {
         PostDetailResponseDTO response = new PostDetailResponseDTO();
         response.setMenu(post.getBoard().getMenu().name());
         response.setTitle(post.getTitle());
@@ -125,7 +129,10 @@ public class PostService {
         Map<Long, String> memberAnonymousMap = new HashMap<>();
         Set<Integer> usedNumbers = new HashSet<>();
 
-        response.setComments(post.getComments().stream().map(comment -> {
+        List<Long> blockedIds = blockRepository.findBlockedIdsByBlockerId(currentMemberId);
+        response.setComments(post.getComments().stream()
+                .filter(comment -> !blockedIds.contains(comment.getMember().getId()))
+                .map(comment -> {
             Long commentMemberId = comment.getMember().getId();
 
             // 글쓴이 여부 확인
@@ -164,11 +171,22 @@ public class PostService {
         return dto;
     }
 
-    public List<PostListResponseDTO> getPostList(String menu, String boardName) {
-        Board board = boardRepository.findByMenuAndBoardName(Menu.valueOf(menu), boardName)
-                .orElseThrow(() -> new GeneralException(ErrorStatus.INVALID_MENU_OR_BOARD));
+    public List<PostListResponseDTO> getPostList(String menu, String boardName, Long currentMemberId) {
+        List<Long> blockedIds = blockRepository.findBlockedIdsByBlockerId(currentMemberId);
 
-        List<Post> posts = postRepository.findByBoard(board);
+        List<Post> posts;
+
+        if (blockedIds.isEmpty()) {
+            // 차단한 사람이 없으면 그냥 전체 조회
+            Board board = boardRepository.findByMenuAndBoardName(Menu.valueOf(menu), boardName)
+                    .orElseThrow(() -> new GeneralException(ErrorStatus.INVALID_MENU_OR_BOARD));
+            posts = postRepository.findByBoard(board);
+        } else {
+            posts = postRepository.findByMenuAndBoardNameAndWriterIdNotIn(
+                    Menu.valueOf(menu), boardName, blockedIds
+            );
+        }
+
         return posts.stream().map(post -> {
             PostListResponseDTO dto = new PostListResponseDTO();
             dto.setPostId(post.getPostId());
