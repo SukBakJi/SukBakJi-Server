@@ -59,7 +59,6 @@ public class PostController {
         }
     }
 
-    // TODO : 차단한 유저의 글 가리기
     @GetMapping("/list")
     public ResponseEntity<ApiResponse<List<PostListResponseDTO>>> getPostList(@RequestParam String menu,
                                                                               @RequestParam String boardName,
@@ -77,7 +76,6 @@ public class PostController {
         }
     }
 
-    // TODO : 차단한 유저의 댓글 가리기
     @GetMapping("/{postId}")
     public ResponseEntity<?> viewPostDetail(@PathVariable Long postId,
                                             @AuthenticationPrincipal PrincipalDetails principalDetails

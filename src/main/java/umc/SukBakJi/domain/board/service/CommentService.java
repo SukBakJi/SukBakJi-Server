@@ -13,6 +13,7 @@ import umc.SukBakJi.global.apiPayload.code.status.ErrorStatus;
 import umc.SukBakJi.global.apiPayload.exception.GeneralException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import umc.SukBakJi.global.filter.BadWordFilter;
 
 import java.util.List;
 import java.util.Optional;
@@ -25,15 +26,22 @@ public class CommentService {
     private final CommentRepository commentRepository;
     private final PostRepository postRepository;
     private final MemberRepository memberRepository;
+    private final BadWordFilter badWordFilter;
 
     @Autowired
-    public CommentService(CommentRepository commentRepository, PostRepository postRepository, MemberRepository memberRepository) {
+    public CommentService(CommentRepository commentRepository, PostRepository postRepository, MemberRepository memberRepository, BadWordFilter badWordFilter) {
         this.commentRepository = commentRepository;
         this.postRepository = postRepository;
         this.memberRepository = memberRepository;
+        this.badWordFilter = badWordFilter;
     }
 
     public CommentResponseDTO createComment(CreateCommentRequestDTO request, Long memberId) {
+
+        if (badWordFilter.containsBadWord(request.getContent())) {
+            throw new GeneralException(ErrorStatus.BAD_WORD_DETECTED);
+        }
+
         Post post = postRepository.findById(request.getPostId())
                 .orElseThrow(() -> new GeneralException(ErrorStatus.POST_NOT_FOUND));
 
@@ -90,6 +98,10 @@ public class CommentService {
     }
 
     public CommentResponseDTO updateComment(UpdateCommentRequestDTO request, Long memberId) {
+        if (badWordFilter.containsBadWord(request.getContent())) {
+            throw new GeneralException(ErrorStatus.BAD_WORD_DETECTED);
+        }
+
         Comment comment = commentRepository.findById(request.getCommentId())
                 .orElseThrow(() -> new GeneralException(ErrorStatus.COMMENT_NOT_FOUND));
 

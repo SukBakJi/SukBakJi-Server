@@ -14,6 +14,7 @@ import umc.SukBakJi.domain.board.repository.BoardRepository;
 import umc.SukBakJi.domain.member.repository.MemberRepository;
 import umc.SukBakJi.global.apiPayload.code.status.ErrorStatus;
 import umc.SukBakJi.global.apiPayload.exception.GeneralException;
+import umc.SukBakJi.global.filter.BadWordFilter;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -25,6 +26,7 @@ public class BoardService {
     private final BoardRepository boardRepository;
     private final BoardLikeRepository boardLikeRepository;
     private final MemberRepository memberRepository;
+    private final BadWordFilter badWordFilter;
 
     public List<String> getBoardNamesByMenu(Menu menu) {
         List<Board> boards = boardRepository.findByMenu(menu);
@@ -34,11 +36,19 @@ public class BoardService {
     }
 
     public Board createBoard(CreateBoardRequestDTO request) {
+
+        // 이름 중복 검사
         List<Board> existingBoards = boardRepository.findByBoardNameAndMenu(request.getBoardName(), Menu.자유);
         if (!existingBoards.isEmpty()) {
             throw new IllegalArgumentException("A board with this name already exists in the 자유 menu.");
         }
 
+        // 비속어 필터링 (게시판 제목, 설명 모두 필터링)
+        if(badWordFilter.containsBadWord(request.getBoardName()) || badWordFilter.containsBadWord(request.getDescription())) {
+            throw new GeneralException(ErrorStatus.BAD_WORD_DETECTED);
+        }
+
+        // 정상 처리
         Board board = new Board();
         board.setBoardName(request.getBoardName());
         board.setDescription(request.getDescription());
