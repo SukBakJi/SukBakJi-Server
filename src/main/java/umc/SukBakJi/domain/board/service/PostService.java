@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import umc.SukBakJi.global.apiPayload.code.status.ErrorStatus;
 import umc.SukBakJi.global.apiPayload.exception.GeneralException;
+import umc.SukBakJi.global.filter.BadWordFilter;
 
 import java.time.LocalDateTime;
 import java.util.*;
@@ -27,16 +28,27 @@ public class PostService {
     private final MemberRepository memberRepository;
 
     private final BlockRepository blockRepository;
+    private final BadWordFilter badWordFilter;
 
     @Autowired
-    public PostService(PostRepository postRepository, BoardRepository boardRepository, MemberRepository memberRepository, BlockRepository blockRepository) {
+    public PostService(PostRepository postRepository, BoardRepository boardRepository, MemberRepository memberRepository, BlockRepository blockRepository, BadWordFilter badWordFilter) {
         this.postRepository = postRepository;
         this.boardRepository = boardRepository;
         this.memberRepository = memberRepository;
         this.blockRepository = blockRepository;
+        this.badWordFilter = badWordFilter;
     }
 
     public PostResponseDTO createPost(CreatePostRequestDTO request, Long memberId) {
+
+        // 🔒 비속어 검사
+        if (badWordFilter.containsBadWord(request.getTitle())) {
+            throw new GeneralException(ErrorStatus.BAD_WORD_DETECTED);
+        }
+        if (badWordFilter.containsBadWord(request.getContent())) {
+            throw new GeneralException(ErrorStatus.BAD_WORD_DETECTED);
+        }
+
         Board board = boardRepository.findByMenuAndBoardName(request.getMenu(), request.getBoardName())
                 .orElseThrow(() -> new GeneralException(ErrorStatus.INVALID_MENU_OR_BOARD));
 
