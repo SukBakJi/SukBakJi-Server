@@ -108,6 +108,9 @@ public enum ErrorStatus implements BaseErrorCode {
     INVALID_UNIVERSITY(HttpStatus.BAD_REQUEST, "UNIVERSITY400", "유효하지 않은 학교입니다."),
     SET_UNIV_NOT_FOUND(HttpStatus.BAD_REQUEST, "UNIVERSITY400", "학교 일정을 찾을 수 없습니다."),
 
+    // 비속어 필터링 관련 에러
+    BAD_WORD_DETECTED(HttpStatus.BAD_REQUEST, "FILTERING400", "비속어가 포함되어 작성이 불가능합니다."),
+
     // 멘토링 관련 에러
     DUPLICATE_MENTOR(HttpStatus.BAD_REQUEST, "MENTORING400", "이미 멘토로 신청했습니다."),
     DUPLICATE_MENTORING(HttpStatus.BAD_REQUEST, "MENTORING401", "이미 신청된 멘토링입니다."),
