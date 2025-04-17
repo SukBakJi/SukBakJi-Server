@@ -5,6 +5,7 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import umc.SukBakJi.domain.mentoring.converter.MentoringConverter;
@@ -16,7 +17,7 @@ import umc.SukBakJi.global.apiPayload.code.ErrorReasonDTO;
 import umc.SukBakJi.global.security.jwt.JwtTokenProvider;
 
 import java.util.List;
-
+@Tag(name = "멘토링", description = "멘토 등록, 멘토 조회, 멘토링 신청 등 멘토링 관련 API")
 @RestController
 @RequestMapping("/api/mentor")
 public class MentoringController {

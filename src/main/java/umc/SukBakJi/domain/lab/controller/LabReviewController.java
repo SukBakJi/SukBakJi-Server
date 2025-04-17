@@ -5,26 +5,26 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import umc.SukBakJi.domain.lab.model.dto.*;
 import umc.SukBakJi.global.apiPayload.ApiResponse;
 import umc.SukBakJi.domain.lab.service.LabReviewService;
 import umc.SukBakJi.global.apiPayload.code.ErrorReasonDTO;
+import umc.SukBakJi.global.security.PrincipalDetails;
 import umc.SukBakJi.global.security.jwt.JwtTokenProvider;
 
 import java.util.List;
 import java.util.Optional;
 
-
+@Tag(name = "연구실 후기 API", description = "연구실 후기 작성, 조회, 검색 및 문의 관련 기능 제공")
 @RestController
 @RequestMapping("/api/labs/reviews")
 public class LabReviewController {
     @Autowired
     private LabReviewService labReviewService;
-
-    @Autowired
-    private JwtTokenProvider jwtTokenProvider;
 
     @Operation(summary = "연구실 별 후기 상세 조회", description = "연구실 후기 상세 정보를 조회합니다.")
     @ApiResponses(value = {
@@ -64,14 +64,10 @@ public class LabReviewController {
     public ApiResponse<LabReviewDetailsDTO> createLabReview(
             @Parameter(description = "연구실 후기 생성 DTO", required = true)
             @PathVariable("lab_id") Long labId,
-            @RequestHeader("Authorization") String token,
+            @AuthenticationPrincipal PrincipalDetails principalDetails,
             @RequestBody LabReviewCreateDTO dto) {
 
-        // JWT 토큰에서 Bearer 제거
-        String jwt = token.substring(7);
-
-        // JWT에서 사용자 ID 추출
-        Long userId = jwtTokenProvider.getMemberIdFromToken(jwt);
+        Long userId = principalDetails.getMember().getMemberId();
 
         LabReviewDetailsDTO details = labReviewService.createLabReview(dto, labId, userId);
         return ApiResponse.onSuccess(details);
@@ -127,10 +123,9 @@ public class LabReviewController {
     @PostMapping("/{labId}/inquiries")
     @Operation(summary = "연구실 후기 문의 등록",
             description = "연구실 후기에 잘못 기입되어 있는 정보에 대한 문의를 등록합니다.")
-    public ApiResponse<String> inquiryLabInfo(@RequestHeader("Authorization") String token,
+    public ApiResponse<String> inquiryLabInfo(@AuthenticationPrincipal PrincipalDetails principalDetails,
                                          @RequestBody LabRequestDTO.InquireLabReviewDTO request) {
-        String jwtToken = token.substring(7);
-        Long memberId = jwtTokenProvider.getMemberIdFromToken(jwtToken);
+        Long memberId = principalDetails.getMember().getMemberId();
         labReviewService.labReviewUpdateRequest(memberId, request);
         return ApiResponse.onSuccess("연구실 후기에 대한 문의를 등록하였습니다.");
     }

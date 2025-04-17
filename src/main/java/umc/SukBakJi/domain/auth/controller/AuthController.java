@@ -1,6 +1,8 @@
 package umc.SukBakJi.domain.auth.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.mail.MessagingException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -18,6 +20,7 @@ import umc.SukBakJi.domain.auth.service.AuthService;
 import umc.SukBakJi.global.apiPayload.ApiResponse;
 import umc.SukBakJi.global.security.jwt.JwtBlacklistService;
 
+@Tag(name = "인증/로그인 API", description = "회원가입, 로그인, 이메일 인증, 비밀번호 재설정 등 인증 관련 기능 제공")
 @RestController
 @RequiredArgsConstructor
 @Slf4j
@@ -49,6 +52,12 @@ public class AuthController {
 
     @PostMapping("/email")
     @Operation(summary = "이메일 중복 확인", description = "이메일 중복 검사를 통해 이메일을 사용할 수 있는지 확인합니다.")
+    @ApiResponses(value = {
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "사용 가능한 이메일"),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "409", description = "이미 존재하는 이메일"),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "400", description = "잘못된 요청"),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "500", description = "서버 오류")
+    })
     public ResponseEntity<ApiResponse<?>> verifyEmail(@RequestBody @Valid AuthRequestDTO.EmailDto request) {
         Boolean isAvailable = authService.verifyEmail(request.getEmail());
         if (isAvailable) {

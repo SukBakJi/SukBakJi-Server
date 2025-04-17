@@ -5,6 +5,7 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -26,6 +27,7 @@ import umc.SukBakJi.global.security.jwt.JwtTokenProvider;
 
 import java.util.List;
 
+@Tag(name = "학사 일정", description = "대학교 검색, 일정 조회, 등록, 수정, 삭제 등의 학사 일정 관련 API")
 @RestController
 @RequestMapping("/api/calender")
 public class CalenderController {

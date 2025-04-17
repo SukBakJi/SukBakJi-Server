@@ -2,7 +2,9 @@ package umc.SukBakJi.domain.board.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import umc.SukBakJi.domain.board.model.dto.HotBoardPostDTO;
 import umc.SukBakJi.domain.board.model.dto.LatestQuestionDTO;
@@ -11,19 +13,17 @@ import umc.SukBakJi.domain.board.model.dto.PostSearchDTO;
 import umc.SukBakJi.domain.common.entity.enums.Menu;
 import umc.SukBakJi.domain.board.service.CommunityService;
 import umc.SukBakJi.global.apiPayload.ApiResponse;
-import umc.SukBakJi.global.security.jwt.JwtTokenProvider;
+import umc.SukBakJi.global.security.PrincipalDetails;
 
 import java.util.List;
 
+@Tag(name = "커뮤니티 API", description = "커뮤니티 기능 관련 API (질문글, HOT 게시판, 내가 쓴 글, 스크랩 등)")
 @RestController
 @RequestMapping("/api/community")
 public class CommunityController {
 
     @Autowired
     private CommunityService communityService;
-
-    @Autowired
-    private JwtTokenProvider jwtTokenProvider;
 
     @Operation(summary = "최근 질문글 3개 불러오기", description = "각 메뉴(박사, 석사, 진학예정)별로 질문게시판의 최신 질문글을 가져옵니다.")
     @ApiResponses(value = {
@@ -57,9 +57,8 @@ public class CommunityController {
                             schema = @io.swagger.v3.oas.annotations.media.Schema(implementation = PostListDTO.class)))
     })
     @GetMapping("/scrap-list")
-    public ApiResponse<List<PostListDTO>> getScrapListByUserId(@RequestHeader("Authorization") String token) {
-        String jwtToken = token.substring(7);
-        Long userId = jwtTokenProvider.getMemberIdFromToken(jwtToken);
+    public ApiResponse<List<PostListDTO>> getScrapListByUserId(@AuthenticationPrincipal PrincipalDetails principalDetails) {
+        Long userId = principalDetails.getMember().getId();
 
         List<PostListDTO> scrapList = communityService.getScrappedPostsByUserId(userId);
         return ApiResponse.onSuccess(scrapList);
@@ -72,9 +71,8 @@ public class CommunityController {
                             schema = @io.swagger.v3.oas.annotations.media.Schema(implementation = PostListDTO.class)))
     })
     @GetMapping("/post-list")
-    public ApiResponse<List<PostListDTO>> getPostListByUser(@RequestHeader("Authorization") String token) {
-        String jwtToken = token.substring(7);
-        Long userId = jwtTokenProvider.getMemberIdFromToken(jwtToken);
+    public ApiResponse<List<PostListDTO>> getPostListByUser(@AuthenticationPrincipal PrincipalDetails principalDetails) {
+        Long userId = principalDetails.getMember().getId();
 
         List<PostListDTO> postList = communityService.getPostsByUserId(userId);
         return ApiResponse.onSuccess(postList);
@@ -87,9 +85,8 @@ public class CommunityController {
                             schema = @io.swagger.v3.oas.annotations.media.Schema(implementation = PostListDTO.class)))
     })
     @GetMapping("/comment-list")
-    public ApiResponse<List<PostListDTO>> getCommentedPostListByUser(@RequestHeader("Authorization") String token) {
-        String jwtToken = token.substring(7);
-        Long userId = jwtTokenProvider.getMemberIdFromToken(jwtToken);
+    public ApiResponse<List<PostListDTO>> getCommentedPostListByUser(@AuthenticationPrincipal PrincipalDetails principalDetails) {
+        Long userId = principalDetails.getMember().getId();
 
         List<PostListDTO> postList = communityService.getCommentedPostsByUserId(userId);
         return ApiResponse.onSuccess(postList);
@@ -102,10 +99,9 @@ public class CommunityController {
                             schema = @io.swagger.v3.oas.annotations.media.Schema(implementation = PostListDTO.class)))
     })
     @GetMapping("/favorite-post-list")
-    public ApiResponse<List<PostListDTO>> getFavoritePosts(@RequestHeader("Authorization") String token) {
-        String jwtToken = token.substring(7);
+    public ApiResponse<List<PostListDTO>> getFavoritePosts(@AuthenticationPrincipal PrincipalDetails principalDetails) {
+        Long userId = principalDetails.getMember().getId();
 
-        Long userId = jwtTokenProvider.getMemberIdFromToken(jwtToken);
         List<PostListDTO> favoritePosts = communityService.getFavoritePosts(userId);
         return ApiResponse.onSuccess(favoritePosts);
     }
