@@ -1,6 +1,7 @@
 package umc.SukBakJi.domain.member.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
@@ -21,6 +22,7 @@ import umc.SukBakJi.global.security.jwt.JwtTokenProvider;
 @RestController
 @RequiredArgsConstructor
 @Validated
+@Tag(name = "회원 API", description = "회원 관련 API")
 @RequestMapping("/api/user")
 public class MemberController {
     private final MemberService memberService;
