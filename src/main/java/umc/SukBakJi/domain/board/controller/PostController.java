@@ -1,5 +1,8 @@
 package umc.SukBakJi.domain.board.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import umc.SukBakJi.domain.board.model.dto.*;
 import umc.SukBakJi.domain.board.service.PostService;
@@ -14,24 +17,30 @@ import umc.SukBakJi.global.security.jwt.JwtTokenProvider;
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
+@Tag(name = "게시글 API", description = "게시글 작성, 조회, 수정, 삭제 기능 제공")
 @RestController
 @RequestMapping("/api/posts")
 public class PostController {
 
     private final PostService postService;
-    private final JwtTokenProvider jwtTokenProvider;
 
     @Autowired
-    public PostController(PostService postService, JwtTokenProvider jwtTokenProvider) {
+    public PostController(PostService postService) {
         this.postService = postService;
-        this.jwtTokenProvider = jwtTokenProvider;
     }
 
+    @Operation(summary = "일반 게시글 작성", description = "로그인한 사용자가 게시글을 작성합니다.")
+    @ApiResponses({
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "게시글 작성 성공"),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "400", description = "입력값 오류 또는 비속어 포함"),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "500", description = "서버 오류")
+    })
     @PostMapping("/create")
-    public ResponseEntity<ApiResponse<?>> createPost(@RequestBody CreatePostRequestDTO request, @RequestHeader("Authorization") String token) {
+    public ResponseEntity<ApiResponse<?>> createPost(@RequestBody CreatePostRequestDTO request,
+                                                     @AuthenticationPrincipal PrincipalDetails principalDetails) {
         try {
-            token = token.replace("Bearer ", ""); // Remove "Bearer " prefix if present
-            Long memberId = jwtTokenProvider.getMemberIdFromToken(token);
+            Long memberId = principalDetails.getMember().getId();
+
             PostResponseDTO createdPost = postService.createPost(request, memberId);
             return ResponseEntity.ok(ApiResponse.onSuccess("게시글 작성에 성공했습니다.", createdPost));
         } catch (GeneralException e) {
@@ -43,11 +52,13 @@ public class PostController {
         }
     }
 
+    @Operation(summary = "잡 게시글 작성", description = "로그인한 사용자가 잡 게시판에 게시글을 작성합니다.")
     @PostMapping("/createJobPost")
-    public ResponseEntity<ApiResponse<?>> createJobPost(@RequestBody CreateJobPostRequestDTO request, @RequestHeader("Authorization") String token) {
+    public ResponseEntity<ApiResponse<?>> createJobPost(@RequestBody CreateJobPostRequestDTO request,
+                                                        @AuthenticationPrincipal PrincipalDetails principalDetails) {
         try {
-            token = token.replace("Bearer ", ""); // Remove "Bearer " prefix if present
-            Long memberId = jwtTokenProvider.getMemberIdFromToken(token);
+            Long memberId = principalDetails.getMember().getId();
+
             PostResponseDTO createdJobPost = postService.createJobPost(request, memberId);
             return ResponseEntity.ok(ApiResponse.onSuccess("잡 포스트 작성에 성공했습니다.", createdJobPost));
         } catch (GeneralException e) {
@@ -59,6 +70,7 @@ public class PostController {
         }
     }
 
+    @Operation(summary = "게시글 목록 조회", description = "메뉴와 게시판 이름에 따라 게시글 목록을 조회합니다.")
     @GetMapping("/list")
     public ResponseEntity<ApiResponse<List<PostListResponseDTO>>> getPostList(@RequestParam String menu,
                                                                               @RequestParam String boardName,
@@ -76,6 +88,7 @@ public class PostController {
         }
     }
 
+    @Operation(summary = "게시글 상세 조회", description = "게시글 ID를 통해 상세 내용을 조회합니다.")
     @GetMapping("/{postId}")
     public ResponseEntity<?> viewPostDetail(@PathVariable Long postId,
                                             @AuthenticationPrincipal PrincipalDetails principalDetails
@@ -98,14 +111,15 @@ public class PostController {
         return null;
     }
 
+    @Operation(summary = "게시글 수정", description = "자신이 작성한 게시글을 수정합니다.")
     @PutMapping("/{postId}/update")
     public ResponseEntity<ApiResponse<?>> updatePost(
             @PathVariable Long postId,
             @RequestBody UpdatePostRequestDTO request,
-            @RequestHeader("Authorization") String token) {
+            @AuthenticationPrincipal PrincipalDetails principalDetails) {
         try {
-            token = token.replace("Bearer ", ""); // Remove "Bearer " prefix if present
-            Long memberId = jwtTokenProvider.getMemberIdFromToken(token);
+            Long memberId = principalDetails.getMember().getId();
+
             PostResponseDTO updatedPost = postService.updatePost(postId, request, memberId);
             return ResponseEntity.ok(ApiResponse.onSuccess("게시글 수정에 성공했습니다.", updatedPost));
         } catch (GeneralException e) {
@@ -117,13 +131,14 @@ public class PostController {
         }
     }
 
+    @Operation(summary = "게시글 삭제", description = "자신이 작성한 게시글을 삭제합니다.")
     @DeleteMapping("/{postId}/delete")
     public ResponseEntity<ApiResponse<?>> deletePost(
             @PathVariable Long postId,
-            @RequestHeader("Authorization") String token) {
+            @AuthenticationPrincipal PrincipalDetails principalDetails) {
         try {
-            token = token.replace("Bearer ", "");
-            Long memberId = jwtTokenProvider.getMemberIdFromToken(token);
+            Long memberId = principalDetails.getMember().getId();
+
             postService.deletePost(postId, memberId);
             return ResponseEntity.ok(ApiResponse.onSuccess("게시글 삭제에 성공했습니다.", null));
         } catch (GeneralException e) {

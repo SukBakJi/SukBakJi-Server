@@ -2,6 +2,7 @@ package umc.SukBakJi.domain.lab.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -22,6 +23,7 @@ import umc.SukBakJi.global.security.jwt.JwtTokenProvider;
 
 import java.util.List;
 
+@Tag(name = "연구실 API", description = "연구실 검색, 즐겨찾기, 문의 관련 기능 제공")
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/labs")
