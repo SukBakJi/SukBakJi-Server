@@ -38,7 +38,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 uri.startsWith("/api/sms/") ||
                 uri.startsWith("/v3/api-docs") ||
                 uri.startsWith("/swagger-ui/") ||
-                uri.startsWith("/swagger-resources/")
+                uri.startsWith("/swagger-resources/") ||
+                uri.startsWith("/actuator/health")
         ) {
             filterChain.doFilter(request, response);
             return;
