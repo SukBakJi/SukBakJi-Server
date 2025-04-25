@@ -29,6 +29,19 @@ public class SecurityConfig {
     }
 
     @Bean
+    @Order(0) // 가장 먼저 적용
+    public SecurityFilterChain actuatorSecurityFilterChain(HttpSecurity http) throws Exception {
+        http
+                .securityMatcher("/actuator/**")
+                .csrf(csrf -> csrf.disable())
+                .authorizeHttpRequests(request -> request
+                        .anyRequest().permitAll()
+                );
+
+        return http.build();
+    }
+
+    @Bean
     @Order(1)
     public SecurityFilterChain adminSecurityFilterChain(HttpSecurity http) throws Exception {
         http
@@ -66,7 +79,8 @@ public class SecurityConfig {
                 .authorizeHttpRequests(request -> request
                         .requestMatchers("/api/auth/logout").authenticated()
                         .requestMatchers(
-                        "/api/auth/**", "/api/sms/**", "/v3/api-docs/**", "/swagger-ui/**", "/swagger-resources/**"
+                        "/api/auth/**", "/api/sms/**", "/v3/api-docs/**", "/swagger-ui/**", "/swagger-resources/**",
+                                "/actuator/health"
                         ).permitAll()
                         .anyRequest().authenticated()
                 )
