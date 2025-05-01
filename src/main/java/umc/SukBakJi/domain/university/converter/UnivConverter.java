@@ -1,5 +1,6 @@
 package umc.SukBakJi.domain.university.converter;
 
+import lombok.extern.slf4j.Slf4j;
 import umc.SukBakJi.domain.university.model.dto.UnivRequestDTO;
 import umc.SukBakJi.domain.university.model.dto.UnivResponseDTO;
 import umc.SukBakJi.domain.member.model.entity.Member;
@@ -115,7 +116,7 @@ public class UnivConverter {
                 // "yyyy-MM-dd" 형식의 DateTimeFormatter 생성
                 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
                 // 문자열로 받은 날짜를 LocalDate 객체로 변환
-                LocalDate targetDate = LocalDate.parse(scheduleInfo.getDate(), formatter);
+                LocalDate targetDate = LocalDate.parse(scheduleInfo.getDate().trim(), formatter);
                 // 오늘 날짜 구하기
                 LocalDate today = LocalDate.now();
                 // 두 날짜 사이의 일수 계산
