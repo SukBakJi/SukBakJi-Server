@@ -9,7 +9,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     outputs:
-      DEPLOY_ENV: ${{ steps.set_env.outputs.DEPLOY_ENV }}
+      AFTER_COLOR: ${{ steps.color.outputs.AFTER_COLOR }}
     env:
       REDIS_PASSWORD: ${{ secrets.REDIS_PASSWORD }}
     steps:
@@ -56,16 +56,28 @@ jobs:
           username: ${{ secrets.DOCKER_HUB_USERNAME }}
           password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
 
+      - name: Determine Next Color
+        id: color
+        run: |
+          CURRENT_COLOR=$(ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa ubuntu@${{ secrets.EC2_HOST }} "docker ps --format '{{.Names}}'" | grep spring-blue && echo "blue" || echo "green")
+          if [ "$CURRENT_COLOR" = "blue" ]; then
+            echo "AFTER_COLOR=green" >> $GITHUB_ENV
+            echo "AFTER_COLOR=green" >> $GITHUB_OUTPUT
+          else
+            echo "AFTER_COLOR=blue" >> $GITHUB_ENV
+            echo "AFTER_COLOR=blue" >> $GITHUB_OUTPUT
+          fi
+
       - name: Build and Push Docker Image
         run: |
-          docker build -t ${{ secrets.DOCKER_HUB_USERNAME }}/sukbakji-server:blue .
-          docker push ${{ secrets.DOCKER_HUB_USERNAME }}/sukbakji-server:blue
+          docker build -t ${{ secrets.DOCKER_HUB_USERNAME }}/sukbakji-server:${{ steps.color.outputs.AFTER_COLOR }} .
+          docker push ${{ secrets.DOCKER_HUB_USERNAME }}/sukbakji-server:${{ steps.color.outputs.AFTER_COLOR }} 
 
   deploy:
     needs: build
     runs-on: ubuntu-latest
     env:
-      DEPLOY_ENV: ${{ needs.build.outputs.DEPLOY_ENV }}
+      AFTER_COLOR: ${{ needs.build.outputs.AFTER_COLOR }}
       REDIS_PASSWORD: ${{ secrets.REDIS_PASSWORD }}
       APPLE_AUTH_KEY_NAME: ${{ secrets.APPLE_AUTH_KEY_NAME }}
     steps:
@@ -80,4 +92,4 @@ jobs:
             export REDIS_PASSWORD=${{ secrets.REDIS_PASSWORD }}
             export APPLE_AUTH_KEY_NAME=${{ secrets.APPLE_AUTH_KEY_NAME }}
             cd ~/SukBakJi-Server
-            ./deploy.sh
+            ./deploy.sh ${{ env.AFTER_COLOR }}
