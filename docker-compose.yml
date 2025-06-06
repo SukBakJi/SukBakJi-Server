@@ -20,6 +20,7 @@ services:
       - REDIS_PASSWORD=${REDIS_PASSWORD}
       - SPRING_PROFILES_ACTIVE=production
     volumes:
+      - ./key:/app/key
       - ./src/main/resources/application.yml:/app/application.yml
     depends_on:
       - redis
@@ -36,6 +37,7 @@ services:
       - REDIS_PASSWORD=${REDIS_PASSWORD}
       - SPRING_PROFILES_ACTIVE=production
     volumes:
+      - ./key:/app/key
       - ./src/main/resources/application.yml:/app/application.yml
     depends_on:
       - redis
