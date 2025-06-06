@@ -3,6 +3,7 @@ package umc.SukBakJi.domain.board.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.stereotype.Service;
+import umc.SukBakJi.domain.board.model.dto.BoardLikeResponseDTO;
 import umc.SukBakJi.domain.board.model.dto.CreateBoardRequestDTO;
 import umc.SukBakJi.domain.board.model.entity.Board;
 import umc.SukBakJi.domain.member.model.entity.Member;
@@ -14,6 +15,7 @@ import umc.SukBakJi.domain.board.repository.BoardRepository;
 import umc.SukBakJi.domain.member.repository.MemberRepository;
 import umc.SukBakJi.global.apiPayload.code.status.ErrorStatus;
 import umc.SukBakJi.global.apiPayload.exception.GeneralException;
+import umc.SukBakJi.global.apiPayload.exception.handler.MemberHandler;
 import umc.SukBakJi.global.filter.BadWordFilter;
 
 import java.util.List;
@@ -87,5 +89,20 @@ public class BoardService {
             boardLikeRepository.deleteById(boardLikeId);
             return true; // Unfavorited
         }
+    }
+
+    public List<BoardLikeResponseDTO> getFavoriteBoardList(Long memberId) {
+        List<BoardLike> boardLikeList = boardLikeRepository.findWithBoardByMemberId(memberId);
+
+        return boardLikeList.stream()
+                .map(boardLike -> {
+                    Board board = boardLike.getBoard();
+                    return BoardLikeResponseDTO.builder()
+                            .label(board.getMenu().toString())
+                            .boardId(board.getBoardId())
+                            .boardName(board.getBoardName())
+                            .build();
+                })
+                .collect(Collectors.toList());
     }
 }

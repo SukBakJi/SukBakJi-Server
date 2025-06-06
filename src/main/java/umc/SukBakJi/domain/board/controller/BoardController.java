@@ -6,6 +6,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.BindingResult;
+import umc.SukBakJi.domain.board.model.dto.BoardLikeResponseDTO;
 import umc.SukBakJi.domain.board.model.dto.CreateBoardRequestDTO;
 import umc.SukBakJi.domain.board.model.entity.Board;
 import umc.SukBakJi.domain.common.entity.enums.Menu;
@@ -15,7 +16,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import umc.SukBakJi.global.apiPayload.ApiResponse;
 import umc.SukBakJi.global.security.PrincipalDetails;
-import umc.SukBakJi.global.security.jwt.JwtTokenProvider;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -88,5 +88,13 @@ public class BoardController {
         boolean isUnfavorited = boardService.removeFavoriteBoard(memberId, boardId);
         String message = isUnfavorited ? "즐겨찾기에서 제거되었습니다." : "즐겨찾기 제거 실패.";
         return ResponseEntity.ok(ApiResponse.onSuccess(message));
+    }
+
+    @Operation(summary = "게시판 즐겨찾기 목록 조회", description = "사용자가 즐겨찾기한 게시판 목록을 조회합니다.")
+    @GetMapping("/favorite")
+    public ResponseEntity<ApiResponse<List<BoardLikeResponseDTO>>> getFavoriteBoardList(@AuthenticationPrincipal PrincipalDetails principalDetails) {
+        Long memberId = principalDetails.getMember().getMemberId();
+        List<BoardLikeResponseDTO> boardLikeList = boardService.getFavoriteBoardList(memberId);
+        return ResponseEntity.ok(ApiResponse.onSuccess(boardLikeList));
     }
 }
